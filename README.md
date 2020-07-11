@@ -31,3 +31,11 @@
 4. source폴더를 열기 또는 선택합니다.
 
 ![확장 프로그램 불러오기](./images/howto-3.png)
+
+
+
+# 라이선스
+
+- 네이버 카페 애드온: MIT License Copyright 2020, Wei756(@wei756) (kjhoon1122@naver.com)
+
+- jQuery v3.3.1: MIT License (c) [JS Foundation and other contributors](https://jquery.org/license/)
