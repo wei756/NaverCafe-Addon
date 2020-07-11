@@ -32,13 +32,15 @@ jQuery(function($){
         
         $('ul.list_sub_tab').ready(function() {
             // 인기글 링크
-            var page = $(link_best);
-            $("ul.list_sub_tab").append(page);
-            page.on("click", function() {
-                //loadLikeIt();
-                location.href = location.href.replace("&best=true", "")
-                                            .replace("#", "") + "&best=true";
-            });
+            if (location.href.indexOf("BestArticleList.nhn") != -1) {
+                var page = $(link_best);
+                $("ul.list_sub_tab").append(page);
+                page.on("click", function() {
+                    //loadLikeIt();
+                    location.href = location.href.replace("&best=true", "")
+                                                .replace("#", "") + "&best=true";
+                });
+            }
             // 인기글 페이지 로딩
             var params = getParams();
             var isBest = params["best"];
