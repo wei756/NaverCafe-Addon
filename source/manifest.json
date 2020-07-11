@@ -1,0 +1,27 @@
+{
+  "name": "네이버 카페 애드온",
+  "version": "1.0",
+  "description": "네이버 카페 인기글 목록, 좋아요한 글 등 각종 편의기능 제공",
+  "permissions": [
+    "storage", 
+    "https://cafe.naver.com/*", 
+    "http://cafe.naver.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://cafe.naver.com/*"], 
+      "run_at": "document_idle",
+      "js": ["jquery3.3.1.min.js", "content_script.js"],
+      "all_frames": true
+    }
+  ],
+  "page_action": {
+    "default_icon": {
+      "16": "images/icon16.png",
+      "32": "images/icon32.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    }
+  },
+  "manifest_version": 2
+}
