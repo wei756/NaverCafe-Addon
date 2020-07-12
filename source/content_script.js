@@ -1,3 +1,8 @@
+/** 
+ * @author Wei756 <kjhoon1122@naver.com> 
+ * @license MIT
+ */
+
 jQuery(function($){
     var link = '<li class="info5 likeit"><span class="tit"><span class="_icon">♡</span><strong class="gm-tcol-c"><a class="link_likeit" target="cafe_main">좋아요한 글 보기</a></strong></span></li>';
     var link2 = '<a href="#" class="likeit link_sort"">좋아요한 글</a>';
@@ -52,7 +57,10 @@ jQuery(function($){
         });
     })
 
-    // 좋아요 페이지 로딩
+    /** 
+     * @description 좋아요한 글 목록을 불러옵니다.
+     * @param {string} timestamp 타임스탬프
+     */
     function loadLikeIt(timestamp) {
         var main_area = $("#main-area");
         var section = main_area.children(".article-board.article_profile");
@@ -77,7 +85,10 @@ jQuery(function($){
         getLikeItArticles(clubid, memberid, "20", timestamp);
     }
 
-    // 인기글 페이지 로딩
+    /** 
+     * @description 인기글 목록을 불러옵니다.
+     * @param {string} timestamp 타임스탬프
+     */
     function loadBest() {
         var main_area = document.querySelector("#main-area");
 
@@ -96,7 +107,13 @@ jQuery(function($){
         getBestArticles(clubid);
     }
 
-    // 좋아요 페이지 데이터 로딩
+    /** 
+     * @description 좋아요한 글 데이터를 불러옵니다.
+     * @param {string} cafeid 카페 id
+     * @param {string} memberid 회원 id
+     * @param {string} count 출력할 개수
+     * @param {string} timestamp 타임스탬프
+     */
     function getLikeItArticles(cafeid, memberid, count, timestamp) {
         var url = 'https://m.cafe.naver.com/CafeMemberLikeItList.nhn?search.cafeId=' + cafeid + 
                 '&search.memberId='+ memberid +
@@ -119,7 +136,11 @@ jQuery(function($){
         })
     }
 
-    // 인기글 데이터 로딩
+    
+    /** 
+     * @description 인기글 데이터를 불러옵니다.
+     * @param {string} cafeid 카페 id
+     */
     function getBestArticles(cafeid) {
         var url = 'https://apis.naver.com/cafe-web/cafe2/WeeklyPopularArticleList.json?cafeId=' + cafeid;
         $.ajax({
@@ -140,6 +161,14 @@ jQuery(function($){
         })
     }
 
+    /** 
+     * @description 좋아요한 글 목록을 출력합니다.
+     * @param {JSON} data 좋아요한 글 JSON
+     * @param {string} cafeid 카페 id
+     * @param {string} memberid 회원 id
+     * @param {string} count 출력할 개수
+     * @param {string} timestamp 타임스탬프
+     */
     function drawLikeItArticles(data, cafeid, memberid, count, timestamp) {
         var article_html = '<tr><td class="td_article"><div class="board-number"><div class="inner_number">null</div></div><div class="board-list"><div class="inner_list"><a class="title_txt" target="_parent" href="#">null</a><span class="list-i-img"><i class="blind">사진</i></span><span class="list-i-poll"><i class="blind">투표</i></span><span class="list-i-link"><i class="blind">링크</i></span><span class="list-i-upload"><i class="blind">파일</i></span><a href="#" target="_parent" class="cmt">[<em>null</em>]</a><span class="list-i-new"><i class="blind">new</i></span></div></div></td><td class="td_name"><div class="pers_nick_area"><table role="presentation" cellspacing="0"><tbody><tr><td class="p-nick"><a href="#" class="m-tcol-c"><div class="ellipsis m-tcol-c">null</div></a></td></tr></tbody></table></div></td><td class="td_date">null</td><td class="td_view">null</td></tr>';
         var prevnext_html = '<a href="#" class="pgL"><span class="m-tcol-c">처음으로</span></a><a href="#" class="pgR"><span class="m-tcol-c">다음</span></a>';
@@ -222,6 +251,10 @@ jQuery(function($){
         table.querySelector("#data").remove();
     }
     
+    /** 
+     * @description 인기글 목록을 출력합니다.
+     * @param {JSON} data 인기글 JSON
+     */
     function drawBestArticles(data) {
         var article_html = '<tr align="center"><td colspan="2"><span class="m-tcol-c list-count"></span></td><td align="left" class="board-list"><a class="title" href="/ArticleRead.nhn?clubid=&articleid=">null</a><a href="/ArticleRead.nhn?clubid=&articleid=" class="cmt">[<em>null</em>]</a></td><td class="p-nick"><div class="pers_nick_area"><table role="presentation" cellspacing="0"><tbody><tr><td class="p-nick"><a href="#" class="m-tcol-c nickname">null</a></td></tr></tbody></table></div></td><td class="date">null</td><td class="view">null</td><td class="likeit">null</td></tr>';
         var main_area = document.querySelector("#main-area");
@@ -256,6 +289,10 @@ jQuery(function($){
         $("#consol").scrollTop($("#consol")[0].scrollHeight);
     }
 
+    /** 
+     * @description URL 파라미터를 반환합니다.
+     * @return {Array} 파라미터
+     */
     function getParams() {
         // 파라미터가 담길 배열
         var param = new Array();
@@ -283,4 +320,199 @@ jQuery(function($){
      
         return param;
     }
+
+    /**
+     * @description 네이버 아이디
+     * @type {string}
+     */
+    const nid = "nid";
+    /**
+     * @description 키워드
+     * @type {string}
+     */
+    const keyword = "keyword";
+
+    doBlock(); // 차단 실행
+
+    /** 
+     * @description 회원 아이디/키워드를 차단 목록에 추가합니다.
+     * @param {string} type 회원 아이디/키워드
+     * @param {string} data 추가할 데이터
+     */
+    function pushBlockItem(type, data) {
+        getBlockList(function(items) {
+            if (typeof items["" + type] == "undefined" || items["" + type] == null) { // 차단 목록 생성
+                items["" + type] = new Array(data);
+            } else {
+                if (items["" + type].indexOf(data) == -1) { // 중복 검사
+                    items["" + type].push(data);
+                    alert(type + ": " + data + " 님을 차단하였습니다.");
+                } else {
+                    alert("이미 차단한 " + (type == nid ? "사용자" : "키워드") + "입니다. (" + data + ")");
+                }
+            }
+            chrome.storage.local.set(items, function() { 
+                //alert(data + " pushed!");
+            });
+        });
+    }
+
+    /** 
+     * @description 차단 목록을 불러옵니다.
+     * @param {function} callback 콜백 함수
+     */
+    function getBlockList(callback) {
+        chrome.storage.local.get(null, function(items) {
+            //alert("items: " + JSON.stringify(items));
+            callback(items);
+        });
+    }
+    
+    /** 
+     * @description 사용자/키워드 차단을 실행합니다.
+     */
+    function doBlock() {
+
+        getBlockList(function(dataBlock) {
+
+            // 글 차단
+            if (document.querySelectorAll("#main-area").length != 0)
+                $("#main-area").ready(function() {
+                    $("#main-area .article-board table").ready(function() {
+                        var articles = document.querySelectorAll("#main-area > .article-board > table > tbody > tr");
+                        var le = articles.length;
+
+                        for(var i = 0; i < le; i++) {
+                            var writerId = articles[i].querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
+                            //alert(i + ": " + writerId);
+
+                            if (dataBlock.nid.indexOf(writerId) != -1) { // 유저 차단
+                                articles[i].innerHTML = "";
+
+                            } else {
+                                articles[i].addEventListener("click", function(event) { // 유저 차단 UI 삽입
+                                    var targetElement = (event.target || event.srcElement).parentElement;
+                                    addBlockUIArticle(targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "")); 
+                                });
+
+                            }
+
+                        }
+                    });
+                });
+
+            // 댓글 차단
+            if (document.querySelectorAll("#app").length != 0)
+                $("#app .Article .ArticleContentBox > .CommentBox > ul.comment_list").ready(function() {
+                    setTimeout(() => {
+                        var comments = document.querySelectorAll("ul.comment_list > li.CommentItem");
+                        var le = comments.length;
+                        
+                        for(var i = 0; i < le; i++) {
+                            var writerId = comments[i].querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "");
+                            //alert(i + ": " + writerId);
+
+                            if (dataBlock.nid.indexOf(writerId) != -1) { // 유저 차단
+                                comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
+                                comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
+                                var blockedCmt = document.createElement("div");
+                                blockedCmt.className = "comment_box";
+                                var blockedP = document.createElement("p");
+                                blockedP.className = "comment_deleted";
+                                blockedP.append("차단된 댓글입니다.");
+                                blockedCmt.appendChild(blockedP);
+                                comments[i].querySelector(".comment_area").appendChild(blockedCmt);
+
+                            } else {
+                                comments[i].addEventListener("click", function(event) { // 유저 차단 UI 삽입
+                                    var targetElement = (event.target || event.srcElement).parentElement;
+                                    addBlockUIComment(targetElement.parentElement, 
+                                        targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "")); 
+                                });
+
+                            }
+
+                        }
+                    }, 1000);
+                });
+
+        });
+
+    }
+
+    /** 
+     * @description 글 목록에 차단하기 UI를 삽입합니다.
+     * @param {string} _id 차단 대상 id
+     */
+    function addBlockUIArticle(_id) { // 글목록 회원 차단 UI
+        document.querySelector(".perid-layer").addEventListener("DOMSubtreeModified", function() {
+            if (document.querySelector(".perid-layer > ul").innerHTML.indexOf("blocking") == -1) {
+                var btnBlock = document.createElement("li");
+                var aBlock = document.createElement("a");
+                aBlock.className = "blocking";
+                aBlock.href = "#";
+                var spanBlock = document.createElement("span");
+                spanBlock.append("차단하기");
+                aBlock.appendChild(spanBlock);
+                btnBlock.appendChild(aBlock);
+                document.querySelector(".perid-layer > ul").appendChild(btnBlock);
+
+                document.querySelector(".perid-layer > ul .blocking").addEventListener("click", function(event) {
+                    if(confirm("정말로 " + _id + " 님을 차단하시겠습니까?")) {
+                        pushBlockItem(nid, _id);
+                        location.reload(true);
+                    }
+                });
+            }
+        });
+
+    }
+
+    /** 
+     * @description 댓글 목록에 차단하기 UI를 삽입합니다.
+     * @param {string} element 삽입할 요소
+     * @param {string} _id 차단 대상 id
+     */
+    function addBlockUIComment(element, _id) { // 댓글목록 회원 차단 UI
+        if (element.querySelector(".LayerMore").innerHTML.indexOf("blocking") == -1) {
+            var btnBlock = document.createElement("li");
+            btnBlock.className = "layer_item";
+            var aBlock = document.createElement("a");
+            aBlock.className = "layer_button blocking";
+            aBlock.href = "#";
+            aBlock.setAttribute("role", "button");
+            aBlock.append("차단");
+            btnBlock.appendChild(aBlock);
+            element.querySelector(".LayerMore").appendChild(btnBlock);
+
+            element.querySelector(".LayerMore .blocking").addEventListener("click", function(event) {
+                if(confirm("정말로 " + _id + " 님을 차단하시겠습니까?")) {
+                    pushBlockItem(nid, _id);
+                    location.reload(true);
+                }
+            });
+        }
+        element.addEventListener("DOMSubtreeModified", function() {
+            if (element.querySelector(".LayerMore").innerHTML.indexOf("blocking") == -1) {
+                var btnBlock = document.createElement("li");
+                btnBlock.className = "layer_item";
+                var aBlock = document.createElement("a");
+                aBlock.className = "layer_button blocking";
+                aBlock.href = "#";
+                aBlock.setAttribute("role", "button");
+                aBlock.append("차단");
+                btnBlock.appendChild(aBlock);
+                element.querySelector(".LayerMore").appendChild(btnBlock);
+    
+                element.querySelector(".LayerMore .blocking").addEventListener("click", function(event) {
+                    if(confirm("정말로 " + _id + " 님을 차단하시겠습니까?")) {
+                        pushBlockItem(nid, _id);
+                        location.reload(true);
+                    }
+                });
+            }
+        });
+
+    }
+
 });
