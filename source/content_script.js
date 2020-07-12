@@ -5,21 +5,63 @@
 
 jQuery(function($){
     var link = '<li class="info5 likeit"><span class="tit"><span class="_icon">♡</span><strong class="gm-tcol-c"><a class="link_likeit" target="cafe_main">좋아요한 글 보기</a></strong></span></li>';
-    var link2 = '<a href="#" class="likeit link_sort"">좋아요한 글</a>';
+    
     var link_best = '<li class="best" aria-selected="false"><a href="#" class="link">인기글</a></li>';
 
     $(document).ready(function() {
         injectLikeItUI();
         injectBeatArticleUI();
+        injectBlockListUI();
     });
+
+    /** 
+     * @description 차단 목록 UI를 삽입합니다.
+     */
+    function injectBlockListUI() {
+        var link = '<span class="line_block link_del">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="#" class="link_sort link_del link_block_keyword">키워드 차단 목록</a><span class="line_block link_del">&nbsp;&nbsp;|&nbsp;</span><a href="#" class="link_sort link_del link_block_nid">회원 차단 목록</a>';
+        $('.article-board.article_profile').ready( function() {
+            // 차단 목록 링크
+            var page = $(link);
+            var sort_area = $(".article-board.article_profile > .list-style > .sort_area");
+            if (document.querySelectorAll(".article-board.article_profile > .list-style > .sort_area .link_del").length > 0) {
+                sort_area.append(page);
+            }
+            sort_area.children(".line_block").css("color", "#e5e5e5");
+            sort_area.children(".link_block_keyword").on("click", function() {
+                location.href = location.href.replace("&blocking.page=true", "")
+                                            .replace("&blocking.type=", "&blocking.dump=")
+                                            .replace("#", "") + "&blocking.type=keyword&blocking.page=true"; // 키워드 차단 목록 페이지로 이동
+            });
+            sort_area.children(".link_block_nid").on("click", function() {
+                location.href = location.href.replace("&blocking.page=true", "")
+                                            .replace("&blocking.type=", "&blocking.dump=")
+                                            .replace("#", "") + "&blocking.type=nid&blocking.page=true"; // 회원 차단 목록 페이지로 이동
+            });
+
+            // 차단 목록 페이지 로딩
+            var params = getParams();
+            var isBlocking = params["blocking.page"];
+            var pageType = params["blocking.type"];
+            isBlocking = isBlocking.replace("#", "");
+            if (isBlocking == "true") { // 차단 목록 페이지면
+                if (pageType == "nid") { // 회원 id
+                    loadBlocking("nid");
+                } else if (pageType == "keyword") { // 키워드
+                    loadBlocking("keyword");
+                }
+
+            }
+        });
+    }
 
     /** 
      * @description 좋아요한 글 목록 UI를 삽입합니다.
      */
     function injectLikeItUI() {
-        $('.article-board.article_profile').ready( function() {
+        var link = '<a href="#" class="likeit link_sort"">좋아요한 글</a>';
+        $('.article-board.article_profile').ready(function() {
             // 좋아요한 글 링크
-            var page = $(link2);
+            var page = $(link);
             $(".article-board.article_profile > .list-style > .sort_area").append(page);
             page.on("click", function() {
                 location.href = location.href.replace("&likeit.page=true", "")
@@ -67,6 +109,31 @@ jQuery(function($){
                 parent.document.querySelector("#cafe_main").style.height = "7200px";
                 loadBestArticle();
             }
+        });
+    }
+
+    /** 
+     * @description 차단 목록을 불러옵니다.
+     * @param {string} type 종류
+     */
+    function loadBlocking(type) {
+        var main_area = $("#main-area");
+        var section = main_area.children(".article-board.article_profile");
+
+        var table = '<table><caption><span class="blind">차단 목록</span></caption><colgroup><col><col style="width:120px"><col style="width:100px"><col style="width:80px"></colgroup><thead><tr><th scope="col" class="type"></th><th scope="col"></th><th scope="col">차단일</th><th scope="col"></th></tr></thead><tbody></tbody></table>';
+        
+        // 기존 UI 제거
+        section.find(".sort_area > .link_sort.on").removeClass("on");
+        section.find(".sort_area > .link_block_" + type).addClass("on");
+        main_area.children(".post_btns").remove();
+        main_area.children(".prev-next").html("");
+        section.children("table").remove();
+
+        section.append($(table));
+        section.find(".type").text(type == "nid" ? "회원 id" : "키워드");
+
+        getBlockList(function(data) {
+            drawBlockList(data, type);
         });
     }
 
@@ -183,6 +250,94 @@ jQuery(function($){
                 alert(xhr.responseText);
             }
         })
+    }
+
+    /** 
+     * @description 차단 목록을 출력합니다.
+     * @param {JSON} data 차단 목록 JSON
+     * @param {string} type 종류
+     */
+    function drawBlockList(data, type) {
+        var main_area = document.querySelector("#main-area");
+        var section = main_area.querySelector(".article-board.article_profile");
+        
+        
+        var table = section.querySelector("table > tbody");
+        table.innerHTML = "";
+
+        var list = data["" + type];
+        var le = list.length;
+
+        for(var i = 0; i < le; i++) {
+            var item = document.createElement("tr");
+
+            // title
+            var tdTitle = document.createElement("td");
+            tdTitle.className = "td_article";
+            var divNum = document.createElement("div");
+            divNum.className = "board-number";
+            var divInnerNum = document.createElement("div");
+            divInnerNum.className = "inner_number";
+            var divList = document.createElement("div");
+            divList.className = "board-list";
+            var divInnerList = document.createElement("div");
+            divInnerList.className = "inner_list";
+            var aList = document.createElement("a");
+            aList.className = "title_txt";
+            aList.setAttribute("target", "_parent");
+            aList.href = "#";
+
+            // name
+            var tdName = document.createElement("td");
+            tdName.className = "td_name";
+
+            // date
+            var tdDate = document.createElement("td");
+            tdDate.className = "td_date";
+
+            // view
+            var tdView = document.createElement("td");
+            tdView.className = "td_view";
+
+
+            divInnerList.appendChild(aList);
+
+            divNum.appendChild(divInnerNum);
+            divList.appendChild(divInnerList);
+
+            tdTitle.appendChild(divNum);
+            tdTitle.appendChild(divList);
+
+            item.appendChild(tdTitle);
+            item.appendChild(tdName);
+            item.appendChild(tdDate);
+            item.appendChild(tdView);
+
+            table.appendChild(item);
+
+            divInnerNum.append(i + 1); // 순서
+
+            aList.append(list[i]); // 회원 id
+
+            tdDate.append(""); // 차단일
+
+            var btnRemove = document.createElement("a");
+            btnRemove.className = "remove";
+            btnRemove.append("차단 해제");
+            btnRemove.href = "#";
+
+            tdView.appendChild(btnRemove); // 차단 해제
+            btnRemove.addEventListener("click", function(event) {
+                var targetElement = (event.target || event.srcElement).parentElement;
+                var _id = targetElement.parentElement.querySelector(".title_txt").innerText;
+                if(confirm(_id + " 님을 차단 해제하시겠습니까?")) {
+                    removeBlockItem(type, _id);
+                    location.reload(true);
+                }
+            });
+            
+        }
+        table.querySelector("#data").remove();
     }
 
     /** 
@@ -384,6 +539,30 @@ jQuery(function($){
         chrome.storage.local.get(null, function(items) {
             //alert("items: " + JSON.stringify(items));
             callback(items);
+        });
+    }
+
+    /** 
+     * @description 차단 목록에서 회원 아이디/키워드를 제거합니다.
+     * @param {string} type 회원 아이디/키워드
+     * @param {string} data 제거할 데이터
+     */
+    function removeBlockItem(type, data) {
+        getBlockList(function(items) {
+            if (typeof items["" + type] == "undefined" || items["" + type] == null) {
+                alert("차단하지 않은 " + (type == nid ? "사용자" : "키워드") + "입니다. (" + data + ")");
+            } else {
+                if (items["" + type].indexOf(data) != -1) { // 존재하는지 여부 검사
+                    items["" + type].splice(items["" + type].indexOf(data), 1);
+                    alert(type + ": " + data + " 님을 차단 해제하였습니다.");
+                    
+                    chrome.storage.local.set(items, function() { 
+                        //alert(data + " pushed!");
+                    });
+                } else {
+                    alert("차단하지 않은 " + (type == nid ? "사용자" : "키워드") + "입니다. (" + data + ")");
+                }
+            }
         });
     }
     
