@@ -7,16 +7,24 @@ jQuery(function($){
     var link = '<li class="info5 likeit"><span class="tit"><span class="_icon">♡</span><strong class="gm-tcol-c"><a class="link_likeit" target="cafe_main">좋아요한 글 보기</a></strong></span></li>';
     var link2 = '<a href="#" class="likeit link_sort"">좋아요한 글</a>';
     var link_best = '<li class="best" aria-selected="false"><a href="#" class="link">인기글</a></li>';
+
     $(document).ready(function() {
-        $('.article-board.article_profile').ready(function() {
+        injectLikeItUI();
+        injectBeatArticleUI();
+    });
+
+    /** 
+     * @description 좋아요한 글 목록 UI를 삽입합니다.
+     */
+    function injectLikeItUI() {
+        $('.article-board.article_profile').ready( function() {
             // 좋아요한 글 링크
             var page = $(link2);
             $(".article-board.article_profile > .list-style > .sort_area").append(page);
             page.on("click", function() {
-                //loadLikeIt();
                 location.href = location.href.replace("&likeit.page=true", "")
                                             .replace("&likeit.timestamp=", "&likeit.dump=")
-                                            .replace("#", "") + "&likeit.page=true";
+                                            .replace("#", "") + "&likeit.page=true"; // 좋아요한 글 페이지로 이동
             });
 
             // 좋아요 페이지 로딩
@@ -34,28 +42,33 @@ jQuery(function($){
 
             }
         });
-        
+    }
+
+    /** 
+     * @description 인기글 목록 UI를 삽입합니다.
+     */
+    function injectBeatArticleUI() {
         $('ul.list_sub_tab').ready(function() {
             // 인기글 링크
             if (location.href.indexOf("BestArticleList.nhn") != -1) {
                 var page = $(link_best);
                 $("ul.list_sub_tab").append(page);
                 page.on("click", function() {
-                    //loadLikeIt();
                     location.href = location.href.replace("&best=true", "")
                                                 .replace("#", "") + "&best=true";
                 });
             }
+
             // 인기글 페이지 로딩
             var params = getParams();
             var isBest = params["best"];
             isBest = isBest.replace("#", "");
             if (isBest == "true") { // 인기글 페이지면
                 parent.document.querySelector("#cafe_main").style.height = "7200px";
-                loadBest();
+                loadBestArticle();
             }
         });
-    })
+    }
 
     /** 
      * @description 좋아요한 글 목록을 불러옵니다.
@@ -67,6 +80,7 @@ jQuery(function($){
 
         var table = '<table><caption><span class="blind">게시글 목록</span></caption><colgroup><col><col style="width:120px"><col style="width:100px"><col style="width:80px"></colgroup><thead><tr><th scope="col">제목</th><th scope="col" class="th_name">작성자</th><th scope="col">작성일</th><th scope="col">조회</th></tr></thead><tbody></tbody></table>';
         
+        // 기존 UI 제거
         section.find(".sort_area > .link_sort.on").removeClass("on");
         section.find(".sort_area > .link_sort.likeit").addClass("on");
         main_area.children(".post_btns").remove();
@@ -82,17 +96,23 @@ jQuery(function($){
             memberid = params["search.writerid"];
         }
         memberid = memberid.replace("#", "");
-        getLikeItArticles(clubid, memberid, "20", timestamp);
+        getLikeItArticles(
+                clubid, 
+                memberid, 
+                "20", 
+                timestamp, 
+                function(data) {
+            drawLikeItArticles(data, clubid, memberid, "20", timestamp);
+        });
     }
 
     /** 
      * @description 인기글 목록을 불러옵니다.
-     * @param {string} timestamp 타임스탬프
      */
-    function loadBest() {
+    function loadBestArticle() {
         var main_area = document.querySelector("#main-area");
 
-        var table = '<table><caption><span class="blind">게시글 목록</span></caption><colgroup><col><col style="width:120px"><col style="width:100px"><col style="width:80px"></colgroup><thead><tr><th scope="col">제목</th><th scope="col" class="th_name">작성자</th><th scope="col">작성일</th><th scope="col">조회</th></tr></thead><tbody></tbody></table>';
+        //var table = '<table><caption><span class="blind">게시글 목록</span></caption><colgroup><col><col style="width:120px"><col style="width:100px"><col style="width:80px"></colgroup><thead><tr><th scope="col">제목</th><th scope="col" class="th_name">작성자</th><th scope="col">작성일</th><th scope="col">조회</th></tr></thead><tbody></tbody></table>';
         
         main_area.querySelector("ul.list_sub_tab > li.on").setAttribute("aria-selected", "false");
         main_area.querySelector("ul.list_sub_tab > li.on").classList.remove("on");
@@ -104,7 +124,9 @@ jQuery(function($){
 
         var params = getParams();
         var clubid = params["clubid"];
-        getBestArticles(clubid);
+        getBestArticles(clubid, function(data) {
+            drawBestArticles(data);
+        });
     }
 
     /** 
@@ -113,8 +135,9 @@ jQuery(function($){
      * @param {string} memberid 회원 id
      * @param {string} count 출력할 개수
      * @param {string} timestamp 타임스탬프
+     * @param {function} callback 콜백 함수
      */
-    function getLikeItArticles(cafeid, memberid, count, timestamp) {
+    function getLikeItArticles(cafeid, memberid, count, timestamp, callback) {
         var url = 'https://m.cafe.naver.com/CafeMemberLikeItList.nhn?search.cafeId=' + cafeid + 
                 '&search.memberId='+ memberid +
                 '&search.count='+ count +
@@ -127,7 +150,7 @@ jQuery(function($){
             },
             crossDomain: true,
             success:function(data){
-                drawLikeItArticles(data, cafeid, memberid, count, timestamp);
+                callback(data);
             },
             error: function (xhr) {
                 alert("에러 발생");
@@ -140,8 +163,9 @@ jQuery(function($){
     /** 
      * @description 인기글 데이터를 불러옵니다.
      * @param {string} cafeid 카페 id
+     * @param {function} callback 콜백 함수
      */
-    function getBestArticles(cafeid) {
+    function getBestArticles(cafeid, callback) {
         var url = 'https://apis.naver.com/cafe-web/cafe2/WeeklyPopularArticleList.json?cafeId=' + cafeid;
         $.ajax({
             type: "POST",
@@ -152,7 +176,7 @@ jQuery(function($){
             },
             crossDomain: true,
             success:function(data){
-                drawBestArticles(data);
+                callback(data);
             },
             error: function (xhr) {
                 alert("에러 발생");
@@ -284,11 +308,6 @@ jQuery(function($){
         }
     }
 
-    function logg(str) {
-        $("#consol").append($("<p>" + str + "</p>"));
-        $("#consol").scrollTop($("#consol")[0].scrollHeight);
-    }
-
     /** 
      * @description URL 파라미터를 반환합니다.
      * @return {Array} 파라미터
@@ -392,7 +411,7 @@ jQuery(function($){
                             } else {
                                 articles[i].addEventListener("click", function(event) { // 유저 차단 UI 삽입
                                     var targetElement = (event.target || event.srcElement).parentElement;
-                                    addBlockUIArticle(targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "")); 
+                                    injectBlockUIArticle(targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "")); 
                                 });
 
                             }
@@ -419,14 +438,14 @@ jQuery(function($){
                                 blockedCmt.className = "comment_box";
                                 var blockedP = document.createElement("p");
                                 blockedP.className = "comment_deleted";
-                                blockedP.append("차단된 댓글입니다.");
+                                blockedP.append("차단된 회원의 댓글입니다.");
                                 blockedCmt.appendChild(blockedP);
                                 comments[i].querySelector(".comment_area").appendChild(blockedCmt);
 
                             } else {
                                 comments[i].addEventListener("click", function(event) { // 유저 차단 UI 삽입
                                     var targetElement = (event.target || event.srcElement).parentElement;
-                                    addBlockUIComment(targetElement.parentElement, 
+                                    injectBlockUIComment(targetElement.parentElement, 
                                         targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "")); 
                                 });
 
@@ -444,7 +463,7 @@ jQuery(function($){
      * @description 글 목록에 차단하기 UI를 삽입합니다.
      * @param {string} _id 차단 대상 id
      */
-    function addBlockUIArticle(_id) { // 글목록 회원 차단 UI
+    function injectBlockUIArticle(_id) {
         document.querySelector(".perid-layer").addEventListener("DOMSubtreeModified", function() {
             if (document.querySelector(".perid-layer > ul").innerHTML.indexOf("blocking") == -1) {
                 var btnBlock = document.createElement("li");
@@ -473,7 +492,7 @@ jQuery(function($){
      * @param {string} element 삽입할 요소
      * @param {string} _id 차단 대상 id
      */
-    function addBlockUIComment(element, _id) { // 댓글목록 회원 차단 UI
+    function injectBlockUIComment(element, _id) {
         if (element.querySelector(".LayerMore").innerHTML.indexOf("blocking") == -1) {
             var btnBlock = document.createElement("li");
             btnBlock.className = "layer_item";
