@@ -19,19 +19,19 @@
 
 2. Chrome에서 상단 메뉴→도구 더보기→확장 프로그램에 들어갑니다.
 
-![확장 프로그램 관리 페이지 들어가는 모습](./images/howto-1.png)
+![확장 프로그램 관리 페이지 들어가는 모습](https://github.com/wei756/NaverCafe-Addon/raw/master/images/howto-1.png)
 
 
 
 3. 개발자 모드를 켜고 '압축해제된 확장 프로그램을 로드합니다.'를 누릅니다.
 
-![확장 프로그램 관리 페이지](./images/howto-2.png)
+![확장 프로그램 관리 페이지](https://github.com/wei756/NaverCafe-Addon/raw/master/images/howto-2.png)
 
 
 
 4. source폴더를 열기 또는 선택합니다.
 
-![확장 프로그램 불러오기](./images/howto-3.png)
+![확장 프로그램 불러오기](https://github.com/wei756/NaverCafe-Addon/raw/master/images/howto-3.png)
 
 
 
