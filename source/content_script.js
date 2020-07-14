@@ -756,7 +756,7 @@ jQuery(function($){
     }
     
     /** 
-     * @description 차단 목록을 불러옵니다.
+     * @description 다크 모드 상태를 불러옵니다.
      * @param {function} callback 콜백 함수
      */
     function isDarkmode(callback) {
