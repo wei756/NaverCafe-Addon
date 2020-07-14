@@ -12,7 +12,30 @@ jQuery(function($){
         injectLikeItUI();
         injectBeatArticleUI();
         injectBlockListUI();
+        injectDarkmodeUI();
     });
+
+    function injectDarkmodeUI() {
+        if ($("#front-img").length == 1) {
+            var btnDarkmodeHtml = '<button id="NM_darkmode_btn" type="button" role="button" class="btn_theme" aria-pressed="false"> <span class="blind">라이트 모드로 보기</span> </button>';
+            var btnDarkmode = $(btnDarkmodeHtml);
+            
+            isDarkmode(function (darkmode) {
+                btnDarkmode.attr("aria-pressed", darkmode);
+                
+                $("body").append(btnDarkmode);
+
+                btnDarkmode.on("click", function(event) {
+                    setDarkmode(!darkmode);
+                    location.reload(true);
+                });
+            });
+
+            var btnContentTopHtml = '<a id="NM_scroll_top_btn" href="#cafe-body-skin" class="content_top"><span class="blind">TOP</span></a>';
+            var btnContentTop = $(btnContentTopHtml);
+            $("body").append(btnContentTop);
+        }
+    }
 
     /** 
      * @description 차단 목록 UI를 삽입합니다.
@@ -711,6 +734,36 @@ jQuery(function($){
             }
         });
 
+    }
+
+    isDarkmode(function (darkmode) {
+        if (darkmode) {
+            document.documentElement.setAttribute("data-dark", "true");
+        }
+    })
+
+    /** 
+     * @description 다크 모드를 설정합니다.
+     * @param {boolean} bool 추가할 데이터
+     */
+    function setDarkmode(bool) {
+        getBlockList(function(items) {
+            items.darkmode = bool;
+            chrome.storage.local.set(items, function() { 
+                //alert(bool + " pushed!");
+            });
+        });
+    }
+    
+    /** 
+     * @description 차단 목록을 불러옵니다.
+     * @param {function} callback 콜백 함수
+     */
+    function isDarkmode(callback) {
+        chrome.storage.local.get(null, function(items) {
+            //alert("items: " + JSON.stringify(items));
+            callback(items.darkmode);
+        });
     }
 
 });
