@@ -640,11 +640,10 @@ jQuery(function($){
                     setTimeout(() => {
                         var comments = document.querySelectorAll("ul.comment_list > li.CommentItem");
                         var le = comments.length;
-                        alert(le);
                         
                         for(var i = 0; i < le; i++) {
                             var writerId = comments[i].querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "");
-                            alert(i + ": " + writerId);
+                            //alert(i + ": " + writerId);
 
                             if (!isEmpty(dataBlock.nid) && dataBlock.nid.indexOf(writerId) != -1) { // 유저 차단
                                 comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
@@ -679,7 +678,6 @@ jQuery(function($){
      * @param {string} _id 차단 대상 id
      */
     function injectBlockUIArticle(_id) {
-        alert("Asdfasfd");
         document.querySelector(".perid-layer").addEventListener("DOMSubtreeModified", function() {
             if (document.querySelector(".perid-layer > ul").innerHTML.indexOf("blocking") == -1) {
                 var btnBlock = document.createElement("li");
