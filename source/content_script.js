@@ -53,11 +53,15 @@ jQuery(function($){
             sort_area.children(".link_block_keyword").on("click", function() {
                 location.href = location.href.replace("&blocking.page=true", "")
                                             .replace("&blocking.type=", "&blocking.dump=")
+                                            .replace("&likeit.page=true", "")
+                                            .replace("&likeit.timestamp=", "&likeit.dump=")
                                             .replace("#", "") + "&blocking.type=keyword&blocking.page=true"; // 키워드 차단 목록 페이지로 이동
             });
             sort_area.children(".link_block_nid").on("click", function() {
                 location.href = location.href.replace("&blocking.page=true", "")
                                             .replace("&blocking.type=", "&blocking.dump=")
+                                            .replace("&likeit.page=true", "")
+                                            .replace("&likeit.timestamp=", "&likeit.dump=")
                                             .replace("#", "") + "&blocking.type=nid&blocking.page=true"; // 회원 차단 목록 페이지로 이동
             });
 
@@ -65,7 +69,9 @@ jQuery(function($){
             var params = getParams();
             var isBlocking = params["blocking.page"];
             var pageType = params["blocking.type"];
-            isBlocking = isBlocking.replace("#", "");
+            if (!isEmpty(isBlocking)) {
+                isBlocking = isBlocking.replace("#", "");
+            }
             if (isBlocking == "true") { // 차단 목록 페이지면
                 if (pageType == "nid") { // 회원 id
                     loadBlocking("nid");
@@ -89,6 +95,8 @@ jQuery(function($){
             page.on("click", function() {
                 location.href = location.href.replace("&likeit.page=true", "")
                                             .replace("&likeit.timestamp=", "&likeit.dump=")
+                                            .replace("&blocking.page=true", "")
+                                            .replace("&blocking.type=", "&blocking.dump=")
                                             .replace("#", "") + "&likeit.page=true"; // 좋아요한 글 페이지로 이동
             });
 
@@ -96,7 +104,9 @@ jQuery(function($){
             var params = getParams();
             var isLikeIt = params["likeit.page"];
             var timestamp = params["likeit.timestamp"];
-            isLikeIt = isLikeIt.replace("#", "");
+            if (!isEmpty(isLikeIt)) {
+                isLikeIt = isLikeIt.replace("#", "");
+            }
             if (isLikeIt == "true") { // 좋아요한 글 페이지면
 
                 if (typeof(timestamp) == "undefined") { // 첫 페이지
@@ -127,7 +137,9 @@ jQuery(function($){
             // 인기글 페이지 로딩
             var params = getParams();
             var isBest = params["best"];
-            isBest = isBest.replace("#", "");
+            if (!isEmpty(isBest)) {
+                isBest = isBest.replace("#", "");
+            }
             if (isBest == "true") { // 인기글 페이지면
                 parent.document.querySelector("#cafe_main").style.height = "7200px";
                 loadBestArticle();
@@ -607,7 +619,7 @@ jQuery(function($){
                             var writerId = articles[i].querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
                             //alert(i + ": " + writerId);
 
-                            if (dataBlock.nid.indexOf(writerId) != -1) { // 유저 차단
+                            if (!isEmpty(dataBlock.nid) && dataBlock.nid.indexOf(writerId) != -1) { // 유저 차단
                                 articles[i].innerHTML = "";
 
                             } else {
@@ -628,12 +640,13 @@ jQuery(function($){
                     setTimeout(() => {
                         var comments = document.querySelectorAll("ul.comment_list > li.CommentItem");
                         var le = comments.length;
+                        alert(le);
                         
                         for(var i = 0; i < le; i++) {
                             var writerId = comments[i].querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "");
-                            //alert(i + ": " + writerId);
+                            alert(i + ": " + writerId);
 
-                            if (dataBlock.nid.indexOf(writerId) != -1) { // 유저 차단
+                            if (!isEmpty(dataBlock.nid) && dataBlock.nid.indexOf(writerId) != -1) { // 유저 차단
                                 comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
                                 comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
                                 var blockedCmt = document.createElement("div");
@@ -666,6 +679,7 @@ jQuery(function($){
      * @param {string} _id 차단 대상 id
      */
     function injectBlockUIArticle(_id) {
+        alert("Asdfasfd");
         document.querySelector(".perid-layer").addEventListener("DOMSubtreeModified", function() {
             if (document.querySelector(".perid-layer > ul").innerHTML.indexOf("blocking") == -1) {
                 var btnBlock = document.createElement("li");
@@ -764,6 +778,18 @@ jQuery(function($){
             //alert("items: " + JSON.stringify(items));
             callback(items.darkmode);
         });
+    }
+
+    /**
+     * 문자열이 빈 문자열인지 체크하여 결과값을 리턴합니다.
+     * @param str 체크할 문자열
+     */
+    function isEmpty(str) {
+         
+        if (typeof str == "undefined" || str == null || str == "")
+            return true;
+        else
+            return false;
     }
 
 });
