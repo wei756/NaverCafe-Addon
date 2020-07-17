@@ -11,7 +11,7 @@
     {
       "matches": ["https://cafe.naver.com/*"], 
       "run_at": "document_idle",
-      "js": ["jquery3.3.1.min.js", "content_script.js"],
+      "js": ["jquery3.3.1.min.js", "content_script.js", "blocking_script.js"],
       "css": ["deepdarknaver.css", "deepdark1080_cafe-1593151221000-219709.css"],
       "all_frames": true
     }
