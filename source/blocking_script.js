@@ -97,6 +97,15 @@ jQuery(function($){
 
             }
         });
+
+        //프로필 페이지
+        if (location.href.indexOf("CafeMemberNetworkView.nhn") != -1) {
+            var params = getURLParams();
+            var memberId = params["memberid"];
+            document.querySelector(".pers_nick_area .p-nick a.m-tcol-c").addEventListener("click", function(event) { // 유저 차단 UI 삽입
+                injectBlockUIArticle(memberId); 
+            });
+        }
     }
 
     /** 
