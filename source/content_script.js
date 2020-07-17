@@ -10,8 +10,9 @@ jQuery(function($){
 
     $(document).ready(function() {
         injectLikeItUI();
-        injectBeatArticleUI();
+        injectBestArticleUI();
         injectDarkmodeUI();
+        checkActivityStop();
     });
 
     function injectDarkmodeUI() {
@@ -75,7 +76,7 @@ jQuery(function($){
     /** 
      * @description 인기글 목록 UI를 삽입합니다.
      */
-    function injectBeatArticleUI() {
+    function injectBestArticleUI() {
         $('ul.list_sub_tab').ready(function() {
             // 인기글 링크
             if (location.href.indexOf("BestArticleList.nhn") != -1) {
@@ -410,6 +411,38 @@ jQuery(function($){
             return true;
         else
             return false;
+    }
+
+    /**
+     * 회원이 활동정지 상태인지 확인하고 그 상태를 출력합니다.
+     */
+    function checkActivityStop() {
+        if (location.href.indexOf("CafeMemberNetworkView.nhn") != -1) {
+            // 프로필 페이지 로딩
+            var params = getURLParams();
+            var cafeId = params["clubid"];
+            var memberId = params["memberid"];
+            if (!isEmpty(memberId)) {
+                $.ajax({
+                    type: "POST",
+                    url: "https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberStatus?cafeId=" + cafeId + "&memberId=" + memberId,
+                    dataType: "json",
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    crossDomain: true,
+                    success:function(data){
+                        if (data.message.status == "200" && data.message.result.activityStop) {
+                            var stoppedElement = document.createElement("span");
+                            stoppedElement.append("(활동 정지됨)");
+                            document.querySelector(".pers_nick_area .p-nick a.m-tcol-c").appendChild(stoppedElement);
+                        }
+                    },
+                    error: function (xhr) {
+                    }
+                })
+            }
+        }
     }
 
 });
