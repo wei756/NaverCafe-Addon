@@ -116,7 +116,7 @@ jQuery(function($){
         var main_area = $("#main-area");
         var section = main_area.children(".article-board.article_profile");
 
-        var table = '<table><caption><span class="blind">차단 목록</span></caption><colgroup><col><col style="width:120px"><col style="width:100px"><col style="width:80px"></colgroup><thead><tr><th scope="col" class="type"></th><th scope="col"></th><th scope="col">차단일</th><th scope="col"></th></tr></thead><tbody></tbody></table>';
+        var table = '<table><caption><span class="blind">차단 목록</span></caption><colgroup><col><col style="width:120px"><col style="width:100px"><col style="width:80px"></colgroup><thead><tr><th scope="col" class="type"></th><th scope="col"></th><th scope="col"></th><th scope="col"></th></tr></thead><tbody></tbody></table>';
         
         // 기존 UI 제거
         section.find(".sort_area > .link_sort.on").removeClass("on");
@@ -210,9 +210,18 @@ jQuery(function($){
             tdView.appendChild(btnRemove); // 차단 해제
             btnRemove.addEventListener("click", function(event) {
                 var targetElement = (event.target || event.srcElement).parentElement;
-                var _id = targetElement.parentElement.querySelector(".title_txt").innerText;
-                if(confirm(_id + " 님을 차단 해제하시겠습니까?")) {
-                    removeBlockItem(type, _id);
+                var key = targetElement.parentElement.querySelector(".title_txt").innerText;
+                var msgStr = " 님을 차단 해제하시겠습니까?";
+                if (type == keyword) {
+                    var iga = "을";
+                    var lastChar = key.charCodeAt(key.length - 1);
+                    if (lastChar >= 44032 && lastChar <= 55215 && (lastChar - 44032) % 28 == 0) {
+                        iga = "를";
+                    }
+                    msgStr = iga + " 차단 해제하시겠습니까?";
+                }
+                if(confirm(key + msgStr)) {
+                    removeBlockItem(type, key);
                     location.reload(true);
                 }
             });
@@ -246,7 +255,7 @@ jQuery(function($){
             } else {
                 if (items["" + type].indexOf(data) == -1) { // 중복 검사
                     items["" + type].push(data);
-                    alert(type + ": " + data + " 님을 차단하였습니다.");
+                    alert("'" + data + "' 님을 차단하였습니다.");
                 } else {
                     alert("이미 차단한 " + (type == nid ? "사용자" : "키워드") + "입니다. (" + data + ")");
                 }
@@ -280,7 +289,17 @@ jQuery(function($){
             } else {
                 if (items["" + type].indexOf(data) != -1) { // 존재하는지 여부 검사
                     items["" + type].splice(items["" + type].indexOf(data), 1);
-                    alert(type + ": " + data + " 님을 차단 해제하였습니다.");
+
+                    var msgStr = " 님을 차단 해제하였습니다.";
+                    if (type == keyword) {
+                        var iga = "을";
+                        var lastChar = data.charCodeAt(data.length - 1);
+                        if (lastChar >= 44032 && lastChar <= 55215 && (lastChar - 44032) % 28 == 0) {
+                            iga = "를";
+                        }
+                        msgStr = iga + " 차단 해제하였습니다.";
+                    }
+                    alert(data + msgStr);
                     
                     chrome.storage.local.set(items, function() { 
                         //alert(data + " pushed!");
@@ -308,9 +327,20 @@ jQuery(function($){
 
                         for(var i = 0; i < le; i++) {
                             var writerId = articles[i].querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
+                            var title = articles[i].querySelector(".board-list .inner_list .article").innerText;
                             //alert(i + ": " + writerId);
 
-                            if (!isEmpty(dataBlock.nid) && dataBlock.nid.indexOf(writerId) != -1) { // 유저 차단
+                            // 키워드 차단
+                            if (!isEmpty(dataBlock.keyword)) { 
+                                dataBlock.keyword.forEach(element => {
+                                    if (title.indexOf(element) != -1) {
+                                        articles[i].innerHTML = "";
+                                    }
+                                });
+                            }
+
+                            // 유저 차단
+                            if (!isEmpty(dataBlock.nid) && dataBlock.nid.indexOf(writerId) != -1) { 
                                 articles[i].innerHTML = "";
 
                             } else {
@@ -334,9 +364,28 @@ jQuery(function($){
                         
                         for(var i = 0; i < le; i++) {
                             var writerId = comments[i].querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "");
+                            var content = comments[i].querySelector(".comment_text_view").innerText;
                             //alert(i + ": " + writerId);
 
-                            if (!isEmpty(dataBlock.nid) && dataBlock.nid.indexOf(writerId) != -1) { // 유저 차단
+                            // 키워드 차단
+                            if (!isEmpty(dataBlock.keyword)) { 
+                                dataBlock.keyword.forEach(element => {
+                                    if (content.indexOf(element) != -1) {
+                                        comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
+                                        comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
+                                        var blockedCmt = document.createElement("div");
+                                        blockedCmt.className = "comment_box";
+                                        var blockedP = document.createElement("p");
+                                        blockedP.className = "comment_deleted";
+                                        blockedP.append("차단된 키워드가 포함된 댓글입니다.");
+                                        blockedCmt.appendChild(blockedP);
+                                        comments[i].querySelector(".comment_area").appendChild(blockedCmt);
+                                    }
+                                });
+                            }
+
+                            // 유저 차단
+                            if (!isEmpty(dataBlock.nid) && dataBlock.nid.indexOf(writerId) != -1) { 
                                 comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
                                 comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
                                 var blockedCmt = document.createElement("div");

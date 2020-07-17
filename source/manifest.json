@@ -4,6 +4,7 @@
   "description": "네이버 카페 인기글 목록, 좋아요한 글 등 각종 편의기능 제공",
   "permissions": [
     "storage", 
+    "contextMenus", 
     "https://cafe.naver.com/*", 
     "http://cafe.naver.com/*"
   ],
@@ -16,6 +17,9 @@
       "all_frames": true
     }
   ],
+  "background": {
+    "scripts": ["blocking_context_menu.js"]
+  },
   "page_action": {
     "default_icon": {
       "16": "images/icon16.png",
