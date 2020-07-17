@@ -1157,3 +1157,40 @@ html[data-dark=true] .content_top:hover:before{
     height:1px;
     margin:-1px
 }
+
+/* 카페 등급 */
+html[data-dark=true] #pop_wrap {
+    background-color: #1e1f21;
+    color: #d9d9d9;
+}
+
+html[data-dark=true] #pop_wrap .bx_type {
+	border: 1px solid #777;
+    color: #d9d9d9;
+}
+
+html[data-dark=true] #pop_wrap .bx_type strong {
+    color: #d9d9d9;
+}
+
+html[data-dark=true] #pop_wrap .txt_top, 
+html[data-dark=true] #pop_wrap .txt_cont {
+    color: #d9d9d9;
+}
+
+html[data-dark=true] #pop_wrap .tbl_role {
+	border-top: 1px solid #777;
+}
+
+html[data-dark=true] #pop_wrap .tbl_role td .txt_cont ul li {
+    color: #a8a8a8;
+}
+
+html[data-dark=true] #pop_wrap .tbl_role th, 
+html[data-dark=true] #pop_wrap .tbl_role td {
+	border-bottom: 1px solid #333;
+}
+
+html[data-dark=true] #pop_wrap .btn_type {
+    filter: invert(.8);
+}
