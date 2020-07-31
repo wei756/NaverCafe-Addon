@@ -262,6 +262,15 @@ jQuery(function($){
             }
             chrome.storage.local.set(items, function() { 
                 //alert(data + " pushed!");
+                doBlock();
+                var cmtUI = document.querySelector(".LayerMore");
+                if (!isEmpty(cmtUI)) {
+                    cmtUI.parentNode.removeChild(cmtUI);
+                }
+                var articleUI = document.querySelector(".perid-layer ul");
+                if (!isEmpty(articleUI)) {
+                    articleUI.parentNode.removeChild(articleUI);
+                }
             });
         });
     }
@@ -363,46 +372,50 @@ jQuery(function($){
                         var le = comments.length;
                         
                         for(var i = 0; i < le; i++) {
-                            var writerId = comments[i].querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "");
-                            var content = comments[i].querySelector(".comment_text_view").innerText;
-                            //alert(i + ": " + writerId);
-
-                            // 키워드 차단
-                            if (!isEmpty(dataBlock.keyword)) { 
-                                dataBlock.keyword.forEach(element => {
-                                    if (content.indexOf(element) != -1) {
-                                        comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
-                                        comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
-                                        var blockedCmt = document.createElement("div");
-                                        blockedCmt.className = "comment_box";
-                                        var blockedP = document.createElement("p");
-                                        blockedP.className = "comment_deleted";
-                                        blockedP.append("차단된 키워드가 포함된 댓글입니다.");
-                                        blockedCmt.appendChild(blockedP);
-                                        comments[i].querySelector(".comment_area").appendChild(blockedCmt);
-                                    }
-                                });
-                            }
-
-                            // 유저 차단
-                            if (!isEmpty(dataBlock.nid) && dataBlock.nid.indexOf(writerId) != -1) { 
-                                comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
-                                comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
-                                var blockedCmt = document.createElement("div");
-                                blockedCmt.className = "comment_box";
-                                var blockedP = document.createElement("p");
-                                blockedP.className = "comment_deleted";
-                                blockedP.append("차단된 회원의 댓글입니다.");
-                                blockedCmt.appendChild(blockedP);
-                                comments[i].querySelector(".comment_area").appendChild(blockedCmt);
-
-                            } else {
-                                comments[i].addEventListener("click", function(event) { // 유저 차단 UI 삽입
-                                    var targetElement = (event.target || event.srcElement).parentElement;
-                                    injectBlockUIComment(targetElement.parentElement, 
-                                        targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "")); 
-                                });
-
+                            try {
+                                var writerId = comments[i].querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "");
+                                var content = comments[i].querySelector(".comment_text_view").innerText;
+                                //alert(i + ": " + writerId);
+    
+                                // 키워드 차단
+                                if (!isEmpty(dataBlock.keyword)) { 
+                                    dataBlock.keyword.forEach(element => {
+                                        if (content.indexOf(element) != -1) {
+                                            comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
+                                            comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
+                                            var blockedCmt = document.createElement("div");
+                                            blockedCmt.className = "comment_box";
+                                            var blockedP = document.createElement("p");
+                                            blockedP.className = "comment_deleted";
+                                            blockedP.append("차단된 키워드가 포함된 댓글입니다.");
+                                            blockedCmt.appendChild(blockedP);
+                                            comments[i].querySelector(".comment_area").appendChild(blockedCmt);
+                                        }
+                                    });
+                                }
+    
+                                // 유저 차단
+                                if (!isEmpty(dataBlock.nid) && dataBlock.nid.indexOf(writerId) != -1) { 
+                                    comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
+                                    comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
+                                    var blockedCmt = document.createElement("div");
+                                    blockedCmt.className = "comment_box";
+                                    var blockedP = document.createElement("p");
+                                    blockedP.className = "comment_deleted";
+                                    blockedP.append("차단된 회원의 댓글입니다.");
+                                    blockedCmt.appendChild(blockedP);
+                                    comments[i].querySelector(".comment_area").appendChild(blockedCmt);
+    
+                                } else {
+                                    comments[i].addEventListener("click", function(event) { // 유저 차단 UI 삽입
+                                        var targetElement = (event.target || event.srcElement).parentElement;
+                                        injectBlockUIComment(targetElement.parentElement, 
+                                            targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "")); 
+                                    });
+    
+                                }
+                            } catch(e) {
+                                
                             }
 
                         }
@@ -433,7 +446,7 @@ jQuery(function($){
                 document.querySelector(".perid-layer > ul .blocking").addEventListener("click", function(event) {
                     if(confirm("정말로 " + _id + " 님을 차단하시겠습니까?")) {
                         pushBlockItem(nid, _id);
-                        location.reload(true);
+                        //location.reload(true);
                     }
                 });
             }
@@ -461,7 +474,7 @@ jQuery(function($){
             element.querySelector(".LayerMore .blocking").addEventListener("click", function(event) {
                 if(confirm("정말로 " + _id + " 님을 차단하시겠습니까?")) {
                     pushBlockItem(nid, _id);
-                    location.reload(true);
+                    //location.reload(true);
                 }
             });
         }
@@ -480,7 +493,7 @@ jQuery(function($){
                 element.querySelector(".LayerMore .blocking").addEventListener("click", function(event) {
                     if(confirm("정말로 " + _id + " 님을 차단하시겠습니까?")) {
                         pushBlockItem(nid, _id);
-                        location.reload(true);
+                        //location.reload(true);
                     }
                 });
             }

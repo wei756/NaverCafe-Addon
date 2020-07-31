@@ -382,11 +382,21 @@ jQuery(function($){
      * @param {boolean} bool 추가할 데이터
      */
     function setDarkmode(bool) {
-        getBlockList(function(items) {
+        getStorageList(function(items) {
             items.darkmode = bool;
             chrome.storage.local.set(items, function() { 
                 //alert(bool + " pushed!");
             });
+        });
+    }
+
+    /** 
+     * @description 다크 모드 설정을 불러옵니다.
+     * @param {function} callback 콜백 함수
+     */
+    function getStorageList(callback) {
+        chrome.storage.local.get(null, function(items) {
+            callback(items);
         });
     }
     
