@@ -431,7 +431,7 @@ jQuery(function($){
                 // 키워드 차단
                 if (!isEmpty(dataBlock.keyword)) { 
                     dataBlock.keyword.forEach(element => {
-                        if (content.indexOf(element) != -1) {
+                        if (content.indexOf(element) != -1 && !isEmpty(comments[i].querySelector(".comment_area > .comment_thumb"))) {
                             comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
                             comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
                             var blockedCmt = document.createElement("div");
