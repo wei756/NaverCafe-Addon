@@ -528,7 +528,7 @@ html[data-dark=true] .skin-1080 #cafe-secede {
 }
 
 html[data-dark=true] .skin-1080 .search_result .search_input {
-	background-color: #f9f9f8;
+	background-color: #292a2d;
 }
 
 html[data-dark=true] .skin-1080 .search_result .learn_more.is_selected + .search_input {
@@ -1193,4 +1193,16 @@ html[data-dark=true] #pop_wrap .tbl_role td {
 
 html[data-dark=true] #pop_wrap .btn_type {
     filter: invert(.8);
+}
+
+html[data-dark=true] .CommentBox .comment_list .CommentItem.CommentItem--mine:before {
+    background: #032706;
+}
+
+html[data-dark=true] .CommentBox .comment_list .CommentItem.CommentItem--mine {
+    background: #032706;
+}
+
+html[data-dark=true] .CommentBox .comment_list .CommentItem {
+    border-top: 1px solid rgba(255,255,255,0.05);
 }
