@@ -31,9 +31,13 @@ jQuery(function($){
                 });
             });
 
-            var btnContentTopHtml = '<a id="NM_scroll_top_btn" href="#cafe-body-skin" class="content_top"><span class="blind">TOP</span></a>';
+            var btnContentTopHtml = '<a id="NM_scroll_top_btn" href="" class="content_top"><span class="blind">TOP</span></a>';
             var btnContentTop = $(btnContentTopHtml);
             $("body").append(btnContentTop);
+            btnContentTop.click(function (e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth'});
+            })
         }
     }
 
