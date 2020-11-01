@@ -17,6 +17,8 @@
 
 1. 해당 저장소를 클론하거나 source 폴더만 다운로드합니다.
 
+![저장소 다운받는 모습](https://github.com/wei756/NaverCafe-Addon/raw/master/images/howto-0.png)
+
 
 
 2. Chrome에서 상단 메뉴→도구 더보기→확장 프로그램에 들어갑니다.
