@@ -380,21 +380,29 @@ jQuery(function($){
                 });
 
             // 댓글 차단
-            if (document.querySelectorAll("#app").length != 0)
-                document.querySelector("#app .Article .ArticleContentBox").addEventListener("DOMSubtreeModified", function() {
-                    if (!isEmpty(document.querySelector("#app .Article .ArticleContentBox .CommentBox ul.comment_list"))) {
-                        doBlockComment(dataBlock);
-                        document.querySelector("#app .Article .ArticleContentBox .CommentBox ul.comment_list").addEventListener("DOMSubtreeModified", doBlockComment);
-                    }
-                });
-
+            $("#app .Article .ArticleContentBox .CommentBox ul.comment_list").ready(function () {
+                loopBlockComment(dataBlock);
+            })
         });
 
+    }
+
+    var countComment = 0;
+
+    function loopBlockComment(dataBlock) {
+        if(document.querySelector("#app .Article .ArticleContentBox .CommentBox ul.comment_list") != null &&
+           document.querySelectorAll("ul.comment_list > li.CommentItem").length != countComment)
+            doBlockComment(dataBlock);
+
+        setTimeout(() => {
+            loopBlockComment(dataBlock);
+        }, 500);
     }
 
     function doBlockComment(dataBlock) {
         var comments = document.querySelectorAll("ul.comment_list > li.CommentItem");
         var le = comments.length;
+        countComment = le;
         
         for(var i = 0; i < le; i++) {
             var writerId = comments[i].querySelector("a.comment_thumb");
