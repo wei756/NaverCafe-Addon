@@ -470,27 +470,28 @@ jQuery(function($){
      */
     function injectBlockUIArticle(_id) {
         target_id = _id;
-        document.querySelector(".perid-layer").addEventListener("DOMSubtreeModified", function() {
-            if (!isEmpty(document.querySelector(".perid-layer > ul")) && 
-                document.querySelector(".perid-layer > ul").innerHTML.indexOf("blocking") == -1) {
-                var btnBlock = document.createElement("li");
-                var aBlock = document.createElement("a");
-                aBlock.className = "blocking";
-                aBlock.href = "#";
-                var spanBlock = document.createElement("span");
-                spanBlock.append("차단하기");
-                aBlock.appendChild(spanBlock);
-                btnBlock.appendChild(aBlock);
-                document.querySelector(".perid-layer > ul").appendChild(btnBlock);
+        if (document.querySelector(".perid-layer") != null)
+            document.querySelector(".perid-layer").addEventListener("DOMSubtreeModified", function() {
+                if (!isEmpty(document.querySelector(".perid-layer > ul")) && 
+                    document.querySelector(".perid-layer > ul").innerHTML.indexOf("blocking") == -1) {
+                    var btnBlock = document.createElement("li");
+                    var aBlock = document.createElement("a");
+                    aBlock.className = "blocking";
+                    aBlock.href = "#";
+                    var spanBlock = document.createElement("span");
+                    spanBlock.append("차단하기");
+                    aBlock.appendChild(spanBlock);
+                    btnBlock.appendChild(aBlock);
+                    document.querySelector(".perid-layer > ul").appendChild(btnBlock);
 
-                document.querySelector(".perid-layer > ul .blocking").addEventListener("click", function(event) {
-                    if(confirm("정말로 " + target_id + " 님을 차단하시겠습니까?")) {
-                        pushBlockItem(nid, target_id);
-                        //location.reload(true);
-                    }
-                });
-            }
-        });
+                    document.querySelector(".perid-layer > ul .blocking").addEventListener("click", function(event) {
+                        if(confirm("정말로 " + target_id + " 님을 차단하시겠습니까?")) {
+                            pushBlockItem(nid, target_id);
+                            //location.reload(true);
+                        }
+                    });
+                }
+            });
 
     }
 
