@@ -61,7 +61,7 @@ jQuery(function($){
      * @description 차단 목록 UI를 삽입합니다.
      */
     function injectBlockListUI() {
-        var link = '<span class="line_block link_del">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="#" class="link_sort link_del link_block_keyword">키워드 차단 목록</a><span class="line_block link_del">&nbsp;&nbsp;|&nbsp;</span><a href="#" class="link_sort link_del link_block_nid">회원 차단 목록</a>';
+        var link = '<span class="line_block link_del">&nbsp;&nbsp;|&nbsp;&nbsp;</span><a href="#" class="link_sort link_del link_block_keyword">키워드 차단 목록</a><span class="line_block link_del">&nbsp;&nbsp;|&nbsp;</span><a href="#" class="link_sort link_del link_block_nid">회원 차단 목록</a>';
         $('.article-board.article_profile').ready( function() {
             // 차단 목록 링크
             var page = $(link);
