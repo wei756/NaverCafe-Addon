@@ -1,7 +1,7 @@
 {
   "name": "네이버 카페 애드온",
-  "version": "1.0",
-  "description": "네이버 카페 인기글 목록, 좋아요한 글 등 각종 편의기능 제공",
+  "version": "1.0.1",
+  "description": "네이버 카페 차단, 인기글 목록, 좋아요한 글 등 각종 편의기능 제공",
   "permissions": [
     "storage", 
     "contextMenus", 
