@@ -1,5 +1,5 @@
 /** 
- * @author Wei756 <kjhoon1122@naver.com> 
+ * @author Wei756 <wei756fg@gmail.com> 
  * @license MIT
  */
 
