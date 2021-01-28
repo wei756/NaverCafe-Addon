@@ -337,6 +337,7 @@ jQuery(function($){
                 table.querySelector(".cmt").remove();
             }
             table.querySelector(".nickname").innerText = list[i].nickname; // 작성자 닉네임
+            table.querySelector(".nickname").setAttribute('onclick', "ui(event, '" + list[i].writerId + "',3,'" + list[i].nickname + "','" + list[i].cafeId + "','me', 'false', 'true', '', 'false', '0'); return false;"); // 작성자 드롭다운 메뉴
             table.querySelector(".date").innerText = list[i].aheadOfWriteDate; // 게시글 작성일
             table.querySelector(".view").innerText = list[i].formattedReadCount; // 게시글 조회수
             table.querySelector(".likeit").innerText = list[i].upCount; // 게시글 좋아요 수
