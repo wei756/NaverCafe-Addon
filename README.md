@@ -3,6 +3,14 @@
 
 
 
+# 다운로드
+
+웹스토어 버전: [![Download from Chrome Web Store](https://img.shields.io/badge/다운로드-v1.0.1-brightgreen)](https://chrome.google.com/webstore/detail/네이버-카페-애드온/epcibdcgmbiimdleghmeldeopdjcaeic)
+
+개발 버전: [![Download from https://github.com/wei756/NaverCafe-Addon/releases](https://img.shields.io/github/v/release/wei756/NaverCafe-Addon?label=다운로드)](https://github.com/wei756/NaverCafe-Addon/releases)
+
+
+
 # 제공하는 기능
 
 - 인기글 리스트 표시
@@ -29,11 +37,7 @@
 
 ![회원 정지 여부 조회](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn5.png)
 
-# 다운로드
 
-웹스토어 버전: [![Download from Chrome Web Store](https://img.shields.io/badge/다운로드-v1.0.1-brightgreen)](https://chrome.google.com/webstore/detail/네이버-카페-애드온/epcibdcgmbiimdleghmeldeopdjcaeic)
-
-개발 버전: [![Download from https://github.com/wei756/NaverCafe-Addon/releases](https://img.shields.io/github/v/release/wei756/NaverCafe-Addon?label=다운로드)](https://github.com/wei756/NaverCafe-Addon/releases)
 
 # 적용하는 법
 
