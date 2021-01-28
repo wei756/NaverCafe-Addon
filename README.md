@@ -29,29 +29,27 @@
 
 ![회원 정지 여부 조회](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn5.png)
 
+# 다운로드
 
+웹스토어 버전: [![Download from Chrome Web Store](https://img.shields.io/badge/다운로드-v1.0.1-brightgreen)](https://chrome.google.com/webstore/detail/네이버-카페-애드온/epcibdcgmbiimdleghmeldeopdjcaeic)
+
+개발 버전: [![Download from https://github.com/wei756/NaverCafe-Addon/releases](https://img.shields.io/github/v/release/wei756/NaverCafe-Addon?label=다운로드)](https://github.com/wei756/NaverCafe-Addon/releases)
 
 # 적용하는 법
 
-1. 해당 저장소를 클론하거나 source 폴더만 다운로드합니다.
-
-![저장소 다운받는 모습](https://github.com/wei756/NaverCafe-Addon/raw/master/images/howto-0.png)
-
-
-
-2. Chrome에서 상단 메뉴→도구 더보기→확장 프로그램에 들어갑니다.
+1. Chrome에서 상단 메뉴→도구 더보기→확장 프로그램에 들어갑니다.
 
 ![확장 프로그램 관리 페이지 들어가는 모습](https://github.com/wei756/NaverCafe-Addon/raw/master/images/howto-1.png)
 
 
 
-3. 개발자 모드를 켜고 '압축해제된 확장 프로그램을 로드합니다.'를 누릅니다.
+2. 개발자 모드를 켜고 '압축해제된 확장 프로그램을 로드합니다.'를 누릅니다.
 
 ![확장 프로그램 관리 페이지](https://github.com/wei756/NaverCafe-Addon/raw/master/images/howto-2.png)
 
 
 
-4. source폴더를 열기 또는 선택합니다.
+3. 다운로드한 확장 프로그램의 source폴더를 열기 또는 선택합니다.
 
 ![확장 프로그램 불러오기](https://github.com/wei756/NaverCafe-Addon/raw/master/images/howto-3.png)
 
