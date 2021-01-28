@@ -3,6 +3,8 @@
  * @license MIT
  */
 
+ var doBlock;
+
 jQuery(function($){
 
     /** 
@@ -244,6 +246,69 @@ jQuery(function($){
      * @type {string}
      */
     const keyword = "keyword";
+    
+    /** 
+     * @description 사용자/키워드 차단을 실행합니다.
+     */
+    doBlock = function () {
+
+        getBlockList(function(dataBlock) {
+
+            // 글 차단
+            if (document.querySelectorAll("#main-area").length != 0)
+                $("#main-area").ready(function() {
+                    $("#main-area .article-board table").ready(function() {
+                        var articles = document.querySelectorAll("#main-area > .article-board > table > tbody > tr");
+                        var le = articles.length;
+
+                        for(var i = 0; i < le; i++) {
+                            var writerId = articles[i].querySelector(".p-nick > a");
+                            if (!isEmpty(writerId)) {
+                                writerId = writerId.getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
+
+                                // 유저 차단
+                                if (!isEmpty(dataBlock.nid) && dataBlock.nid.indexOf(writerId) != -1) { 
+                                    articles[i].innerHTML = "";
+                                } else {
+                                    articles[i].addEventListener("click", function(event) { // 유저 차단 UI 삽입
+                                        var targetElement = (event.target || event.srcElement);
+                                        if (!isEmpty(targetElement)) {
+                                            var targetElement = targetElement.parentElement;
+                                            if (!isEmpty(targetElement.querySelector(".p-nick > a"))) {
+                                                injectBlockUIArticle(targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "")); 
+                                            }
+                                        }
+                                    });
+
+                                }
+                            }
+
+                            var title = articles[i].querySelector(".board-list .inner_list .article");
+                            if (!isEmpty(title)) {
+                                title = title.innerText;
+
+                                // 키워드 차단
+                                if (!isEmpty(dataBlock.keyword)) { 
+                                    dataBlock.keyword.forEach(element => {
+                                        if (title.indexOf(element) != -1) {
+                                            articles[i].innerHTML = "";
+                                        }
+                                    });
+                                }
+                            }
+
+                        }
+                    });
+                });
+
+            // 댓글 차단
+            $("#app .Article .ArticleContentBox .CommentBox ul.comment_list").ready(function () {
+                loopBlockComment(dataBlock);
+            })
+        });
+
+    }
+
 
     doBlock(); // 차단 실행
 
@@ -323,68 +388,6 @@ jQuery(function($){
                 }
             }
         });
-    }
-    
-    /** 
-     * @description 사용자/키워드 차단을 실행합니다.
-     */
-    function doBlock() {
-
-        getBlockList(function(dataBlock) {
-
-            // 글 차단
-            if (document.querySelectorAll("#main-area").length != 0)
-                $("#main-area").ready(function() {
-                    $("#main-area .article-board table").ready(function() {
-                        var articles = document.querySelectorAll("#main-area > .article-board > table > tbody > tr");
-                        var le = articles.length;
-
-                        for(var i = 0; i < le; i++) {
-                            var writerId = articles[i].querySelector(".p-nick > a");
-                            if (!isEmpty(writerId)) {
-                                writerId = writerId.getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
-
-                                // 유저 차단
-                                if (!isEmpty(dataBlock.nid) && dataBlock.nid.indexOf(writerId) != -1) { 
-                                    articles[i].innerHTML = "";
-                                } else {
-                                    articles[i].addEventListener("click", function(event) { // 유저 차단 UI 삽입
-                                        var targetElement = (event.target || event.srcElement);
-                                        if (!isEmpty(targetElement)) {
-                                            var targetElement = targetElement.parentElement;
-                                            if (!isEmpty(targetElement.querySelector(".p-nick > a"))) {
-                                                injectBlockUIArticle(targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "")); 
-                                            }
-                                        }
-                                    });
-
-                                }
-                            }
-
-                            var title = articles[i].querySelector(".board-list .inner_list .article");
-                            if (!isEmpty(title)) {
-                                title = title.innerText;
-
-                                // 키워드 차단
-                                if (!isEmpty(dataBlock.keyword)) { 
-                                    dataBlock.keyword.forEach(element => {
-                                        if (title.indexOf(element) != -1) {
-                                            articles[i].innerHTML = "";
-                                        }
-                                    });
-                                }
-                            }
-
-                        }
-                    });
-                });
-
-            // 댓글 차단
-            $("#app .Article .ArticleContentBox .CommentBox ul.comment_list").ready(function () {
-                loopBlockComment(dataBlock);
-            })
-        });
-
     }
 
     var countComment = 0;

@@ -161,6 +161,9 @@ jQuery(function($){
         var clubid = params["clubid"];
         getBestArticles(clubid, function(data) {
             drawBestArticles(data);
+
+            // 유저 차단 적용
+            doBlock();
         });
     }
 
