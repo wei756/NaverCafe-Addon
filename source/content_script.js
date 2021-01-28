@@ -318,7 +318,7 @@ jQuery(function($){
      * @param {JSON} data 인기글 JSON
      */
     function drawBestArticles(data) {
-        var article_html = '<tr align="center"><td colspan="2"><span class="m-tcol-c list-count"></span></td><td align="left" class="board-list"><a class="title" href="/ArticleRead.nhn?clubid=&articleid=">null</a><a href="/ArticleRead.nhn?clubid=&articleid=" class="cmt">[<em>null</em>]</a></td><td class="p-nick"><div class="pers_nick_area"><table role="presentation" cellspacing="0"><tbody><tr><td class="p-nick"><a href="#" class="m-tcol-c nickname">null</a></td></tr></tbody></table></div></td><td class="date">null</td><td class="view">null</td><td class="likeit">null</td></tr>';
+        var article_html = '<tr align="center"><td colspan="2"><span class="m-tcol-c list-count"></span></td><td align="left" class="board-list"><a class="title" href="/ArticleRead.nhn?clubid=&articleid=">null</a> <a href="/ArticleRead.nhn?clubid=&articleid=" class="cmt">[<em>null</em>] </a><span class="list-i-new"><i class="blind">new</i></span> </td><td class="p-nick"><div class="pers_nick_area"><table role="presentation" cellspacing="0"><tbody><tr><td class="p-nick"><a href="#" class="m-tcol-c nickname">null</a></td></tr></tbody></table></div></td><td class="date">null</td><td class="view">null</td><td class="likeit">null</td></tr>';
         var main_area = document.querySelector("#main-area");
         main_area.querySelector("table.board-box").innerHTML += "<tbody></tbody>";
         var table = main_area.querySelector("table.board-box > tbody");
@@ -338,6 +338,9 @@ jQuery(function($){
                 table.querySelector(".cmt").href = "https://cafe.naver.com/ArticleRead.nhn?clubid=" + list[i].cafeId + "&articleid=" + list[i].articleId; // 게시글 댓글 링크
             } else { // 댓글이 없으면
                 table.querySelector(".cmt").remove();
+            }
+            if (list[i].newArticle !== true) {
+                table.querySelector(".list-i-new").remove();
             }
             table.querySelector(".nickname").innerText = list[i].nickname; // 작성자 닉네임
             table.querySelector(".nickname").setAttribute('onclick', "ui(event, '" + list[i].writerId + "',3,'" + list[i].nickname + "','" + list[i].cafeId + "','me', 'false', 'true', '', 'false', '0'); return false;"); // 작성자 드롭다운 메뉴
