@@ -326,6 +326,7 @@ jQuery(function($){
         var list = data['message']['result']['popularArticleList'];
 
         var le = list.length;
+        parent.document.querySelector("#cafe_main").style.height = (37 * le + 250) + "px";
         for(var i = le - 1; i >= 0; i--) {
             table.innerHTML = article_html + table.innerHTML;
             
