@@ -573,7 +573,7 @@ jQuery(function($){
             var writerThumb = comments[i].querySelector("a.comment_thumb");
             var writerName = comments[i].querySelector("a.comment_nickname");
             if (!isEmpty(writerThumb)) {
-                var writerId = writerThumb.href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "");
+                var writerId = writerThumb.href.match(/memberid=([a-z0-9_-]+)/gi)[0].replace("memberid=", "");
                 var cafeid   = writerThumb.href.match(/clubid=([0-9_]+)/g)[0].replace("clubid=", "");
                 var nickname = writerName.innerText.replace(/[ \t]/g, "");
 
@@ -597,7 +597,7 @@ jQuery(function($){
                             if (!isEmpty(targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb"))) {
                                 var _cafeid = targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb").href.match(/clubid=([0-9_]+)/g)[0].replace("clubid=", "");
                                 var _nickname = targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_nickname").innerText.replace(/[ \t]/g, "");
-                                var _id = targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "");
+                                var _id = targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_-]+)/gi)[0].replace("memberid=", "");
                                 injectBlockUIComment(targetElement.parentElement, _cafeid, _nickname, _id);
                             }
                             
