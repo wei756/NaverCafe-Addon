@@ -3,7 +3,7 @@
  * @license MIT
  */
 
- var doBlock;
+var doBlock;
 
 jQuery(function($){
 
@@ -91,14 +91,15 @@ jQuery(function($){
             var params = getURLParams();
             var isBlocking = params["blocking.page"];
             var pageType = params["blocking.type"];
+            var cafeid = params['clubid'];
             if (!isEmpty(isBlocking)) {
                 isBlocking = isBlocking.replace("#", "");
             }
             if (isBlocking == "true") { // 차단 목록 페이지면
                 if (pageType == "nid") { // 회원 id
-                    loadBlocking("nid");
+                    loadBlocking(nid, cafeid);
                 } else if (pageType == "keyword") { // 키워드
-                    loadBlocking("keyword");
+                    loadBlocking(keyword, cafeid);
                 }
 
             }
@@ -109,7 +110,16 @@ jQuery(function($){
             var params = getURLParams();
             var memberId = params["memberid"];
             document.querySelector(".pers_nick_area .p-nick a.m-tcol-c").addEventListener("click", function(event) { // 유저 차단 UI 삽입
-                injectBlockUIArticle(memberId); 
+                var targetElement = (event.target || event.srcElement);
+                if (!isEmpty(targetElement)) {
+                    var targetElement = targetElement.parentElement.parentElement;
+                    if (!isEmpty(targetElement.querySelector(".p-nick > a"))) {
+                        var _cafeid = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[2].replace("'", "").replace("'", "");
+                        var _nickname = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[1].replace("'", "").replace("'", "");
+                        var _id = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
+                        injectBlockUIArticle(_cafeid, _nickname, _id); 
+                    }
+                }
             });
         }
     }
@@ -118,11 +128,11 @@ jQuery(function($){
      * @description 차단 목록을 불러옵니다.
      * @param {string} type 종류
      */
-    function loadBlocking(type) {
+    function loadBlocking(type, cafeid) {
         var main_area = $("#main-area");
         var section = main_area.children(".article-board.article_profile");
 
-        var table = '<table><caption><span class="blind">차단 목록</span></caption><colgroup><col><col style="width:120px"><col style="width:100px"><col style="width:80px"></colgroup><thead><tr><th scope="col" class="type"></th><th scope="col"></th><th scope="col"></th><th scope="col"></th></tr></thead><tbody></tbody></table>';
+        var table = '<table><caption><span class="blind">차단 목록</span></caption><colgroup><col><col style="width:120px"><col style="width:100px"><col style="width:80px"></colgroup><thead><tr><th scope="col" class="type"></th><th scope="col"></th><th scope="col" class="date"></th><th scope="col"></th></tr></thead><tbody></tbody></table>';
         
         // 기존 UI 제거
         section.find(".sort_area > .link_sort.on").removeClass("on");
@@ -132,10 +142,11 @@ jQuery(function($){
         section.children("table").remove();
 
         section.append($(table));
-        section.find(".type").text(type == "nid" ? "회원 id" : "키워드");
+        section.find(".type").text(type == "nid" ? "차단 회원" : "차단 키워드");
+        section.find(".date").text("차단일");
 
         getBlockList(function(data) {
-            drawBlockList(data, type);
+            drawBlockList(data, type, cafeid);
         });
     }
 
@@ -144,7 +155,7 @@ jQuery(function($){
      * @param {JSON} data 차단 목록 JSON
      * @param {string} type 종류
      */
-    function drawBlockList(data, type) {
+    function drawBlockList(data, type, cafeid) {
         var main_area = document.querySelector("#main-area");
         var section = main_area.querySelector(".article-board.article_profile");
         
@@ -156,7 +167,19 @@ jQuery(function($){
         var le = list.length;
 
         for(var i = 0; i < le; i++) {
+            if (list[i]['cafeid'] !== '-' && cafeid != list[i]['cafeid']) { // 타 카페 차단
+                continue;
+            }
             var item = document.createElement("tr");
+
+            item.setAttribute('data-cafeid', list[i]['cafeid']); // 카페 id
+
+            if (type === nid) {
+                item.setAttribute('data-id', list[i]['id']); // 회원 id
+                item.setAttribute('data-nickname', list[i]['nickname']); // 회원 닉네임
+            } else {
+                item.setAttribute('data-keyword', list[i]['keyword']); // 키워드
+            }
 
             // title
             var tdTitle = document.createElement("td");
@@ -202,11 +225,24 @@ jQuery(function($){
 
             table.appendChild(item);
 
-            divInnerNum.append(i + 1); // 순서
+            divInnerNum.append(list[i]['cafeid']); // 카페 id
 
-            aList.append(list[i]); // 회원 id
+            if (type === nid) {
+                aList.append(list[i]['nickname'] + '(' + list[i]['id'] +')'); // 회원 id
+                aList.setAttribute('onclick', "ui(event, '" + list[i]['id'] + "',3,'" + list[i]['nickname'] + "','" + list[i]['cafeid'] + "','me', 'false', 'true', '', 'false', '0'); return false;"); // 드롭다운 메뉴
+            
+            }
+            else {
+                aList.append(list[i]['keyword']); // 키워드
+            }
 
-            tdDate.append(""); // 차단일
+            var now = Date.now();
+            var timestamp = new Date(list[i]['timestamp']);
+            if (Math.floor(now / (1000 * 60 * 60 * 24)) === Math.floor(timestamp / (1000 * 60 * 60 * 24))) { // 오늘이면
+                tdDate.append(timestamp.toLocaleTimeString('it-IT')); // 차단시각
+            } else {
+                tdDate.append(timestamp.toLocaleDateString('ko-KR')); // 차단날짜
+            }
 
             var btnRemove = document.createElement("a");
             btnRemove.className = "remove";
@@ -215,25 +251,43 @@ jQuery(function($){
 
             tdView.appendChild(btnRemove); // 차단 해제
             btnRemove.addEventListener("click", function(event) {
-                var targetElement = (event.target || event.srcElement).parentElement;
-                var key = targetElement.parentElement.querySelector(".title_txt").innerText;
+                var targetElement = (event.target || event.srcElement).parentElement.parentElement;
+
+                var cafeid = targetElement.getAttribute('data-cafeid');
+                var id = targetElement.getAttribute('data-id');
+                var nickname = targetElement.getAttribute('data-nickname');
+                var _keyword = targetElement.getAttribute('data-keyword');
+
+                var key = '', value;
+                if (type == keyword) {
+                    key = 'keyword';
+                    value = _keyword;
+                } else {
+                    if (targetElement.hasAttribute('data-nickname') && nickname !== '-') {
+                        key = 'nickname';
+                        value = nickname;
+                    }
+                    else {
+                        key = 'id';
+                        value = id;
+                    }
+                }
                 var msgStr = " 님을 차단 해제하시겠습니까?";
                 if (type == keyword) {
                     var iga = "을";
-                    var lastChar = key.charCodeAt(key.length - 1);
+                    var lastChar = value.charCodeAt(value.length - 1);
                     if (lastChar >= 44032 && lastChar <= 55215 && (lastChar - 44032) % 28 == 0) {
                         iga = "를";
                     }
                     msgStr = iga + " 차단 해제하시겠습니까?";
                 }
-                if(confirm(key + msgStr)) {
-                    removeBlockItem(type, key);
+                if(confirm(value + msgStr)) {
+                    removeBlockItem(type, cafeid, key, value);
                     location.reload(true);
                 }
             });
             
         }
-        table.querySelector("#data").remove();
     }
 
     /**
@@ -262,12 +316,14 @@ jQuery(function($){
                         var le = articles.length;
 
                         for(var i = 0; i < le; i++) {
-                            var writerId = articles[i].querySelector(".p-nick > a");
-                            if (!isEmpty(writerId)) {
-                                writerId = writerId.getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
+                            var writer = articles[i].querySelector(".p-nick > a");
+                            if (!isEmpty(writer)) {
+                                var cafeid = writer.getAttribute("onclick").match(/'([^'])+'/g)[2].replace("'", "").replace("'", "");
+                                var nickname = writer.getAttribute("onclick").match(/'([^'])+'/g)[1].replace("'", "").replace("'", "");
+                                var writerId = writer.getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
 
                                 // 유저 차단
-                                if (!isEmpty(dataBlock.nid) && dataBlock.nid.indexOf(writerId) != -1) { 
+                                if (indexBlockItem(dataBlock["" + nid], cafeid, 'nickname', nickname) != -1 || indexBlockItem(dataBlock["" + nid], cafeid, 'id', writerId) != -1) { 
                                     articles[i].innerHTML = "";
                                 } else {
                                     articles[i].addEventListener("click", function(event) { // 유저 차단 UI 삽입
@@ -275,7 +331,10 @@ jQuery(function($){
                                         if (!isEmpty(targetElement)) {
                                             var targetElement = targetElement.parentElement;
                                             if (!isEmpty(targetElement.querySelector(".p-nick > a"))) {
-                                                injectBlockUIArticle(targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "")); 
+                                                var _cafeid = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[2].replace("'", "").replace("'", "");
+                                                var _nickname = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[1].replace("'", "").replace("'", "");
+                                                var _id = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
+                                                injectBlockUIArticle(_cafeid, _nickname, _id); 
                                             }
                                         }
                                     });
@@ -290,7 +349,7 @@ jQuery(function($){
                                 // 키워드 차단
                                 if (!isEmpty(dataBlock.keyword)) { 
                                     dataBlock.keyword.forEach(element => {
-                                        if (title.indexOf(element) != -1) {
+                                        if (title.indexOf(element['keyword']) != -1) {
                                             articles[i].innerHTML = "";
                                         }
                                     });
@@ -314,21 +373,44 @@ jQuery(function($){
 
     /** 
      * @description 회원 아이디/키워드를 차단 목록에 추가합니다.
-     * @param {string} type 회원 아이디/키워드
-     * @param {string} data 추가할 데이터
+     * @param {string} type 차단 타입
+     * @param {string} keyword 추가할 키워드/닉네임
+     * @param {string} cafeid 적용될 카페 id
+     * @param {string} id 추가할 아이디
      */
-    function pushBlockItem(type, data) {
+    function pushBlockItem(type, cafeid = '-', keyword = '', id = '') {
         getBlockList(function(items) {
+
             if (typeof items["" + type] == "undefined" || items["" + type] == null) { // 차단 목록 생성
-                items["" + type] = new Array(data);
-            } else {
-                if (items["" + type].indexOf(data) == -1) { // 중복 검사
-                    items["" + type].push(data);
-                    alert("'" + data + "' 님을 차단하였습니다.");
-                } else {
-                    alert("이미 차단한 " + (type == nid ? "사용자" : "키워드") + "입니다. (" + data + ")");
-                }
+                items['version'] = 2; // json 버전
+                items["" + type] = new Array(); // 새로운 array
             }
+
+            if ((type == nid ? indexBlockItem(items["" + type], cafeid, 'id', id)
+                             : indexBlockItem(items["" + type], cafeid, 'keyword', keyword)) === -1) { // 중복 검사
+                if (type == nid) { // 사용자
+                    items["" + type].push({
+                        cafeid: cafeid, 
+                        id: id, 
+                        nickname: keyword,
+                        timestamp: Date.now(),
+                    });
+                    alert("'" + keyword + "'(" + id + ") 님이 작성한 글과 댓글을 차단합니다.");
+
+                } else { // 키워드
+                    items["" + type].push({
+                        cafeid: cafeid, 
+                        keyword: keyword,
+                        timestamp: Date.now(),
+                    });
+                    alert("'" + keyword + "'가 포함된 글이나 댓글을 차단합니다.");
+
+                }
+            } else { // 중복인 경우
+                alert("'" + keyword + (type == nid ? "' 님은" : "' 은(는)") + " 이미 차단한 " + (type == nid ? "사용자" : "키워드") + "입니다.");
+            }
+
+
             chrome.storage.local.set(items, function() { 
                 //alert(data + " pushed!");
                 doBlock();
@@ -342,7 +424,18 @@ jQuery(function($){
                     articleUI.parentNode.removeChild(articleUI);
                 }
             });
+
         });
+    }
+
+    function indexBlockItem(arr, cafeid, key, value) {
+        var le = arr.length;
+        for (let i = 0; i < le; i++) {
+            if (arr[i]['' + key] != null && (arr[i]['cafeid'] === '-' || arr[i]['cafeid'] === cafeid) && arr[i]['' + key] === value) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /** 
@@ -351,7 +444,7 @@ jQuery(function($){
      */
     function getBlockList(callback) {
         chrome.storage.local.get(null, function(items) {
-            //alert("items: " + JSON.stringify(items));
+            console.log("items: " + JSON.stringify(items));
             callback(items);
         });
     }
@@ -359,42 +452,111 @@ jQuery(function($){
     /** 
      * @description 차단 목록에서 회원 아이디/키워드를 제거합니다.
      * @param {string} type 회원 아이디/키워드
-     * @param {string} data 제거할 데이터
+     * @param {string} cafeid 제거할 데이터의 카페 id
+     * @param {string} key 제거할 데이터 키
+     * @param {string} value 제거할 데이터 값
      */
-    function removeBlockItem(type, data) {
+    function removeBlockItem(type, cafeid, key, value) {
         getBlockList(function(items) {
             if (typeof items["" + type] == "undefined" || items["" + type] == null) {
                 alert("차단하지 않은 " + (type == nid ? "사용자" : "키워드") + "입니다. (" + data + ")");
             } else {
-                if (items["" + type].indexOf(data) != -1) { // 존재하는지 여부 검사
-                    items["" + type].splice(items["" + type].indexOf(data), 1);
+                var ind = indexBlockItem(items["" + type], cafeid, key, value)
+                if (ind != -1) { // 존재하는지 여부 검사
+                    items["" + type].splice(ind, 1);
 
                     var msgStr = " 님을 차단 해제하였습니다.";
                     if (type == keyword) {
                         var iga = "을";
-                        var lastChar = data.charCodeAt(data.length - 1);
+                        var lastChar = value.charCodeAt(value.length - 1);
                         if (lastChar >= 44032 && lastChar <= 55215 && (lastChar - 44032) % 28 == 0) {
                             iga = "를";
                         }
                         msgStr = iga + " 차단 해제하였습니다.";
                     }
-                    alert(data + msgStr);
+                    alert(value + msgStr);
                     
                     chrome.storage.local.set(items, function() { 
-                        //alert(data + " pushed!");
+                        //alert(value + " pushed!");
                     });
                 } else {
-                    alert("차단하지 않은 " + (type == nid ? "사용자" : "키워드") + "입니다. (" + data + ")");
+                    alert("차단하지 않은 " + (type == nid ? "사용자" : "키워드") + "입니다. (" + value + ")");
                 }
             }
+        });
+    }
+   
+    convertFromOldBlockList();
+
+    /** 
+     * @description 1.1.0 이전 버전의 데이터를 현재 버전에 맞게 변환합니다.
+     */
+    function convertFromOldBlockList() {
+        getBlockList(function(items) {
+        
+            if (typeof items[nid] == "undefined" || items[nid] == null) { // 차단 목록 생성
+                items[nid] = new Array(); // 새로운 array
+            }
+            if (typeof items[keyword] == "undefined" || items[keyword] == null) { // 차단 목록 생성
+                items[keyword] = new Array(); // 새로운 array
+            }
+
+            if (typeof items['version'] == "undefined" || items['version'] < 2) {
+                console.log('tr');
+                items['version'] = 2;
+
+                var l = items[nid].length;
+
+                for (let i = 0; i < l; i++) {
+                    var data = items[nid][i];
+                    if (typeof data == 'string') {
+                        items[nid][i] = {
+                            cafeid: '-', 
+                            id: data, 
+                            nickname: '-',
+                            timestamp: Date.now(),
+                        };
+                    }
+
+                }
+
+                l = items[keyword].length;
+
+                for (let i = 0; i < l; i++) {
+                    var data = items[keyword][i];
+                    if (typeof data == 'string') {
+                        items[keyword][i] = ({
+                            cafeid: '-', 
+                            keyword: data,
+                            timestamp: Date.now(),
+                        });
+                    }
+                }
+                console.log(items);
+
+                chrome.storage.local.set(items, function() { 
+                });
+
+            }
+
+        });
+    }
+
+    /** 
+     * @description 설정 데이터 테스트에 사용됩니다.
+     */
+    function testData(str) {
+        items = JSON.parse(str);
+
+        chrome.storage.local.set(items, function() { 
         });
     }
 
     var countComment = 0;
 
     function loopBlockComment(dataBlock) {
-        if(document.querySelector("#app .Article .ArticleContentBox .CommentBox ul.comment_list") != null &&
-           document.querySelectorAll("ul.comment_list > li.CommentItem").length != countComment)
+        if(document.querySelector("#app .Article .ArticleContentBox .CommentBox ul.comment_list") != null/* &&
+           document.querySelectorAll("ul.comment_list > li.CommentItem").length != countComment*/)
             doBlockComment(dataBlock);
 
         setTimeout(() => {
@@ -408,12 +570,15 @@ jQuery(function($){
         countComment = le;
         
         for(var i = 0; i < le; i++) {
-            var writerId = comments[i].querySelector("a.comment_thumb");
-            if (!isEmpty(writerId)) {
-                writerId = writerId.href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "");
+            var writerThumb = comments[i].querySelector("a.comment_thumb");
+            var writerName = comments[i].querySelector("a.comment_nickname");
+            if (!isEmpty(writerThumb)) {
+                var writerId = writerThumb.href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "");
+                var cafeid   = writerThumb.href.match(/clubid=([0-9_]+)/g)[0].replace("clubid=", "");
+                var nickname = writerName.innerText.replace(/[ \t]/g, "");
 
                 // 유저 차단
-                if (!isEmpty(dataBlock.nid) && dataBlock.nid.indexOf(writerId) != -1) { 
+                if (indexBlockItem(dataBlock["" + nid], cafeid, 'nickname', nickname) != -1 || indexBlockItem(dataBlock["" + nid], cafeid, 'id', writerId) != -1) { 
                     comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
                     comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
                     var blockedCmt = document.createElement("div");
@@ -430,8 +595,10 @@ jQuery(function($){
                         if (!isEmpty(targetElement)) {
                             targetElement = targetElement.parentElement;
                             if (!isEmpty(targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb"))) {
-                                injectBlockUIComment(targetElement.parentElement, 
-                                                targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", ""));
+                                var _cafeid = targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb").href.match(/clubid=([0-9_]+)/g)[0].replace("clubid=", "");
+                                var _nickname = targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_nickname").innerText.replace(/[ \t]/g, "");
+                                var _id = targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_]+)/gi)[0].replace("memberid=", "");
+                                injectBlockUIComment(targetElement.parentElement, _cafeid, _nickname, _id);
                             }
                             
                         }
@@ -446,7 +613,7 @@ jQuery(function($){
                 // 키워드 차단
                 if (!isEmpty(dataBlock.keyword)) { 
                     dataBlock.keyword.forEach(element => {
-                        if (content.indexOf(element) != -1 && !isEmpty(comments[i].querySelector(".comment_area > .comment_thumb"))) {
+                        if (content.indexOf(element['keyword']) != -1 && !isEmpty(comments[i].querySelector(".comment_area > .comment_thumb"))) {
                             comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
                             comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
                             var blockedCmt = document.createElement("div");
@@ -465,14 +632,21 @@ jQuery(function($){
         }
     };
 
+    var target_cafeid = "";
+    var target_nickname = "";
     var target_id = "";
 
     /** 
      * @description 글 목록에 차단하기 UI를 삽입합니다.
+     * @param {string} _cafeid 차단 대상 회원의 카페 id
+     * @param {string} _nickname 차단 대상 닉네임
      * @param {string} _id 차단 대상 id
      */
-    function injectBlockUIArticle(_id) {
+    function injectBlockUIArticle(_cafeid, _nickname, _id = '') {
+        target_cafeid = _cafeid;
+        target_nickname = _nickname;
         target_id = _id;
+
         if (document.querySelector(".perid-layer") != null)
             document.querySelector(".perid-layer").addEventListener("DOMSubtreeModified", function() {
                 if (!isEmpty(document.querySelector(".perid-layer > ul")) && 
@@ -488,8 +662,8 @@ jQuery(function($){
                     document.querySelector(".perid-layer > ul").appendChild(btnBlock);
 
                     document.querySelector(".perid-layer > ul .blocking").addEventListener("click", function(event) {
-                        if(confirm("정말로 " + target_id + " 님을 차단하시겠습니까?")) {
-                            pushBlockItem(nid, target_id);
+                        if(confirm("정말로 " + target_nickname + " 님을 차단하시겠습니까?")) {
+                            pushBlockItem(nid, target_cafeid, target_nickname, target_id);
                             //location.reload(true);
                         }
                     });
@@ -501,10 +675,15 @@ jQuery(function($){
     /** 
      * @description 댓글 목록에 차단하기 UI를 삽입합니다.
      * @param {string} element 삽입할 요소
+     * @param {string} _cafeid 차단 대상 회원의 카페 id
+     * @param {string} _nickname 차단 대상 닉네임
      * @param {string} _id 차단 대상 id
      */
-    function injectBlockUIComment(element, _id) {
+    function injectBlockUIComment(element, _cafeid, _nickname, _id = '') {
+        target_cafeid = _cafeid;
+        target_nickname = _nickname;
         target_id = _id;
+
         if (!isEmpty(element.querySelector(".LayerMore")) && element.querySelector(".LayerMore").innerHTML.indexOf("blocking") == -1) {
             var btnBlock = document.createElement("li");
             btnBlock.className = "layer_item";
@@ -517,8 +696,8 @@ jQuery(function($){
             element.querySelector(".LayerMore").appendChild(btnBlock);
 
             element.querySelector(".LayerMore .blocking").addEventListener("click", function(event) {
-                if(confirm("정말로 " + target_id + " 님을 차단하시겠습니까?")) {
-                    pushBlockItem(nid, target_id);
+                if(confirm("정말로 " + target_nickname + " 님을 차단하시겠습니까?")) {
+                    pushBlockItem(nid, target_cafeid, target_nickname, target_id);
                     //location.reload(true);
                 }
             });
@@ -537,8 +716,8 @@ jQuery(function($){
                 element.querySelector(".LayerMore").appendChild(btnBlock);
     
                 element.querySelector(".LayerMore .blocking").addEventListener("click", function(event) {
-                    if(confirm("정말로 " + target_id + " 님을 차단하시겠습니까?")) {
-                        pushBlockItem(nid, target_id);
+                    if(confirm("정말로 " + target_nickname + " 님을 차단하시겠습니까?")) {
+                        pushBlockItem(nid, target_cafeid, target_nickname, target_id);
                         //location.reload(true);
                     }
                 });

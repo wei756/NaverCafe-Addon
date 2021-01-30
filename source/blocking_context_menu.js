@@ -15,7 +15,7 @@ function blockKeyword(info, tab) {
         iga = "가";
     }
     if (confirm("'" + str + "'" + iga + " 포함된 제목, 댓글을 차단하시겠습니까?")) {
-        pushBlockItem(keyword, str);
+        pushBlockItem(keyword, '-', str);
     }
 }
 
@@ -32,35 +32,59 @@ const keyword = "keyword";
 
 /** 
  * @description 회원 아이디/키워드를 차단 목록에 추가합니다.
- * @param {string} type 회원 아이디/키워드
- * @param {string} data 추가할 데이터
+ * @param {string} type 차단 타입
+ * @param {string} keyword 추가할 키워드/닉네임
+ * @param {string} cafeid 적용될 카페 id
+ * @param {string} id 추가할 아이디
  */
-function pushBlockItem(type, data) {
+function pushBlockItem(type, cafeid = '-', keyword = '', id = '') {
     getBlockList(function(items) {
+
         if (typeof items["" + type] == "undefined" || items["" + type] == null) { // 차단 목록 생성
-            items["" + type] = new Array(data);
-        } else {
-            if (items["" + type].indexOf(data) == -1) { // 중복 검사
-                items["" + type].push(data);
-                var iga = "이";
-                var lastChar = data.charCodeAt(data.length - 1);
-                if (lastChar >= 44032 && lastChar <= 55215 && (lastChar - 44032) % 28 == 0) {
-                    iga = "가";
-                }
-                alert("'" + data + "'" + iga + " 포함된 컨텐츠를 차단합니다.");
-            } else {
-                var iga = "은";
-                var lastChar = data.charCodeAt(data.length - 1);
-                if (lastChar >= 44032 && lastChar <= 55215 && (lastChar - 44032) % 28 == 0) {
-                    iga = "는";
-                }
-                alert("'" + data + "'" + iga + " 이미 차단한 키워드입니다.");
-            }
+            items['version'] = 2; // json 버전
+            items["" + type] = new Array(); // 새로운 array
         }
+
+        if ((type == nid ? indexBlockItem(items["" + type], cafeid, 'id', id)
+                            : indexBlockItem(items["" + type], cafeid, 'keyword', keyword)) === -1) { // 중복 검사
+            if (type == nid) { // 사용자
+                items["" + type].push({
+                    cafeid: cafeid, 
+                    id: id, 
+                    nickname: keyword,
+                    timestamp: Date.now(),
+                });
+                alert("'" + keyword + "'(" + id + ") 님이 작성한 글과 댓글을 차단합니다.");
+
+            } else { // 키워드
+                items["" + type].push({
+                    cafeid: cafeid, 
+                    keyword: keyword,
+                    timestamp: Date.now(),
+                });
+                alert("'" + keyword + "'가 포함된 글이나 댓글을 차단합니다.");
+
+            }
+        } else { // 중복인 경우
+            alert("'" + keyword + (type == nid ? "' 님은" : "' 은(는)") + " 이미 차단한 " + (type == nid ? "사용자" : "키워드") + "입니다.");
+        }
+
+
         chrome.storage.local.set(items, function() { 
             //alert(data + " pushed!");
         });
+
     });
+}
+
+function indexBlockItem(arr, cafeid, key, value) {
+    var le = arr.length;
+    for (let i = 0; i < le; i++) {
+        if (arr[i]['' + key] != null && arr[i]['cafeid'] === cafeid && arr[i]['' + key] === value) {
+            return i;
+        }
+    }
+    return -1;
 }
 
 /** 
@@ -69,7 +93,7 @@ function pushBlockItem(type, data) {
  */
 function getBlockList(callback) {
     chrome.storage.local.get(null, function(items) {
-        //alert("items: " + JSON.stringify(items));
+        //console.log("items: " + JSON.stringify(items));
         callback(items);
     });
 }
