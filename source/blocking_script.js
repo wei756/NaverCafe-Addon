@@ -428,6 +428,13 @@ jQuery(function($){
         });
     }
 
+    /** 
+     * @description 차단 목록에 특정값이 있는지 확인하고 그 인덱스를 반환합니다.
+     * @param {Array}} 차단 목록
+     * @param {string} cafeid 찾는 값의 카페 id
+     * @param {string} key 찾는 값의 key
+     * @param {string} value 찾는 값
+     */
     function indexBlockItem(arr, cafeid, key, value) {
         var le = arr.length;
         for (let i = 0; i < le; i++) {
