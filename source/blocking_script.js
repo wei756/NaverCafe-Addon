@@ -494,6 +494,28 @@ jQuery(function($){
     }
    
     convertFromOldBlockList();
+    initBlockList();
+    /*getBlockList(function(items) {
+        testData('{"darkmode":false, "nid":["ecvhao"]}');
+    });*/
+    
+    /** 
+     * @description 차단 목록 배열을 생성합니다.
+     */
+    function initBlockList() {
+        getBlockList(function(items) {
+        
+            if (typeof items[nid] == "undefined" || items[nid] == null) { // 차단 목록 생성
+                items[nid] = new Array(); // 새로운 array
+            }
+            if (typeof items[keyword] == "undefined" || items[keyword] == null) { // 차단 목록 생성
+                items[keyword] = new Array(); // 새로운 array
+            }
+            chrome.storage.local.set(items, function() { 
+            });
+
+        });
+    }
 
     /** 
      * @description 1.1.0 이전 버전의 데이터를 현재 버전에 맞게 변환합니다.
@@ -581,7 +603,7 @@ jQuery(function($){
             var writerName = comments[i].querySelector("a.comment_nickname");
             if (!isEmpty(writerThumb)) {
                 var writerId = writerThumb.href.match(/memberid=([a-z0-9_-]+)/gi)[0].replace("memberid=", "");
-                var cafeid   = writerThumb.href.match(/clubid=([0-9_]+)/g)[0].replace("clubid=", "");
+                var cafeid   = writerThumb.href.match(/clubid=([0-9]+)/g)[0].replace("clubid=", "");
                 var nickname = writerName.innerText.replace(/[ \t]/g, "");
 
                 // 유저 차단
