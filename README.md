@@ -13,29 +13,41 @@
 
 # 제공하는 기능
 
-- 인기글 리스트 표시
+- \[PC\]인기글 리스트 표시
 
 ![인기글 리스트 표시](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn1.png)
 
-- 프로필 페이지에서 좋아요한 글 리스트 표시
+
+
+- \[PC\]프로필 페이지에서 좋아요한 글 리스트 표시
 
 ![프로필 페이지에서 좋아요한 글 리스트 표시](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn2.png)
 
-- 특정 회원 글/댓글 차단
 
-![특정 회원 글/댓글 차단](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn3.gif)
 
-- 특정 키워드가 포함된 글제목/댓글 차단
+- \[PC/모바일\]특정 회원 글/댓글 차단
+
+![특정 회원 글/댓글 차단(PC)](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn3.gif)
+![특정 회원 글/댓글 차단(모바일)](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn3-m.png)
+
+
+
+- \[PC/모바일\]특정 키워드가 포함된 글제목/댓글 차단
 
 ![특정 키워드가 포함된 글제목/댓글 차단](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn3.png)
 
-- 다크 모드
+
+
+- \[PC/모바일\]다크 모드
 
 ![다크 모드](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn4.png)
 
-- 회원 정지 여부 조회
+
+
+- \[PC/모바일\]회원 정지 여부 조회
 
 ![회원 정지 여부 조회](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn5.png)
+
 
 
 
