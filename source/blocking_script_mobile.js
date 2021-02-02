@@ -361,38 +361,19 @@ jQuery(function($){
 
                 // 유저 차단
                 if (indexBlockItem(dataBlock["" + nid], cafeid, 'nickname', nickname) != -1) { 
-                    comments[i].querySelector(".lst_wp > .thumb_area").style.display = 'none';
-                    comments[i].querySelector(".lst_wp > .date_area").style.display = 'none';
-                    comments[i].querySelector(".lst_wp > .txt").style.display = 'none';
-                    if (comments[i].querySelector(".lst_wp > .image_section") != null)
-                        comments[i].querySelector(".lst_wp > .image_section").style.display = 'none';
-                    if (comments[i].querySelector(".lst_wp > .u_cbox_sticker_section") != null)
-                        comments[i].querySelector(".lst_wp > .u_cbox_sticker_section").style.display = 'none';
-                    comments[i].querySelector(".CommentListItemMenuLayer").style.display = 'none';
-                    var blockedP = document.createElement("p");
-                    blockedP.className = "txt del blocked";
-                    blockedP.append("차단된 회원의 댓글입니다.");
-                    comments[i].querySelector(".lst_wp").appendChild(blockedP);
+                    hideComment(comments[i], "차단된 회원의 댓글입니다.");
     
                 }
             }
 
-            var content = comments[i].querySelector(".comment_text_view");
-            if (!isEmpty(content)) {
+            var content = comments[i].querySelector("p.txt");
+            if (!isEmpty(content) && content.style.display !== 'none') {
                 content = content.innerText;
                 // 키워드 차단
                 if (!isEmpty(dataBlock.keyword)) { 
                     dataBlock.keyword.forEach(element => {
-                        if (content.indexOf(element['keyword']) != -1 && !isEmpty(comments[i].querySelector(".comment_area > .comment_thumb"))) {
-                            comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
-                            comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
-                            var blockedCmt = document.createElement("div");
-                            blockedCmt.className = "comment_box";
-                            var blockedP = document.createElement("p");
-                            blockedP.className = "comment_deleted";
-                            blockedP.append("차단된 키워드가 포함된 댓글입니다.");
-                            blockedCmt.appendChild(blockedP);
-                            comments[i].querySelector(".comment_area").appendChild(blockedCmt);
+                        if (content.indexOf(element['keyword']) != -1) {
+                            hideComment(comments[i], "차단된 키워드가 포함된 댓글입니다.");
                         }
                     });
                 }
@@ -401,6 +382,32 @@ jQuery(function($){
 
         }
     };
+
+    /** 
+     * @description 댓글을 숨깁니다.
+     * @param {object} element 숨길 댓글의 element
+     * @param {string} message 숨긴 댓글에 표시할 메시지
+     */
+    function hideComment(element, message = '숨겨진 댓글입니다.') {
+        if (element.querySelectorAll(".lst_wp").length > 0) { // 댓글 element 인지 확인
+            //요소 숨김
+            element.querySelector(".lst_wp > .thumb_area").style.display = 'none';
+            element.querySelector(".lst_wp > .date_area").style.display = 'none';
+            element.querySelector(".lst_wp > .txt").style.display = 'none';
+            if (element.querySelector(".lst_wp > .image_section") != null)
+                element.querySelector(".lst_wp > .image_section").style.display = 'none';
+            if (element.querySelector(".lst_wp > .u_cbox_sticker_section") != null)
+                element.querySelector(".lst_wp > .u_cbox_sticker_section").style.display = 'none';
+            element.querySelector(".CommentListItemMenuLayer").style.display = 'none';
+    
+            // 메시지 표시
+            var blockedP = document.createElement("p");
+            blockedP.className = "txt del blocked";
+            blockedP.append(message);
+            element.querySelector(".lst_wp").appendChild(blockedP);
+
+        }
+    }
 
     /** 
      * @description 프로필 페이지에 차단하기 UI를 삽입합니다.
