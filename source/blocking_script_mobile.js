@@ -95,6 +95,36 @@ jQuery(function($){
                                         .replace("#", "") + "&blocking.type=nick&blocking.page=true"; // 회원 차단 목록 페이지로 이동
         });
 
+        // 키워드 입력 창 인젝트
+        if (type === keyword) {
+            var inputForm = $('<div class="txt_result" style=""><input type="text" id="inputKeyword" placeholder="차단할 키워드 입력"><button id="addKeyword">추가</button></div>');
+            var inputKeyword = inputForm.find('#inputKeyword');
+            var btnKeyword = inputForm.find('#addKeyword');
+    
+            inputForm.css('padding', '17px 0');
+    
+            inputKeyword.css('border', 'none');
+            inputKeyword.css('background', '#f0f0f0');
+            inputKeyword.css('padding', '8px');
+            inputKeyword.css('border-radius', '8px');
+    
+            btnKeyword.css('background', '#03c75a');
+            btnKeyword.css('color', '#fff');
+            btnKeyword.css('padding', '8px 10px');
+            btnKeyword.css('border-radius', '8px');
+            btnKeyword.css('margin-left', '8px');
+
+            btnKeyword.on('click', function(event) {
+                pushBlockItem(keyword, cafeid, inputKeyword.val());
+                setTimeout(() => {
+                    location.reload(true);
+                }, 500);
+            });
+    
+            listContainer.prepend(inputForm);
+
+        }
+
         getBlockList(function(data) {
             drawBlockList(data, type, cafeid);
         });
