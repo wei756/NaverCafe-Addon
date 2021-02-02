@@ -172,7 +172,12 @@ jQuery(function($){
                 item.find('.nick').text(timestamp.toLocaleDateString('ko-KR')); // 차단날짜
             }
             item.find('.remove').on("click", function(event) {
-                var targetElement = (event.target || event.srcElement).parentElement.parentElement;
+                var targetElement = (event.target || event.srcElement);
+                if (targetElement.classList.contains('num')) {
+                    targetElement = targetElement.parentElement.parentElement;
+                } else {
+                    targetElement = targetElement.parentElement;
+                }
                 
                 var cafeid = targetElement.getAttribute('data-cafeid');
                 var id = targetElement.getAttribute('data-id');
@@ -194,7 +199,7 @@ jQuery(function($){
                     }
                 }
                 var msgStr = " 님을 차단 해제하시겠습니까?";
-                if (type == keyword) {
+                if (type == keyword && value != null) {
                     var iga = "을";
                     var lastChar = value.charCodeAt(value.length - 1);
                     if (lastChar >= 44032 && lastChar <= 55215 && (lastChar - 44032) % 28 == 0) {
@@ -204,7 +209,9 @@ jQuery(function($){
                 }
                 if(confirm(value + msgStr)) {
                     removeBlockItem(type, cafeid, key, value);
-                    location.reload(true);
+                    setTimeout(() => {
+                        location.reload(true);
+                    }, 500);
                 }
             });
             
