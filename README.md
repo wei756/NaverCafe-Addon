@@ -41,6 +41,7 @@
 - \[PC/모바일\]특정 키워드가 포함된 글제목/댓글 차단
 
 ![특정 키워드가 포함된 글제목/댓글 차단](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn3.png)
+![특정 키워드가 포함된 글제목/댓글 차단(모바일)](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn3-m3.png)
 
 <br>
 
