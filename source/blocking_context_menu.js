@@ -70,7 +70,7 @@ function pushBlockItem(type, cafeid = '-', keyword = '', id = '') {
         }
 
 
-        chrome.storage.local.set(items, function() { 
+        chrome.storage.sync.set(items, function() { 
             //alert(data + " pushed!");
         });
 
@@ -92,7 +92,7 @@ function indexBlockItem(arr, cafeid, key, value) {
  * @param {function} callback 콜백 함수
  */
 function getBlockList(callback) {
-    chrome.storage.local.get(null, function(items) {
+    chrome.storage.sync.get(null, function(items) {
         //console.log("items: " + JSON.stringify(items));
         callback(items);
     });
