@@ -108,81 +108,36 @@ jQuery(function($){
      * @param {string} type 종류
      */
     function drawBlockList(data, type, cafeid) {
-        var main_area = document.querySelector("#main-area");
-        var section = main_area.querySelector(".article-board.article_profile");
-        
-        
-        var table = section.querySelector("table > tbody");
-        table.innerHTML = "";
+        var table = $("#main-area .article-board.article_profile table > tbody");
+        table.html('');
 
-        var list = data["" + type];
+        var list = data[type];
         var le = list.length;
 
         for(var i = 0; i < le; i++) {
             if (list[i]['cafeid'] !== '-' && cafeid != list[i]['cafeid']) { // 타 카페 차단
                 continue;
             }
-            var item = document.createElement("tr");
+            var item = $('<tr><td class="td_article"><div class="board-number"><div class="inner_number"></div></div><div class="board-list"><div class="inner_list"><a href="#" class="title_txt" target="_parent"></a></div></div></td><td class="td_name"></td><td class="td_date"></td><td class="td_view"></td></tr>');
 
-            item.setAttribute('data-cafeid', list[i]['cafeid']); // 카페 id
+            item.attr('data-cafeid', list[i]['cafeid']); // 카페 id
 
             if (type === nid) {
-                item.setAttribute('data-id', list[i]['id']); // 회원 id
-                item.setAttribute('data-nickname', list[i]['nickname']); // 회원 닉네임
+                item.attr('data-id', list[i]['id']); // 회원 id
+                item.attr('data-nickname', list[i]['nickname']); // 회원 닉네임
             } else {
-                item.setAttribute('data-keyword', list[i]['keyword']); // 키워드
+                item.attr('data-keyword', list[i]['keyword']); // 키워드
             }
 
-            // title
-            var tdTitle = document.createElement("td");
-            tdTitle.className = "td_article";
-            var divNum = document.createElement("div");
-            divNum.className = "board-number";
-            var divInnerNum = document.createElement("div");
-            divInnerNum.className = "inner_number";
-            var divList = document.createElement("div");
-            divList.className = "board-list";
-            var divInnerList = document.createElement("div");
-            divInnerList.className = "inner_list";
-            var aList = document.createElement("a");
-            aList.className = "title_txt";
-            aList.setAttribute("target", "_parent");
-            aList.href = "#";
+            item.find('.inner_number').text(list[i]['cafeid']); // 카페 id
 
-            // name
-            var tdName = document.createElement("td");
-            tdName.className = "td_name";
-
-            // date
-            var tdDate = document.createElement("td");
-            tdDate.className = "td_date";
-
-            // view
-            var tdView = document.createElement("td");
-            tdView.className = "td_view";
-
-
-            divInnerList.appendChild(aList);
-
-            divNum.appendChild(divInnerNum);
-            divList.appendChild(divInnerList);
-
-            tdTitle.appendChild(divNum);
-            tdTitle.appendChild(divList);
-
-            item.appendChild(tdTitle);
-            item.appendChild(tdName);
-            item.appendChild(tdDate);
-            item.appendChild(tdView);
-
-            table.appendChild(item);
-
-            divInnerNum.append(list[i]['cafeid']); // 카페 id
+            var aList = item.find('a.title_txt');
+            var tdDate = item.find('td.td_date');
+            var tdView = item.find('td.td_view');
 
             if (type === nid) {
-                aList.append(list[i]['nickname'] + '(' + list[i]['id'] +')'); // 회원 id
-                aList.setAttribute('onclick', "ui(event, '" + list[i]['id'] + "',3,'" + list[i]['nickname'] + "','" + list[i]['cafeid'] + "','me', 'false', 'true', '', 'false', '0'); return false;"); // 드롭다운 메뉴
-            
+                aList.text(list[i]['nickname'] + '(' + list[i]['id'] +')'); // 회원 id
+                aList.attr('onclick', "ui(event, '" + list[i]['id'] + "',3,'" + list[i]['nickname'] + "','" + list[i]['cafeid'] + "','me', 'false', 'true', '', 'false', '0'); return false;"); // 드롭다운 메뉴
             }
             else {
                 aList.append(list[i]['keyword']); // 키워드
@@ -191,18 +146,15 @@ jQuery(function($){
             var now = Date.now();
             var timestamp = new Date(list[i]['timestamp']);
             if (Math.floor(now / (1000 * 60 * 60 * 24)) === Math.floor(timestamp / (1000 * 60 * 60 * 24))) { // 오늘이면
-                tdDate.append(timestamp.toLocaleTimeString('it-IT')); // 차단시각
+                tdDate.text(timestamp.toLocaleTimeString('it-IT')); // 차단시각
             } else {
-                tdDate.append(timestamp.toLocaleDateString('ko-KR')); // 차단날짜
+                tdDate.text(timestamp.toLocaleDateString('ko-KR')); // 차단날짜
             }
 
-            var btnRemove = document.createElement("a");
-            btnRemove.className = "remove";
-            btnRemove.append("차단 해제");
-            btnRemove.href = "#";
+            var btnRemove = $('<a href="#" class="remove">차단 해제</a>');
 
-            tdView.appendChild(btnRemove); // 차단 해제
-            btnRemove.addEventListener("click", function(event) {
+            tdView.append(btnRemove); // 차단 해제
+            btnRemove.on("click", function(event) {
                 var targetElement = (event.target || event.srcElement).parentElement.parentElement;
 
                 var cafeid = targetElement.getAttribute('data-cafeid');
@@ -239,6 +191,7 @@ jQuery(function($){
                 }
             });
             
+            table.append(item);
         }
     }
     
@@ -264,7 +217,7 @@ jQuery(function($){
                                 var writerId = writer.getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
 
                                 // 유저 차단
-                                if (indexBlockItem(dataBlock["" + nid], cafeid, 'nickname', nickname) != -1 || indexBlockItem(dataBlock["" + nid], cafeid, 'id', writerId) != -1) { 
+                                if (indexBlockItem(dataBlock[nid], cafeid, 'nickname', nickname) != -1 || indexBlockItem(dataBlock[nid], cafeid, 'id', writerId) != -1) { 
                                     articles[i].innerHTML = "";
                                 } else {
                                     articles[i].addEventListener("click", function(event) { // 유저 차단 UI 삽입
@@ -322,15 +275,15 @@ jQuery(function($){
     function pushBlockItem(type, cafeid = '-', keyword = '', id = '') {
         getBlockList(function(items) {
 
-            if (typeof items["" + type] == "undefined" || items["" + type] == null) { // 차단 목록 생성
+            if (typeof items[type] == "undefined" || items[type] == null) { // 차단 목록 생성
                 items['version'] = 2; // json 버전
-                items["" + type] = new Array(); // 새로운 array
+                items[type] = new Array(); // 새로운 array
             }
 
-            if ((type == nid ? indexBlockItem(items["" + type], cafeid, 'id', id)
-                             : indexBlockItem(items["" + type], cafeid, 'keyword', keyword)) === -1) { // 중복 검사
+            if ((type == nid ? indexBlockItem(items[type], cafeid, 'id', id)
+                             : indexBlockItem(items[type], cafeid, 'keyword', keyword)) === -1) { // 중복 검사
                 if (type == nid) { // 사용자
-                    items["" + type].push({
+                    items[type].push({
                         cafeid: cafeid, 
                         id: id, 
                         nickname: keyword,
@@ -339,7 +292,7 @@ jQuery(function($){
                     alert("'" + keyword + "'(" + id + ") 님이 작성한 글과 댓글을 차단합니다.");
 
                 } else { // 키워드
-                    items["" + type].push({
+                    items[type].push({
                         cafeid: cafeid, 
                         keyword: keyword,
                         timestamp: Date.now(),
@@ -469,7 +422,7 @@ jQuery(function($){
                 var nickname = writerName.innerText.replace(/[ \t]/g, "");
 
                 // 유저 차단
-                if (indexBlockItem(dataBlock["" + nid], cafeid, 'nickname', nickname) != -1 || indexBlockItem(dataBlock["" + nid], cafeid, 'id', writerId) != -1) { 
+                if (indexBlockItem(dataBlock[nid], cafeid, 'nickname', nickname) != -1 || indexBlockItem(dataBlock[nid], cafeid, 'id', writerId) != -1) { 
                     comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
                     comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
                     var blockedCmt = document.createElement("div");

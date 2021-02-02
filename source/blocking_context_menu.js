@@ -40,15 +40,15 @@ const keyword = "keyword";
 function pushBlockItem(type, cafeid = '-', keyword = '', id = '') {
     getBlockList(function(items) {
 
-        if (typeof items["" + type] == "undefined" || items["" + type] == null) { // 차단 목록 생성
+        if (typeof items[type] == "undefined" || items[type] == null) { // 차단 목록 생성
             items['version'] = 2; // json 버전
-            items["" + type] = new Array(); // 새로운 array
+            items[type] = new Array(); // 새로운 array
         }
 
-        if ((type == nid ? indexBlockItem(items["" + type], cafeid, 'id', id)
-                            : indexBlockItem(items["" + type], cafeid, 'keyword', keyword)) === -1) { // 중복 검사
+        if ((type == nid ? indexBlockItem(items[type], cafeid, 'id', id)
+                            : indexBlockItem(items[type], cafeid, 'keyword', keyword)) === -1) { // 중복 검사
             if (type == nid) { // 사용자
-                items["" + type].push({
+                items[type].push({
                     cafeid: cafeid, 
                     id: id, 
                     nickname: keyword,
@@ -57,7 +57,7 @@ function pushBlockItem(type, cafeid = '-', keyword = '', id = '') {
                 alert("'" + keyword + "'(" + id + ") 님이 작성한 글과 댓글을 차단합니다.");
 
             } else { // 키워드
-                items["" + type].push({
+                items[type].push({
                     cafeid: cafeid, 
                     keyword: keyword,
                     timestamp: Date.now(),

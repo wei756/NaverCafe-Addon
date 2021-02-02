@@ -138,7 +138,7 @@ jQuery(function($){
     function drawBlockList(data, type, cafeid) {
         var listContainer = $('<ul class="list_area"></ul>');
 
-        var list = data["" + type];
+        var list = data[type];
         var le = list.length;
         //document.querySelector("#itemCount").innerText = le + " 개의 차단 목록이 있습니다.";
         for(var i = 0; i < le; i++) {
@@ -233,15 +233,15 @@ jQuery(function($){
     function pushBlockItem(type, cafeid = '-', keyword = '', id = '') {
         getBlockList(function(items) {
 
-            if (typeof items["" + type] == "undefined" || items["" + type] == null) { // 차단 목록 생성
+            if (typeof items[type] == "undefined" || items[type] == null) { // 차단 목록 생성
                 items['version'] = 2; // json 버전
-                items["" + type] = new Array(); // 새로운 array
+                items[type] = new Array(); // 새로운 array
             }
 
-            if ((type == nid ? indexBlockItem(items["" + type], cafeid, 'id', id)
-                             : indexBlockItem(items["" + type], cafeid, 'keyword', keyword)) === -1) { // 중복 검사
+            if ((type == nid ? indexBlockItem(items[type], cafeid, 'id', id)
+                             : indexBlockItem(items[type], cafeid, 'keyword', keyword)) === -1) { // 중복 검사
                 if (type == nid) { // 사용자
-                    items["" + type].push({
+                    items[type].push({
                         cafeid: cafeid, 
                         id: id, 
                         nickname: keyword,
@@ -250,7 +250,7 @@ jQuery(function($){
                     alert("'" + keyword + "'(" + id + ") 님이 작성한 글과 댓글을 차단합니다.");
 
                 } else { // 키워드
-                    items["" + type].push({
+                    items[type].push({
                         cafeid: cafeid, 
                         keyword: keyword,
                         timestamp: Date.now(),
@@ -324,7 +324,7 @@ jQuery(function($){
                         var nickname = writer.innerText;
                         var cafeid = article.href.match(/clubid=([0-9]+)/g)[0].replace("clubid=", "");
                         // 유저 차단
-                        if (indexBlockItem(dataBlock["" + nid], cafeid, 'nickname', nickname) != -1 ) { 
+                        if (indexBlockItem(dataBlock[nid], cafeid, 'nickname', nickname) != -1 ) { 
                             articles[i].style.display = "none";
                         }
                     }
@@ -360,7 +360,7 @@ jQuery(function($){
                 var nickname = writer.querySelector("span.name").innerText;
 
                 // 유저 차단
-                if (indexBlockItem(dataBlock["" + nid], cafeid, 'nickname', nickname) != -1) { 
+                if (indexBlockItem(dataBlock[nid], cafeid, 'nickname', nickname) != -1) { 
                     hideComment(comments[i], "차단된 회원의 댓글입니다.");
     
                 }

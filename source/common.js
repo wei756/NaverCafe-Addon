@@ -133,12 +133,12 @@ function getBlockList(callback) {
  */
 function removeBlockItem(type, cafeid, key, value) {
     getBlockList(function(items) {
-        if (typeof items["" + type] == "undefined" || items["" + type] == null) {
+        if (typeof items[type] == "undefined" || items[type] == null) {
             alert("차단하지 않은 " + (type == nid ? "사용자" : "키워드") + "입니다. (" + data + ")");
         } else {
-            var ind = indexBlockItem(items["" + type], cafeid, key, value)
+            var ind = indexBlockItem(items[type], cafeid, key, value)
             if (ind != -1) { // 존재하는지 여부 검사
-                items["" + type].splice(ind, 1);
+                items[type].splice(ind, 1);
 
                 var msgStr = " 님을 차단 해제하였습니다.";
                 if (type == keyword) {
