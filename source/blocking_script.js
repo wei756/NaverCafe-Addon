@@ -393,7 +393,7 @@ jQuery(function($){
             }
 
             if (typeof items['version'] == "undefined" || items['version'] < 2) {
-                console.log('tr');
+
                 items['version'] = 2;
 
                 var l = items[nid].length;
