@@ -473,13 +473,9 @@ jQuery(function($){
             element.querySelector(".comment_area > .comment_box").style.display = 'none';
     
             // 메시지 표시
-            var blockedCmt = document.createElement("div");
-            blockedCmt.className = "comment_box";
-            var blockedP = document.createElement("p");
-            blockedP.className = "comment_deleted";
-            blockedP.append(message);
-            blockedCmt.appendChild(blockedP);
-            element.querySelector(".comment_area").appendChild(blockedCmt);
+            var blockedMsg = $('<div class="comment_box"><p class="comment_deleted"><span></span></p></div>')
+            blockedMsg.find('.comment_deleted > span').text(message);
+            $(element).find(".comment_area").append(blockedMsg);
 
         }
     }
