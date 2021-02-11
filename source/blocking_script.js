@@ -423,15 +423,7 @@ jQuery(function($){
 
                 // 유저 차단
                 if (indexBlockItem(dataBlock[nid], cafeid, 'nickname', nickname) != -1 || indexBlockItem(dataBlock[nid], cafeid, 'id', writerId) != -1) { 
-                    comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
-                    comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
-                    var blockedCmt = document.createElement("div");
-                    blockedCmt.className = "comment_box";
-                    var blockedP = document.createElement("p");
-                    blockedP.className = "comment_deleted";
-                    blockedP.append("차단된 회원의 댓글입니다.");
-                    blockedCmt.appendChild(blockedP);
-                    comments[i].querySelector(".comment_area").appendChild(blockedCmt);
+                    hideComment(comments[i], "차단된 회원의 댓글입니다.");
     
                 } else {
                     comments[i].addEventListener("click", function(event) { // 유저 차단 UI 삽입
@@ -458,16 +450,8 @@ jQuery(function($){
                 if (!isEmpty(dataBlock.keyword)) { 
                     dataBlock.keyword.forEach(element => {
                         if (content.indexOf(element['keyword']) != -1 && !isEmpty(comments[i].querySelector(".comment_area > .comment_thumb"))) {
-                            comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_thumb"));
-                            comments[i].querySelector(".comment_area").removeChild(comments[i].querySelector(".comment_area > .comment_box"));
-                            var blockedCmt = document.createElement("div");
-                            blockedCmt.className = "comment_box";
-                            var blockedP = document.createElement("p");
-                            blockedP.className = "comment_deleted";
-                            blockedP.append("차단된 키워드가 포함된 댓글입니다.");
-                            blockedCmt.appendChild(blockedP);
-                            comments[i].querySelector(".comment_area").appendChild(blockedCmt);
-                        }
+                            hideComment(comments[i], "차단된 키워드가 포함된 댓글입니다.");
+                            }
                     });
                 }
 
@@ -475,6 +459,30 @@ jQuery(function($){
 
         }
     };
+
+    /** 
+     * @description 댓글을 숨깁니다.
+     * @param {object} element 숨길 댓글의 element
+     * @param {string} message 숨긴 댓글에 표시할 메시지
+     */
+    function hideComment(element, message = '숨겨진 댓글입니다.') {
+        if (element.querySelectorAll(".comment_area").length > 0 &&
+            element.querySelector(".comment_area > .comment_box").style.display !== 'none') { // 댓글 element 인지 확인 && 이미 차단되었는지 확인
+            //요소 숨김
+            element.querySelector(".comment_area > .comment_thumb").style.display = 'none';
+            element.querySelector(".comment_area > .comment_box").style.display = 'none';
+    
+            // 메시지 표시
+            var blockedCmt = document.createElement("div");
+            blockedCmt.className = "comment_box";
+            var blockedP = document.createElement("p");
+            blockedP.className = "comment_deleted";
+            blockedP.append(message);
+            blockedCmt.appendChild(blockedP);
+            element.querySelector(".comment_area").appendChild(blockedCmt);
+
+        }
+    }
 
     var target_cafeid = "";
     var target_nickname = "";
