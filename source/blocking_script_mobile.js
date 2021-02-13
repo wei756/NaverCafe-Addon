@@ -389,7 +389,8 @@ jQuery(function($){
      * @param {string} message 숨긴 댓글에 표시할 메시지
      */
     function hideComment(element, message = '숨겨진 댓글입니다.') {
-        if (element.querySelectorAll(".lst_wp").length > 0) { // 댓글 element 인지 확인
+        if (element.querySelectorAll(".lst_wp").length > 0 &&
+            element.querySelectorAll(".txt.blocked").length === 0) { // 댓글 element 인지 확인 && 이미 차단되었는지 확인
             //요소 숨김
             element.querySelector(".lst_wp > .thumb_area").style.display = 'none';
             element.querySelector(".lst_wp > .date_area").style.display = 'none';
@@ -401,10 +402,27 @@ jQuery(function($){
             element.querySelector(".CommentListItemMenuLayer").style.display = 'none';
     
             // 메시지 표시
-            var blockedP = document.createElement("p");
-            blockedP.className = "txt del blocked";
-            blockedP.append(message);
-            element.querySelector(".lst_wp").appendChild(blockedP);
+            var blockedMsg = $('<p class="txt del blocked"><span></span> <a href="#" style="color: #25a723;">내용 보기</a></p>');
+            
+            blockedMsg.find('a').on('click', function(event) {
+                event.preventDefault();
+                var targetElement = (event.target || event.srcElement);
+                    targetElement = targetElement.parentElement.parentElement.parentElement;
+
+                    targetElement.querySelector(".lst_wp > .thumb_area").style.display = '';
+                    targetElement.querySelector(".lst_wp > .date_area").style.display = '';
+                    targetElement.querySelector(".lst_wp > .txt").style.display = '';
+                    if (targetElement.querySelector(".lst_wp > .image_section") != null)
+                        targetElement.querySelector(".lst_wp > .image_section").style.display = '';
+                    if (targetElement.querySelector(".lst_wp > .u_cbox_sticker_section") != null)
+                        targetElement.querySelector(".lst_wp > .u_cbox_sticker_section").style.display = '';
+                    targetElement.querySelector(".CommentListItemMenuLayer").style.display = '';
+                    
+                    targetElement.querySelector(".txt.blocked").style.display = 'none';
+            });
+
+            blockedMsg.find('span').text(message);
+            $(element).find('.lst_wp').append(blockedMsg);
 
         }
     }
