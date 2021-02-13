@@ -467,15 +467,26 @@ jQuery(function($){
      */
     function hideComment(element, message = '숨겨진 댓글입니다.') {
         if (element.querySelectorAll(".comment_area").length > 0 &&
-            element.querySelector(".comment_area > .comment_box").style.display !== 'none') { // 댓글 element 인지 확인 && 이미 차단되었는지 확인
+            element.querySelectorAll(".comment_box.deleted").length === 0) { // 댓글 element 인지 확인 && 이미 차단되었는지 확인
             //요소 숨김
             element.querySelector(".comment_area > .comment_thumb").style.display = 'none';
             element.querySelector(".comment_area > .comment_box").style.display = 'none';
     
             // 메시지 표시
-            var blockedMsg = $('<div class="comment_box"><p class="comment_deleted"><span></span></p></div>')
+            var blockedMsg = $('<div class="comment_box deleted"><p class="comment_deleted"><span></span> <a href="#" style="color: #25a723;">내용 보기</a></p></div>');
+
+            blockedMsg.find('.comment_deleted > a').on('click', function(event) {
+                event.preventDefault();
+                var targetElement = (event.target || event.srcElement);
+                    targetElement = targetElement.parentElement.parentElement.parentElement.parentElement;
+                    
+                    targetElement.querySelector(".comment_area > .comment_thumb").style.display = 'block';
+                    targetElement.querySelector(".comment_area > .comment_box").style.display = 'block';
+                    targetElement.querySelector(".comment_box.deleted").style.display = 'none';
+            });
+
             blockedMsg.find('.comment_deleted > span').text(message);
-            $(element).find(".comment_area").append(blockedMsg);
+            $(element).find('.comment_area').append(blockedMsg);
 
         }
     }
