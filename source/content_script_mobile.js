@@ -17,7 +17,7 @@ jQuery(function($){
             var params = getURLParams();
             var cafeId = params["cafeId"];
             var memberId = params["memberId"];
-            if (!isEmpty(memberId)) {
+            if (memberId) {
                 $.ajax({
                     type: "POST",
                     url: "https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberStatus?cafeId=" + cafeId + "&memberId=" + memberId,

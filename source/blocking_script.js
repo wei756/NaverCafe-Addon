@@ -44,7 +44,7 @@ jQuery(function($){
             var isBlocking = params["blocking.page"];
             var pageType = params["blocking.type"];
             var cafeid = params['clubid'];
-            if (!isEmpty(isBlocking)) {
+            if (isBlocking) {
                 isBlocking = isBlocking.replace("#", "");
             }
             if (isBlocking == "true") { // 차단 목록 페이지면
@@ -63,9 +63,9 @@ jQuery(function($){
             var memberId = params["memberid"];
             document.querySelector(".pers_nick_area .p-nick a.m-tcol-c").addEventListener("click", function(event) { // 유저 차단 UI 삽입
                 var targetElement = (event.target || event.srcElement);
-                if (!isEmpty(targetElement)) {
+                if (targetElement) {
                     var targetElement = targetElement.parentElement.parentElement;
-                    if (!isEmpty(targetElement.querySelector(".p-nick > a"))) {
+                    if (targetElement.querySelector(".p-nick > a")) {
                         var _cafeid = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[2].replace("'", "").replace("'", "");
                         var _nickname = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[1].replace("'", "").replace("'", "");
                         var _id = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
@@ -211,7 +211,7 @@ jQuery(function($){
 
                         for(var i = 0; i < le; i++) {
                             var writer = articles[i].querySelector(".p-nick > a");
-                            if (!isEmpty(writer)) {
+                            if (writer) {
                                 var cafeid = writer.getAttribute("onclick").match(/'([^'])+'/g)[2].replace("'", "").replace("'", "");
                                 var nickname = writer.getAttribute("onclick").match(/'([^'])+'/g)[1].replace("'", "").replace("'", "");
                                 var writerId = writer.getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
@@ -222,9 +222,9 @@ jQuery(function($){
                                 } else {
                                     articles[i].addEventListener("click", function(event) { // 유저 차단 UI 삽입
                                         var targetElement = (event.target || event.srcElement);
-                                        if (!isEmpty(targetElement)) {
+                                        if (targetElement) {
                                             var targetElement = targetElement.parentElement;
-                                            if (!isEmpty(targetElement.querySelector(".p-nick > a"))) {
+                                            if (targetElement.querySelector(".p-nick > a")) {
                                                 var _cafeid = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[2].replace("'", "").replace("'", "");
                                                 var _nickname = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[1].replace("'", "").replace("'", "");
                                                 var _id = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
@@ -237,11 +237,11 @@ jQuery(function($){
                             }
 
                             var title = articles[i].querySelector(".board-list .inner_list .article");
-                            if (!isEmpty(title)) {
+                            if (title) {
                                 title = title.innerText;
 
                                 // 키워드 차단
-                                if (!isEmpty(dataBlock.keyword)) { 
+                                if (dataBlock.keyword) { 
                                     dataBlock.keyword.forEach(element => {
                                         if (title.indexOf(element['keyword']) != -1) {
                                             articles[i].innerHTML = "";
@@ -310,11 +310,11 @@ jQuery(function($){
                 doBlock();
                 doBlockComment(items);
                 var cmtUI = document.querySelector(".LayerMore");
-                if (!isEmpty(cmtUI)) {
+                if (cmtUI) {
                     cmtUI.parentNode.removeChild(cmtUI);
                 }
                 var articleUI = document.querySelector(".perid-layer ul");
-                if (!isEmpty(articleUI)) {
+                if (articleUI) {
                     articleUI.parentNode.removeChild(articleUI);
                 }
             });
@@ -416,7 +416,7 @@ jQuery(function($){
         for(var i = 0; i < le; i++) {
             var writerThumb = comments[i].querySelector("a.comment_thumb");
             var writerName = comments[i].querySelector("a.comment_nickname");
-            if (!isEmpty(writerThumb)) {
+            if (writerThumb) {
                 var writerId = writerThumb.href.match(/memberid=([a-z0-9_-]+)/gi)[0].replace("memberid=", "");
                 var cafeid   = writerThumb.href.match(/clubid=([0-9]+)/g)[0].replace("clubid=", "");
                 var nickname = writerName.innerText.replace(/[ \t]/g, "");
@@ -428,9 +428,9 @@ jQuery(function($){
                 } else {
                     comments[i].addEventListener("click", function(event) { // 유저 차단 UI 삽입
                         var targetElement = (event.target || event.srcElement);
-                        if (!isEmpty(targetElement)) {
+                        if (targetElement) {
                             targetElement = targetElement.parentElement;
-                            if (!isEmpty(targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb"))) {
+                            if (targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb")) {
                                 var _cafeid = targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb").href.match(/clubid=([0-9_]+)/g)[0].replace("clubid=", "");
                                 var _nickname = targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_nickname").innerText.replace(/[ \t]/g, "");
                                 var _id = targetElement.parentElement.parentElement.parentElement.querySelector("a.comment_thumb").href.match(/memberid=([a-z0-9_-]+)/gi)[0].replace("memberid=", "");
@@ -444,12 +444,12 @@ jQuery(function($){
             }
 
             var content = comments[i].querySelector(".comment_text_view");
-            if (!isEmpty(content)) {
+            if (content) {
                 content = content.innerText;
                 // 키워드 차단
-                if (!isEmpty(dataBlock.keyword)) { 
+                if (dataBlock.keyword) { 
                     dataBlock.keyword.forEach(element => {
-                        if (content.indexOf(element['keyword']) != -1 && !isEmpty(comments[i].querySelector(".comment_area > .comment_thumb"))) {
+                        if (content.indexOf(element['keyword']) != -1 && comments[i].querySelector(".comment_area > .comment_thumb")) {
                             hideComment(comments[i], "차단된 키워드가 포함된 댓글입니다.");
                             }
                     });
@@ -508,7 +508,7 @@ jQuery(function($){
 
         if (document.querySelector(".perid-layer") != null)
             document.querySelector(".perid-layer").addEventListener("DOMSubtreeModified", function() {
-                if (!isEmpty(document.querySelector(".perid-layer > ul")) && 
+                if (document.querySelector(".perid-layer > ul") && 
                     document.querySelector(".perid-layer > ul").innerHTML.indexOf("blocking") == -1) {
                     var btnBlock = document.createElement("li");
                     var aBlock = document.createElement("a");
@@ -543,7 +543,7 @@ jQuery(function($){
         target_nickname = _nickname;
         target_id = _id;
 
-        if (!isEmpty(element.querySelector(".LayerMore")) && element.querySelector(".LayerMore").innerHTML.indexOf("blocking") == -1) {
+        if (element.querySelector(".LayerMore") && element.querySelector(".LayerMore").innerHTML.indexOf("blocking") == -1) {
             var btnBlock = document.createElement("li");
             btnBlock.className = "layer_item";
             var aBlock = document.createElement("a");
@@ -562,7 +562,7 @@ jQuery(function($){
             });
         }
         element.addEventListener("DOMSubtreeModified", function() {
-            if (!isEmpty(element.querySelector(".LayerMore")) && 
+            if (element.querySelector(".LayerMore") && 
                 element.querySelector(".LayerMore").innerHTML.indexOf("blocking") == -1) {
                 var btnBlock = document.createElement("li");
                 btnBlock.className = "layer_item";

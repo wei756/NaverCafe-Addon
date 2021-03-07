@@ -37,7 +37,7 @@ jQuery(function($){
                 var isBlocking = params["blocking.page"];
                 var pageType = params["blocking.type"];
                 var cafeid = params['cafeId'];
-                if (!isEmpty(isBlocking)) {
+                if (isBlocking) {
                     isBlocking = isBlocking.replace("#", "");
                 }
                 if (isBlocking == "true") { // 차단 목록 페이지면
@@ -320,7 +320,7 @@ jQuery(function($){
                 for(var i = 0; i < le; i++) {
                     var writer = articles[i].querySelector(".user_area .nick span");
                     var article = articles[i].querySelector("a.txt_area");
-                    if (!isEmpty(writer)) {
+                    if (writer) {
                         var nickname = writer.innerText;
                         var cafeid = article.href.match(/clubid=([0-9]+)/g)[0].replace("clubid=", "");
                         // 유저 차단
@@ -330,11 +330,11 @@ jQuery(function($){
                     }
 
                     var title = articles[i].querySelector(".txt_area strong.tit");
-                    if (!isEmpty(title)) {
+                    if (title) {
                         title = title.innerText;
 
                         // 키워드 차단
-                        if (!isEmpty(dataBlock.keyword)) { 
+                        if (dataBlock.keyword) { 
                             dataBlock.keyword.forEach(element => {
                                 if (title.indexOf(element['keyword']) != -1) {
                                     articles[i].style.display = "none";
@@ -355,7 +355,7 @@ jQuery(function($){
         
         for(var i = 0; i < le; i++) {
             var writer = comments[i].querySelector("a.nick");
-            if (!isEmpty(writer)) {
+            if (writer) {
                 var cafeid = window.location.href.match(/cafes\/([0-9]+)/g)[0].replace("cafes\/", "");
                 var nickname = writer.querySelector("span.name").innerText;
 
@@ -367,10 +367,10 @@ jQuery(function($){
             }
 
             var content = comments[i].querySelector("p.txt");
-            if (!isEmpty(content) && content.style.display !== 'none') {
+            if (content && content.style.display !== 'none') {
                 content = content.innerText;
                 // 키워드 차단
-                if (!isEmpty(dataBlock.keyword)) { 
+                if (dataBlock.keyword) { 
                     dataBlock.keyword.forEach(element => {
                         if (content.indexOf(element['keyword']) != -1) {
                             hideComment(comments[i], "차단된 키워드가 포함된 댓글입니다.");

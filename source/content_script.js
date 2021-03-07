@@ -62,7 +62,7 @@ jQuery(function($){
             var params = getURLParams();
             var isLikeIt = params["likeit.page"];
             var timestamp = params["likeit.timestamp"];
-            if (!isEmpty(isLikeIt)) {
+            if (isLikeIt) {
                 isLikeIt = isLikeIt.replace("#", "");
             }
             if (isLikeIt == "true") { // 좋아요한 글 페이지면
@@ -95,7 +95,7 @@ jQuery(function($){
             // 인기글 페이지 로딩
             var params = getURLParams();
             var isBest = params["best"];
-            if (!isEmpty(isBest)) {
+            if (isBest) {
                 isBest = isBest.replace("#", "");
             }
             if (isBest == "true") { // 인기글 페이지면
@@ -401,7 +401,7 @@ jQuery(function($){
             var params = getURLParams();
             var cafeId = params["clubid"];
             var memberId = params["memberid"];
-            if (!isEmpty(memberId)) {
+            if (memberId) {
                 $.ajax({
                     type: "POST",
                     url: "https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberStatus?cafeId=" + cafeId + "&memberId=" + memberId,

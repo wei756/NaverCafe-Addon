@@ -40,18 +40,6 @@ function getURLParams() {
 }
 
 /**
- * 문자열이 빈 문자열인지 체크하여 결과값을 리턴합니다.
- * @param str 체크할 문자열
- */
-function isEmpty(str) {
-        
-    if (typeof str == "undefined" || str == null || str == "")
-        return true;
-    else
-        return false;
-}
-
-/**
  * @description 네이버 아이디
      * @type {string}
     */
