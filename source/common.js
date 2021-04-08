@@ -122,7 +122,7 @@ function getBlockList(callback) {
 function removeBlockItem(type, cafeid, key, value) {
     getBlockList(function(items) {
         if (typeof items[type] == "undefined" || items[type] == null) {
-            alert("차단하지 않은 " + (type == nid ? "사용자" : "키워드") + "입니다. (" + data + ")");
+            alert("차단하지 않은 " + (type == nid ? "사용자" : "키워드") + "입니다. (" + value + ")");
         } else {
             var ind = indexBlockItem(items[type], cafeid, key, value)
             if (ind != -1) { // 존재하는지 여부 검사
