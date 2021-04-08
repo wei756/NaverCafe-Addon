@@ -8,46 +8,36 @@
  * @return {Array} 파라미터
  */
 function getURLParams() {
-    // 파라미터가 담길 배열
-    var param = new Array();
+    const params = [];
     
     try {
         // 현재 페이지의 url
-        var url = decodeURIComponent(location.href);
-        // url이 encodeURIComponent 로 인코딩 되었을때는 다시 디코딩 해준다.
-        url = decodeURIComponent(url);
+        const url = decodeURIComponent(decodeURIComponent(location.href));
     
-        var params;
-        // url에서 '?' 문자 이후의 파라미터 문자열까지 자르기
-        params = url.substring( url.indexOf('?')+1, url.length );
-        // 파라미터 구분자("&") 로 분리
-        params = params.split("&");
+        // url에서 '?' 문자 이후의 파라미터 문자열까지 자르고 파라미터 구분자("&") 로 분리
+        const paramsStr = url.substring( url.indexOf('?')+1, url.length ).split("&");
     
-        // params 배열을 다시 "=" 구분자로 분리하여 param 배열에 key = value 로 담는다.
-        var size = params.length;
-        var key, value;
-        for(var i=0 ; i < size ; i++) {
-            key = params[i].split("=")[0];
-            value = params[i].split("=")[1];
-    
-            param[key] = value;
-        }
+        // paramsStr 배열을 다시 "=" 구분자로 분리하여 param 배열에 key:value 로 담는다.
+        paramsStr.map(param => {
+            const [k, v] = param.split("=");
+            params[k] = v;
+        });
     } catch(err) {
         console.error(err);
     }
     
-    return param;
+    return params;
 }
 
 /**
  * @description 네이버 아이디
-     * @type {string}
-    */
+ * @type {string}
+ */
 const nid = "nid";
 /**
  * @description 키워드
-     * @type {string}
-    */
+ * @type {string}
+ */
 const keyword = "keyword";
 
 initBlockList();
@@ -56,16 +46,16 @@ initBlockList();
  * @description 차단 목록 배열을 생성합니다.
  */
 function initBlockList() {
-    getBlockList(function(items) {
-    
-        if (typeof items[nid] == "undefined" || items[nid] == null) { // 차단 목록 생성
-            items[nid] = new Array(); // 새로운 array
+    getBlockList(items => {
+
+        // 차단 목록 생성
+        if (!items[nid]) {
+            items[nid] = [];
         }
-        if (typeof items[keyword] == "undefined" || items[keyword] == null) { // 차단 목록 생성
-            items[keyword] = new Array(); // 새로운 array
+        if (!items[keyword]) {
+            items[keyword] = [];
         }
-        chrome.storage.sync.set(items, function() { 
-        });
+        chrome.storage.sync.set(items, () => {});
 
     });
 }
@@ -74,13 +64,9 @@ function initBlockList() {
  * @description 새로운 차단 목록 배열을 생성합니다.
  */
 function resetBlockList() {
-    getBlockList(function(items) {
-
-        var list = {darkmode: false, nid: [], keyword: [], version: 2};
-
-        chrome.storage.sync.set(list, function() { 
-        });
-
+    const dummyList = {darkmode: false, nid: [], keyword: [], version: 2};
+    getBlockList(items => {
+        chrome.storage.sync.set(dummyList, () => {});
     });
 }
 
@@ -94,7 +80,9 @@ function resetBlockList() {
 function indexBlockItem(arr, cafeid, key, value) {
     var le = arr.length;
     for (let i = 0; i < le; i++) {
-        if (arr[i]['' + key] != null && (arr[i]['cafeid'] === '-' || arr[i]['cafeid'] === cafeid) && arr[i]['' + key] === value) {
+        if (arr[i]['' + key] != null && 
+            (arr[i]['cafeid'] === '-' || arr[i]['cafeid'] === cafeid) && 
+            arr[i]['' + key] === value) {
             return i;
         }
     }
@@ -106,10 +94,7 @@ function indexBlockItem(arr, cafeid, key, value) {
  * @param {function} callback 콜백 함수
  */
 function getBlockList(callback) {
-    chrome.storage.sync.get(null, function(items) {
-        //console.log("items: " + JSON.stringify(items));
-        callback(items);
-    });
+    chrome.storage.sync.get(null, callback);
 }
 
 /** 
@@ -120,25 +105,24 @@ function getBlockList(callback) {
  * @param {string} value 제거할 데이터 값
  */
 function removeBlockItem(type, cafeid, key, value) {
-    getBlockList(function(items) {
-        if (typeof items[type] == "undefined" || items[type] == null) {
-            alert("차단하지 않은 " + (type == nid ? "사용자" : "키워드") + "입니다. (" + value + ")");
-        } else {
-            var ind = indexBlockItem(items[type], cafeid, key, value)
-            if (ind != -1) { // 존재하는지 여부 검사
-                items[type].splice(ind, 1);
+    const msgNotBlocked = "차단하지 않은 " + (type == nid ? "사용자" : "키워드") + "입니다. (" + value + ")";
+    getBlockList(items => {
+        if (!items[type]) {
+            return alert(msgNotBlocked);
+        }
+        const ind = indexBlockItem(items[type], cafeid, key, value);
+        if (ind != -1) { // 존재하는지 여부 검사
+            items[type].splice(ind, 1);
 
-                const msgStr = 
-                    type == keyword ? 
-                    getEul(value) + " 차단 해제하였습니다." : 
-                    " 님을 차단 해제하였습니다.";
-                alert(value + msgStr);
-                
-                chrome.storage.sync.set(items, function() { 
-                });
-            } else {
-                alert("차단하지 않은 " + (type == nid ? "사용자" : "키워드") + "입니다. (" + value + ")");
-            }
+            const msgStr = 
+                type == keyword ? 
+                getEul(value) + " 차단 해제하였습니다." : 
+                " 님을 차단 해제하였습니다.";
+            alert(value + msgStr);
+            
+            chrome.storage.sync.set(items, () => {});
+        } else {
+            alert(msgNotBlocked);
         }
     });
 }
