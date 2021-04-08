@@ -198,15 +198,10 @@ jQuery(function($){
                         value = id;
                     }
                 }
-                var msgStr = " 님을 차단 해제하시겠습니까?";
-                if (type == keyword && value != null) {
-                    var iga = "을";
-                    var lastChar = value.charCodeAt(value.length - 1);
-                    if (lastChar >= 44032 && lastChar <= 55215 && (lastChar - 44032) % 28 == 0) {
-                        iga = "를";
-                    }
-                    msgStr = iga + " 차단 해제하시겠습니까?";
-                }
+                const msgStr = 
+                    type == keyword && value != null ? 
+                    getEul(value) + " 차단 해제하시겠습니까?" : 
+                    " 님을 차단 해제하시겠습니까?";
                 if(confirm(value + msgStr)) {
                     removeBlockItem(type, cafeid, key, value);
                     setTimeout(() => {

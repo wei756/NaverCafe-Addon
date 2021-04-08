@@ -128,15 +128,10 @@ function removeBlockItem(type, cafeid, key, value) {
             if (ind != -1) { // 존재하는지 여부 검사
                 items[type].splice(ind, 1);
 
-                var msgStr = " 님을 차단 해제하였습니다.";
-                if (type == keyword) {
-                    var iga = "을";
-                    var lastChar = value.charCodeAt(value.length - 1);
-                    if (lastChar >= 44032 && lastChar <= 55215 && (lastChar - 44032) % 28 == 0) {
-                        iga = "를";
-                    }
-                    msgStr = iga + " 차단 해제하였습니다.";
-                }
+                const msgStr = 
+                    type == keyword ? 
+                    getEul(value) + " 차단 해제하였습니다." : 
+                    " 님을 차단 해제하였습니다.";
                 alert(value + msgStr);
                 
                 chrome.storage.sync.set(items, function() { 
@@ -146,4 +141,18 @@ function removeBlockItem(type, cafeid, key, value) {
             }
         }
     });
+}
+
+/** 
+ * @description 문자열 뒤에 알맞는 조사(을/를)를 반환합니다.
+ * @param {string} str 문자열
+ */
+function getEul(str) {
+    const lastChar = str.charCodeAt(str.length - 1); // str의 마지막 글자
+
+    if (lastChar >= 0xAC00 && lastChar <= 0xD7AF) { // 한글이면
+        return ((lastChar - 44032) % 28 ? '을' : '를');
+    } else { // 한글 아니면
+        return "을(를)";
+    }
 }
