@@ -140,3 +140,27 @@ function getEul(str) {
         return "을(를)";
     }
 }
+
+/**
+ * 회원의 활동정지 상태를 반환합니다.
+ * @param {string} cafeid 카페 id
+ * @param {string} memberid 회원 id
+ * @param {function} callback 
+ */
+function getActivityStop({ cafeid, memberid, callback }) {
+    $.ajax({
+        type: 'POST',
+        url: `https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberStatus?cafeId=${cafeid}&memberId=${memberid}`,
+        dataType: 'json',
+        xhrFields: {
+            withCredentials: true
+        },
+        crossDomain: true,
+        success: data => {
+            callback(data.message.status == '200' && data.message.result.activityStop);
+        },
+        error: xhr => {
+            callback(false);
+        }
+    });
+}

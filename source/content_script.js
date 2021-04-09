@@ -381,34 +381,21 @@ jQuery(function($){
     }
 
     /**
-     * 회원이 활동정지 상태인지 확인하고 그 상태를 출력합니다.
+     * @description 현재 보고 있는 회원이 활동정지 상태인지 확인하고 그 상태를 프로필에 표시합니다.
      */
     function checkActivityStop() {
-        if (location.href.indexOf('CafeMemberNetworkView.nhn') != -1) {
-            // 프로필 페이지 로딩
-            var params = getURLParams();
-            var cafeId = params['clubid'];
-            var memberId = params['memberid'];
-            if (memberId) {
-                $.ajax({
-                    type: 'POST',
-                    url: 'https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberStatus?cafeId=' + cafeId + '&memberId=' + memberId,
-                    dataType: 'json',
-                    xhrFields: {
-                        withCredentials: true
-                    },
-                    crossDomain: true,
-                    success: data => {
-                        if (data.message.status == '200' && data.message.result.activityStop) {
-                            var stoppedElement = document.createElement('span');
-                            stoppedElement.append('(활동 정지됨)');
-                            document.querySelector('.pers_nick_area .p-nick a.m-tcol-c').appendChild(stoppedElement);
-                        }
-                    },
-                    error: xhr => {
+        if (location.href.indexOf('CafeMemberNetworkView.nhn') !== -1) { // 프로필 페이지
+            const params = getURLParams();
+            const { clubid, memberid } = params;
+            getActivityStop({
+                cafeid: clubid, 
+                memberid: memberid,
+                callback: stopped => {
+                    if (stopped) {
+                        document.querySelector('.pers_nick_area .p-nick a.m-tcol-c').innerHTML += '<span>(활동 정지됨)</span>';
                     }
-                })
-            }
+                }
+            });
         }
     }
 
