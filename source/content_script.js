@@ -228,7 +228,6 @@ jQuery(function($){
         }
 
         const articles = $('<div>' + data + '</div>').children('li');
-        console.log(articles[articles.length - 1].getAttribute('data-timestamp'));
         
         main_area.querySelector('.prev-next > .pgR').addEventListener('click', () => { // 다음 페이지
             location.href = location.href.replace('&likeit.timestamp=', '&likeit.dump=')
