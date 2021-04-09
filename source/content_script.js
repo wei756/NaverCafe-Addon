@@ -61,7 +61,7 @@ jQuery(function($){
             const isLikeIt = params['likeit.page'];
             const timestamp = params['likeit.timestamp'];
             if (isLikeIt && isLikeIt.replace('#', '') === 'true') { // 좋아요한 글 페이지면
-                loadLikeIt(timestamp ? '' : timestamp);
+                loadLikeIt(timestamp ? timestamp : '');
             }
         });
     }
@@ -123,8 +123,9 @@ jQuery(function($){
             '20', 
             timestamp, 
             data => {
-                drawLikeItArticles(data, clubid, memberid, '20', timestamp);
-        });
+                dispLikeItArticles(data, clubid, memberid, '20', timestamp);
+            }
+        );
     }
 
     /** 
@@ -205,92 +206,79 @@ jQuery(function($){
 
     /** 
      * @description 좋아요한 글 목록을 출력합니다.
-     * @param {JSON} data 좋아요한 글 JSON
+     * @param {string} data 좋아요한 글 html
      * @param {string} cafeid 카페 id
      * @param {string} memberid 회원 id
      * @param {string} count 출력할 개수
      * @param {string} timestamp 타임스탬프
      */
-    function drawLikeItArticles(data, cafeid, memberid, count, timestamp) {
-        var article_html = '<tr><td class="td_article"><div class="board-number"><div class="inner_number">null</div></div><div class="board-list"><div class="inner_list"><a class="title_txt" target="_parent" href="#">null</a><span class="list-i-img"><i class="blind">사진</i></span><span class="list-i-poll"><i class="blind">투표</i></span><span class="list-i-link"><i class="blind">링크</i></span><span class="list-i-upload"><i class="blind">파일</i></span><a href="#" target="_parent" class="cmt">[<em>null</em>]</a><span class="list-i-new"><i class="blind">new</i></span></div></div></td><td class="td_name"><div class="pers_nick_area"><table role="presentation" cellspacing="0"><tbody><tr><td class="p-nick"><a href="#" class="m-tcol-c"><div class="ellipsis m-tcol-c">null</div></a></td></tr></tbody></table></div></td><td class="td_date">null</td><td class="td_view">null</td></tr>';
-        var prevnext_html = '<a href="#" class="pgL"><span class="m-tcol-c">처음으로</span></a><a href="#" class="pgR"><span class="m-tcol-c">다음</span></a>';
-        var main_area = document.querySelector('#main-area');
-        var section = main_area.querySelector('.article-board.article_profile');
+    function dispLikeItArticles(data, cafeid, memberid, count, timestamp) {
+        const prevnext_html = '<a href="#" class="pgL"><span class="m-tcol-c">처음으로</span></a><a href="#" class="pgR"><span class="m-tcol-c">다음</span></a>';
+        const main_area = document.querySelector('#main-area');
+        const section = main_area.querySelector('.article-board.article_profile');
         
-        //main_area.children('.prev-next').html('');
         main_area.querySelector('.prev-next').innerHTML = prevnext_html;
         if (!timestamp) { // 첫페이지
             main_area.querySelector('.prev-next > .pgL').remove();
         } else {
             main_area.querySelector('.prev-next > .pgL').addEventListener('click', () => { // 처음으로
-                getLikeItArticles(cafeid, memberid, count, '');
+                location.href = location.href.replace('&likeit.timestamp=', '&likeit.dump=')
+                                            .replace('#', '') + '&likeit.timestamp=';
             });
         }
-        
-        var table = section.querySelector('table > tbody');
-        table.innerHTML = "<div id='data'></div>";
-        var tmpData = table.querySelector('#data');
-        tmpData.innerHTML = data;
 
-        var articles, articlelinks, titles, comments, nicks, dates, views;
-        articles = tmpData.querySelectorAll('li');
-        articlelinks = tmpData.querySelectorAll('._articleListItem');
-        titles = tmpData.querySelectorAll('._articleListItem > strong.tit');
-        comments = tmpData.querySelectorAll('.link_comment > em.num');
-        nicks = tmpData.querySelectorAll('._articleListItem > .user_area > span.nick > span.ellip');
-        dates = tmpData.querySelectorAll('._articleListItem > .user_area > span.time');
-        views = tmpData.querySelectorAll('._articleListItem > .user_area > span.no');
-        var le = articles.length;
+        const articles = $('<div>' + data + '</div>').children('li');
+        console.log(articles[articles.length - 1].getAttribute('data-timestamp'));
         
         main_area.querySelector('.prev-next > .pgR').addEventListener('click', () => { // 다음 페이지
             location.href = location.href.replace('&likeit.timestamp=', '&likeit.dump=')
-                                        .replace('#', '') + '&likeit.timestamp=' + articles[le - 1].getAttribute('data-timestamp');
+                                        .replace('#', '') + '&likeit.timestamp=' + articles[articles.length - 1].getAttribute('data-timestamp');
         });
 
-        for(var i = le - 1; i >= 0; i--) {
-            table.innerHTML = article_html + table.innerHTML;
+        const table = section.querySelector('table > tbody');
+        table.innerHTML += geneLikeItArticles(articles, cafeid);
+    }
 
-            var article_id = articlelinks[i].getAttribute('data-article-id');
-            var new_icon = articlelinks[i].querySelectorAll('.icon_new_txt').length;
-            var img_icon = articles[i].querySelectorAll('.thumb_area').length;
-            var poll_icon = articles[i].querySelectorAll('.icon_poll').length;
-            var link_icon = articlelinks[i].querySelectorAll('.icon_link').length;
-            var upload_icon = articles[i].querySelectorAll('.icon_file').length;
+    /** 
+     * @description 인기글 목록 HTML을 생성합니다.
+     * @param {Object} articles
+     */
+    function geneLikeItArticles(articles, cafeid) {
+        var innerHtml = '';
+        articles.each((i, itemData) => {
+            const item = $(itemData);
 
-            table.querySelector('.inner_number').innerText = article_id; // 게시글 id
+            const articleListItem = item.find('._articleListItem');
 
-            table.querySelector('.title_txt').innerHTML = titles[i].innerHTML; // 게시글 제목
-            table.querySelector('.title_txt').href = 'https://cafe.naver.com/ArticleRead.nhn?clubid=' + cafeid + '&articleid=' + article_id; // 게시글 제목 링크
-            if (comments[i].innerText != 0) {
-                table.querySelector('.cmt > em').innerText = comments[i].innerText; // 게시글 댓글수
-                table.querySelector('.cmt').href = 'https://cafe.naver.com/ArticleRead.nhn?clubid=' + cafeid + '&articleid=' + article_id; // 게시글 댓글 링크
-            } else { // 댓글이 없으면
-                table.querySelector('.cmt').remove();
-            }
-            if (new_icon == 0) {// new 아이콘이 없으면
-                table.querySelector('.list-i-new').remove();
-            }
-            if (img_icon == 0) {// 이미지가 없으면
-                table.querySelector('.list-i-img').remove();
-            }
-            if (poll_icon == 0) {// 투표가 없으면
-                table.querySelector('.list-i-poll').remove();
-            }
-            if (link_icon == 0) {// 링크가 없으면
-                table.querySelector('.list-i-link').remove();
-            }
-            if (upload_icon == 0) {// 파일이 없으면
-                table.querySelector('.list-i-upload').remove();
-            }
+            const articleId = articleListItem.attr('data-article-id');
+            const articleUrl = `https://cafe.naver.com/ArticleRead.nhn?clubid=${cafeid}&articleid=${articleId}`;
+            const title = articleListItem.find('strong.tit').text();
+            const imgIcon = item.find('.thumb_area').length ? '<span class="list-i-img"><i class="blind">사진</i></span>' : '';
+            const pollIcon = item.find('.icon_poll').length ? '<span class="list-i-poll"><i class="blind">투표</i></span>' : '';
+            const linkIcon = articleListItem.find('.icon_link').length ? '<span class="list-i-link"><i class="blind">링크</i></span>' : '';
+            const uploadIcon = item.find('.icon_file').length ? '<span class="list-i-upload"><i class="blind">파일</i></span>' : '';
+            const newIcon = articleListItem.find('.icon_new_txt').length ? '<span class="list-i-new"><i class="blind">new</i></span>' : '';
 
-            table.querySelector('.td_name .p-nick div').innerText = nicks[i].innerText; // 게시글 작성자
+            const comment = item.find('.link_comment > em.num').text();
+            const nickname = articleListItem.find('.user_area > span.nick > span.ellip').text();
+            const date = articleListItem.find('.user_area > span.time').text();
+            const view = articleListItem.find('.user_area > span.no').text();
 
-            table.querySelector('.td_date').innerText = dates[i].innerText; // 게시글 작성일
-
-            table.querySelector('.td_view').innerText = views[i].innerText; // 게시글 조회
-            
-        }
-        table.querySelector('#data').remove();
+            innerHtml += `
+            <tr>
+                <td class="td_article">
+                    <div class="board-number"><div class="inner_number">${articleId}</div></div>
+                    <div class="board-list"><div class="inner_list">
+                        <a class="title_txt" target="_parent" href="${articleUrl}">${title}</a>${imgIcon}${pollIcon}${linkIcon}${uploadIcon}
+                        <a href="${articleUrl + '&commentFocus=true'}" target="_parent" class="cmt">[<em>${comment}</em>]</a>${newIcon}
+                    </div></div>
+                </td>
+                <td class="td_name"><div class="pers_nick_area"><table role="presentation" cellspacing="0"><tbody><tr><td class="p-nick"><a href="#" class="m-tcol-c"><div class="ellipsis m-tcol-c">${nickname}</div></a></td></tr></tbody></table></div></td>
+                <td class="td_date">${date}</td>
+                <td class="td_view">${view}</td>
+            </tr>`;
+        });
+        return innerHtml;
     }
     
     /** 
