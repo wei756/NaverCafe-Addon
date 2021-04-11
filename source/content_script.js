@@ -128,6 +128,7 @@ jQuery(function($){
         );
     }
 
+    let stateShowBestThumb = true;
     /** 
      * @description 인기글 목록을 불러옵니다.
      */
@@ -139,17 +140,36 @@ jQuery(function($){
         main_area.querySelector('ul.list_sub_tab > li.best').classList.add('on');
         main_area.querySelector('ul.list_sub_tab > li.best').setAttribute('aria-selected', 'true');
 
-        main_area.querySelector('div.list-style').remove();
-        main_area.querySelector('table.board-box > tbody').remove();
+        $('div.list-style .sort_area *').remove();
+        const thumb_show = $('<div class="check_box"><input type="checkbox" id="thumb_show"><label for="thumb_show">썸네일 미리보기</label></div>');
+        $('div.list-style .sort_area').append(thumb_show);
 
+        thumb_show.find('#thumb_show').on('change', e => {
+            const val = !stateShowBestThumb;
+            setShowBestThumb(val, () => {
+                setStateShowBestThumb(val);
+            });
+        });
+        main_area.querySelector('table.board-box > tbody').remove();
+        
         const params = getURLParams();
         const clubid = params['clubid'];
         getBestArticles(clubid, data => {
             dispBestArticles(data);
+            isShowBestThumb(setStateShowBestThumb);
 
             // 유저 차단 적용
             doBlock();
         });
+    }
+    /** 
+     * @description 썸네일 표시여부 상태를 설정합니다.
+     */
+    function setStateShowBestThumb(val) {
+        stateShowBestThumb = val;
+        $('#thumb_show').prop('checked', val);
+        const bestArticleList = $('#bestArticleList');
+        bestArticleList.attr('class', val ? 'showThumb' : '');
     }
 
     /** 

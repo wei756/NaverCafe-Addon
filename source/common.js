@@ -55,6 +55,9 @@ function initBlockList() {
         if (!items[keyword]) {
             items[keyword] = [];
         }
+        if (items['showBestThumb'] === undefined) {
+            items['showBestThumb'] = true;
+        }
         chrome.storage.sync.set(items, () => {});
 
     });
@@ -64,7 +67,7 @@ function initBlockList() {
  * @description 새로운 차단 목록 배열을 생성합니다.
  */
 function resetBlockList() {
-    const dummyList = {darkmode: false, nid: [], keyword: [], version: 2};
+    const dummyList = {showBestThumb: true, darkmode: false, nid: [], keyword: [], version: 2};
     getBlockList(items => {
         chrome.storage.sync.set(dummyList, () => {});
     });
@@ -124,6 +127,28 @@ function removeBlockItem(type, cafeid, key, value) {
         } else {
             alert(msgNotBlocked);
         }
+    });
+}
+
+/**
+ * @description 인기글 목록에서 썸네일 표시여부를 반환합니다.
+ * @param {function} callback 
+ */
+function isShowBestThumb(callback) {
+    getBlockList(items => {
+        callback(items['showBestThumb']);
+    });
+}
+
+/**
+ * @description 인기글 목록에서 썸네일 표시여부를 설정합니다.
+ * @param {boolean} val 썸네일 표시여부
+ * @param {function} callback 
+ */
+function setShowBestThumb(val, callback) {
+    getBlockList(items => {
+        items['showBestThumb'] = val;
+        chrome.storage.sync.set(items, callback);
     });
 }
 
