@@ -1,0 +1,68 @@
+#bestArticleList {
+    display: block;
+}
+#bestArticleList .bestArticleItem {
+    border-bottom: 1px solid #f2f2f2;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 56px 472px 122px 100px 55px 55px;
+    grid-template-rows: 36px;
+    position: relative;
+}
+html[data-dark="true"] #bestArticleList .bestArticleItem {
+    border-bottom: 1px solid rgb(51, 51, 51);
+}
+
+.bestArticleItem > div {
+    box-sizing: border-box;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+.bestArticleItem .b_title > span {
+    text-align: left;
+}
+.bestArticleItem .b_title .cmt {
+    font-weight: bold;
+    color: #ff2f3b;
+}
+.bestArticleItem .b_nick a {
+    color: #666;
+}
+html[data-dark="true"] .bestArticleItem .b_nick a {
+    color: rgb(168, 168, 168);
+}
+.bestArticleItem .b_index,
+.bestArticleItem .b_date,
+.bestArticleItem .b_view,
+.bestArticleItem .b_likeit {
+    justify-content: center;
+}
+
+.bestArticleItem:hover {
+    z-index: 10;
+}
+.bestArticleItem > .best_thumb_area {
+    box-sizing: content-box;
+    display: none;
+}
+.bestArticleItem:hover .best_thumb_area {
+    background-color: #fff;
+    box-shadow: 0 0 6px rgb(0 0 0 / 25%);
+    border-radius: 8px;
+    display: block;
+    position: absolute;
+    left: 54px;
+    top: 40px;
+    padding: 8px;
+    width: 100px;
+    height: 100px;
+    clear: both;
+}
+.best_thumb_area img {
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: 100px;
+    height: 100px;
+}

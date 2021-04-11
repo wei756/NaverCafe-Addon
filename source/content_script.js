@@ -239,7 +239,7 @@ jQuery(function($){
     }
 
     /** 
-     * @description 인기글 목록 HTML을 생성합니다.
+     * @description 좋아요한 글 목록 HTML을 생성합니다.
      * @param {Object} articles
      */
     function geneLikeItArticles(articles, cafeid) {
@@ -285,7 +285,7 @@ jQuery(function($){
      * @param {JSON} data 인기글 JSON
      */
     function dispBestArticles(data) {
-        const table = document.querySelector('#main-area table.board-box');
+        const table = document.querySelector('#main-area .article-board');
 
         const list = data['message']['result']['popularArticleList'];
 
@@ -293,7 +293,7 @@ jQuery(function($){
         parent.document.getElementById('cafe_main').style.height = (list.length * 37 + 250) + 'px';
 
         // 인기글 목록 삽입
-        table.innerHTML += `<tbody>${geneBestArticles(list)}</tbody>`;
+        table.innerHTML += `<ul id="bestArticleList">${geneBestArticles(list)}</ul>`;
     }
 
     /** 
@@ -304,7 +304,7 @@ jQuery(function($){
         var innerHtml = '';
         list.map((itemData, i, arr) => {
             const { 
-                cafeId, articleId, subject, representImageType, commentCount, formattedCommentCount, newArticle, nickname, writerId, aheadOfWriteDate, formattedReadCount, upCount
+                cafeId, articleId, subject, representImage, representImageType, commentCount, formattedCommentCount, newArticle, nickname, writerId, aheadOfWriteDate, formattedReadCount, upCount
             } = itemData;
 
             // 인기글 URL
@@ -326,15 +326,24 @@ jQuery(function($){
             // 작성자 드롭다운 메뉴
             const nickOnClick = `ui(event, '${writerId}',3,'${nickname}','${cafeId}','me', 'false', 'true', '', 'false', '0'); return false;`;
 
+            // 썸네일 오버레이
+            const thumbnail = representImage ? `
+            <div class="best_thumb_area">
+                <div class="thumb">
+                    <img src="${representImage}" width="100px" height="100px" alt="본문이미지" onerror="this.style.display='none';" class="image_thumb">
+                </div>
+            </div>` : '';
+
             innerHtml += `
-            <tr align="center">
-                <td colspan="2"><span class="m-tcol-c list-count">${i + 1}</span></td>
-                <td align="left" class="board-list"><a class="title" href="${articleUrl}">${subject}</a> ${mediaIcon} ${comment}${newIcon} </td>
-                <td class="p-nick"><div class="pers_nick_area"><table role="presentation" cellspacing="0"><tbody><tr><td class="p-nick"><a href="#" class="m-tcol-c nickname" onclick="${nickOnClick}">${nickname}</a></td></tr></tbody></table></div></td>
-                <td class="date">${aheadOfWriteDate}</td>
-                <td class="view">${formattedReadCount}</td>
-                <td class="likeit">${upCount}</td>
-            </tr>`;
+            <li class="bestArticleItem" align="center">
+                <div class="b_index">${i + 1}</div>
+                <div class="b_title"><span><a class="title" href="${articleUrl}">${subject}</a> ${mediaIcon} ${comment}${newIcon}</span></div>
+                <div class="b_nick"><a href="#" class="nickname" onclick="${nickOnClick}">${nickname}</a></div>
+                <div class="b_date">${aheadOfWriteDate}</div>
+                <div class="b_view">${formattedReadCount}</div>
+                <div class="b_likeit">${upCount}</div>
+                ${thumbnail}
+            </li>`;
         });
         return innerHtml;
      }
