@@ -208,36 +208,38 @@ jQuery(function($){
                 $("#main-area").ready(function() {
                     $("#main-area .article-board table").ready(function() {
                         var articles = document.querySelectorAll("#main-area > .article-board > table > tbody > tr");
-                        var le = articles.length;
+                        if (!articles.length) { // 인기글
+                            articles = document.querySelectorAll("#bestArticleList > li");;
+                        }
+                        const le = articles.length;
 
-                        for(var i = 0; i < le; i++) {
-                            var writer = articles[i].querySelector(".p-nick > a");
+                        for(let i = 0; i < le; i++) {
+                            const writer = articles[i].querySelector(".p-nick > a") || articles[i].querySelector(".b_nick > a");
                             if (writer) {
-                                var cafeid = writer.getAttribute("onclick").match(/'([^'])+'/g)[2].replace("'", "").replace("'", "");
-                                var nickname = writer.getAttribute("onclick").match(/'([^'])+'/g)[1].replace("'", "").replace("'", "");
-                                var writerId = writer.getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
+                                const writerData = writer.getAttribute("onclick");
+                                const cafeid = writerData.match(/'([^'])+'/g)[2].replace("'", "").replace("'", "");
+                                const nickname = writerData.match(/'([^'])+'/g)[1].replace("'", "").replace("'", "");
+                                const writerId = writerData.match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
 
                                 // 유저 차단
                                 if (indexBlockItem(dataBlock[nid], cafeid, 'nickname', nickname) != -1 || indexBlockItem(dataBlock[nid], cafeid, 'id', writerId) != -1) { 
-                                    articles[i].innerHTML = "";
+                                    articles[i].style.display = 'none';
                                 } else {
-                                    articles[i].addEventListener("click", function(event) { // 유저 차단 UI 삽입
-                                        var targetElement = (event.target || event.srcElement);
-                                        if (targetElement) {
-                                            var targetElement = targetElement.parentElement;
-                                            if (targetElement.querySelector(".p-nick > a")) {
-                                                var _cafeid = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[2].replace("'", "").replace("'", "");
-                                                var _nickname = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[1].replace("'", "").replace("'", "");
-                                                var _id = targetElement.querySelector(".p-nick > a").getAttribute("onclick").match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
-                                                injectBlockUIArticle(_cafeid, _nickname, _id); 
-                                            }
+                                    writer.addEventListener("click", function(e) { // 유저 차단 UI 삽입
+                                        if (e.target) {
+                                            const onClick = e.target.getAttribute("onclick");
+                                            const _cafeid = onClick.match(/'([^'])+'/g)[2].replace("'", "").replace("'", "");
+                                            const _nickname = onClick.match(/'([^'])+'/g)[1].replace("'", "").replace("'", "");
+                                            const _id = onClick.match(/'([^'])+'/g)[0].replace("'", "").replace("'", "");
+                                            injectBlockUIArticle(_cafeid, _nickname, _id); 
                                         }
                                     });
 
                                 }
                             }
 
-                            var title = articles[i].querySelector(".board-list .inner_list .article");
+                            var title = articles[i].querySelector(".board-list .inner_list .article") || 
+                                        articles[i].querySelector(".b_title a.title");
                             if (title) {
                                 title = title.innerText;
 
@@ -245,7 +247,7 @@ jQuery(function($){
                                 if (dataBlock.keyword) { 
                                     dataBlock.keyword.forEach(element => {
                                         if (title.indexOf(element['keyword']) != -1) {
-                                            articles[i].innerHTML = "";
+                                            articles[i].style.display = 'none';
                                         }
                                     });
                                 }
