@@ -111,10 +111,10 @@ jQuery(function($){
         var table = $("#main-area .article-board.article_profile table > tbody");
         table.html('');
 
-        var list = data[type];
-        var le = list.length;
+        const list = data[type];
+        const le = list.length;
 
-        for(var i = 0; i < le; i++) {
+        for(let i = 0; i < le; i++) {
             if (list[i]['cafeid'] !== '-' && cafeid != list[i]['cafeid']) { // 타 카페 차단
                 continue;
             }
@@ -187,6 +187,12 @@ jQuery(function($){
             });
             
             table.append(item);
+        }
+
+        // 닉네임 클릭시 표시 영역 height 크기 자동 설정되는 핵 적용
+        if ($('.inner_list > a.title_txt')) {
+            $('.inner_list > a.title_txt')[0].click();
+            $('.perid-layer').css('display', 'none');
         }
     }
     
