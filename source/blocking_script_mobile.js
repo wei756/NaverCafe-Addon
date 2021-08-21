@@ -5,9 +5,19 @@
 
 jQuery(function($){
     
-    $(document).ready(function() {
+    let prevUrl = '';
+    function loopCheckUrl() {
+        if (prevUrl != location.href) {
+            console.log(location.href);
+            onReady();
+            prevUrl = location.href;
+        }
+    }
+    setInterval(loopCheckUrl, 500);
+
+    function onReady() {
         injectBlockListUI();
-    });
+    };
 
     /** 
      * @description 차단 목록 UI를 삽입합니다.
@@ -15,48 +25,33 @@ jQuery(function($){
     function injectBlockListUI() {
         
         //프로필 페이지
-        if (location.href.indexOf("CafeMemberProfile.nhn") != -1) {
+        if (location.href.indexOf('/members/') != -1 && location.href.indexOf('/ca-fe/web/cafes/') != -1) {
 
-            // 차단 목록 링크
-            if (document.querySelector("#memberInfo div.info_profile div.info") != null &&
-                document.querySelector("#commentListTab") != null) {
-                var aBlock = document.createElement("a");
-                aBlock.className = "btn_go blocking";
-                aBlock.href = "#";
-                aBlock.append("차단목록");
-                document.querySelector("#memberInfo div.info_profile div.info").appendChild(aBlock);
-    
-                document.querySelector("#memberInfo div.info_profile div.info .blocking").addEventListener("click", function(event) {
-                    location.href = location.href.replace("&blocking.page=true", "")
-                                            .replace("&blocking.type=", "&blocking.dump=")
-                                            .replace("#", "") + "&blocking.type=nick&blocking.page=true"; // 닉네임 차단 목록 페이지로 이동
+            const memberInfoHead = $('#app div.CafeMemberProfile div.profile_head_info');
+            const memberInfoHeadTabList = $('ul.HeaderTabList.HeaderTabList--between > li');
+            
+            if (memberInfoHead && memberInfoHeadTabList.length == 4 && !memberInfoHead.find('.blocking').length) {
+
+                // 차단 목록 링크
+                const blockUI = $(`<div class="profile_button"><a href="#" role="button" class="ButtonBase ButtonBase--gray blocking"><span class="ButtonBase__txt">차단 목록</span></a></div>`)
+                memberInfoHead.append(blockUI);
+                memberInfoHead.find('.blocking').bind('click', e => {
+
+                    // 차단 목록 페이지 로딩
+                    const cafeid = location.href.replace('https://m.cafe.naver.com/ca-fe/web/cafes/', '').split('/')[0];
+                    loadBlocking(nid, cafeid);
+                    //loadBlocking(keyword, cafeid);
                 });
 
-                // 차단 목록 페이지 로딩
-                var params = getURLParams();
-                var isBlocking = params["blocking.page"];
-                var pageType = params["blocking.type"];
-                var cafeid = params['cafeId'];
-                if (isBlocking) {
-                    isBlocking = isBlocking.replace("#", "");
-                }
-                if (isBlocking == "true") { // 차단 목록 페이지면
-                    if (pageType == "nick") { // 닉네임
-                        loadBlocking(nid, cafeid);
-                    } else if (pageType == "keyword") { // 키워드
-                        loadBlocking(keyword, cafeid);
-                    }
-                }
+            } else if (memberInfoHead && memberInfoHeadTabList.length == 3) { // 차단하기 UI삽입
 
-            } else if (document.querySelector("#memberInfo div.info_profile div.info") != null &&
-                       document.querySelector("#commentListTab") == null) { // 차단하기 UI삽입
-
+                /*
                 var params = getURLParams();
 
                 var _cafeid = params['cafeId'];
                 var _nickname = document.querySelector("#memberInfo strong.nick > span").innerText;
                 var _id = params["memberId"].replace('#', '');
-                injectBlockUIUser(_cafeid, _nickname, _id);
+                injectBlockUIUser(_cafeid, _nickname, _id);*/
             }
         }
     }
@@ -66,33 +61,33 @@ jQuery(function($){
      * @param {string} type 종류
      */
     function loadBlocking(type, cafeid) {
-        var list_tab = $("#tabContainer > ul");
-        var listContainer = $("#itemListContainer");
 
-        var tabs = '<li id="nickTab"><a href="#" class="link_tab link_block_nick _stopDefault" ><span class="inner">닉네임 목록</span></a></li><li id="keywordTab"><a href="#" class="link_tab link_block_keyword _stopDefault" ><span class="inner">키워드 목록</span></a></li>';
+        const list_tab = $('.CafeMemberContentsTabContainer .HeaderTab ul.HeaderTabList');
+        const listContainer = $('.CafeMemberContentsTabContainer .my_board_wrap');
+        
+        const tabs = `<li role="presentation" class="tab_item"><a href="#" role="tab" class="tab_link link_block_nick"><span class="tab_menu">닉네임 목록</span></a></li><li role="presentation" class="tab_item"><a href="#" role="tab" class="tab_link link_block_keyword"><span class="tab_menu">키워드 목록</span></a></li>`;
         
         // 기존 UI 제거
-        list_tab.children("li").remove();
-        listContainer.find("#itemList").remove();
-        listContainer.children("#itemListContainer .txt_result").remove();
+        list_tab.children('li').remove();
+        listContainer.find('.nested_route_area').remove();
+        listContainer.find('.board_header .num').remove();
+        if (listContainer.find('.txt_result')) {
+            listContainer.find('.txt_result').remove();
+        }
 
         // 회원/키워드 구분 탭 인젝트
         
-        var page = $(tabs);
+        const page = $(tabs);
 
         list_tab.append(page);
-        list_tab.find("#" + (type === nid ? 'nick' : type) + "Tab").addClass("on");
-        list_tab.find(".link_tab .inner").width("100px");
+        list_tab.find(`.link_block_${type === nid ? 'nick' : type}`).attr('aria-selected', true);
+        //list_tab.find(".link_tab .inner").width("100px");
         
-        $(".link_block_keyword").on("click", function() {
-            location.href = location.href.replace("&blocking.page=true", "")
-                                        .replace("&blocking.type=", "&blocking.dump=")
-                                        .replace("#", "") + "&blocking.type=keyword&blocking.page=true"; // 키워드 차단 목록 페이지로 이동
+        $('.link_block_keyword').bind('click', e => {
+            loadBlocking(keyword, cafeid);
         });
-        $(".link_block_nick").on("click", function() {
-            location.href = location.href.replace("&blocking.page=true", "")
-                                        .replace("&blocking.type=", "&blocking.dump=")
-                                        .replace("#", "") + "&blocking.type=nick&blocking.page=true"; // 회원 차단 목록 페이지로 이동
+        $('.link_block_nick').bind('click', e => {
+            loadBlocking(nid, cafeid);
         });
 
         // 키워드 입력 창 인젝트
@@ -101,12 +96,15 @@ jQuery(function($){
             var inputKeyword = inputForm.find('#inputKeyword');
             var btnKeyword = inputForm.find('#addKeyword');
     
-            inputForm.css('padding', '17px 0');
+            inputForm.css('display', 'flex');
+            inputForm.css('flex-direction', 'row');
+            inputForm.css('padding', '17px 16px');
     
             inputKeyword.css('border', 'none');
-            inputKeyword.css('background', '#f0f0f0');
-            inputKeyword.css('padding', '8px');
             inputKeyword.css('border-radius', '8px');
+            inputKeyword.css('background', '#f0f0f0');
+            inputKeyword.css('flex', '1');
+            inputKeyword.css('padding', '8px');
     
             btnKeyword.css('background', '#03c75a');
             btnKeyword.css('color', '#fff');
@@ -128,6 +126,7 @@ jQuery(function($){
         getBlockList(function(data) {
             drawBlockList(data, type, cafeid);
         });
+        
     }
 
     /** 
@@ -145,7 +144,18 @@ jQuery(function($){
             if (list[i]['cafeid'] !== '-' && cafeid != list[i]['cafeid']) { // 타 카페 차단
                 continue;
             }
-            var item = $('<li class="board_box"><a href="" class="txt_area _articleListItem"><strong class="tit"></strong><div class="user_area"><span class="nick"><span class="ellip"></span></span></div></a><a href="#" class="link_comment remove"><em class="num">해제</em></a></li>');
+            var item = $(`
+            <li class="CafeMemberArticleItem board_box">
+                <a href="" class="txt_area">
+                    <strong class="tit" style="padding-top: 8px;display: inline-block;"></strong>
+                    <div class="user_area">
+                        <span class="nick">
+                            <span class="ellip"></span>
+                        </span>
+                    </div>
+                </a>
+                <a href="#" class="link_comment remove"><div class="comment_inner" style="box-sizing: border-box;height: 56px;padding-top: 20px;"><em class="num">해제</em></div></a>
+            </li>`);
 
             item.attr('data-cafeid', list[i]['cafeid']); // 카페 id
 
@@ -172,24 +182,19 @@ jQuery(function($){
                 item.find('.nick').text(timestamp.toLocaleDateString('ko-KR')); // 차단날짜
             }
             item.find('.remove').on("click", function(event) {
-                var targetElement = (event.target || event.srcElement);
-                if (targetElement.classList.contains('num')) {
-                    targetElement = targetElement.parentElement.parentElement;
-                } else {
-                    targetElement = targetElement.parentElement;
-                }
+                const targetElement = event.currentTarget.parentElement;
                 
-                var cafeid = targetElement.getAttribute('data-cafeid');
-                var id = targetElement.getAttribute('data-id');
-                var nickname = targetElement.getAttribute('data-nickname');
-                var _keyword = targetElement.getAttribute('data-keyword');
+                const cafeid = targetElement.dataset.cafeid;
+                const id = targetElement.dataset.id;
+                const nickname = targetElement.dataset.nickname;
+                const _keyword = targetElement.dataset.keyword;
 
-                var key = '', value;
+                let key = '', value;
                 if (type == keyword) {
                     key = 'keyword';
                     value = _keyword;
                 } else {
-                    if (targetElement.hasAttribute('data-nickname') && nickname !== '-') {
+                    if (nickname && nickname !== '-') {
                         key = 'nickname';
                         value = nickname;
                     }
@@ -199,7 +204,7 @@ jQuery(function($){
                     }
                 }
                 const msgStr = 
-                    type == keyword && value != null ? 
+                    type == keyword && value ? 
                     getEul(value) + " 차단 해제하시겠습니까?" : 
                     " 님을 차단 해제하시겠습니까?";
                 if(confirm(value + msgStr)) {
@@ -213,7 +218,8 @@ jQuery(function($){
             listContainer.append(item);
             
         }
-        $('#itemListContainer').append(listContainer);
+        $('.my_board_wrap .list_board').append($('<div class="nested_route_area"><div class="CafeMemberArticleContentsTab"></div></div>'));
+        $('.my_board_wrap .list_board .nested_route_area .CafeMemberArticleContentsTab').append(listContainer);
     }
 
     //doBlock(); // 차단 실행
