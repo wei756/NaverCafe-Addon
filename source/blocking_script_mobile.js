@@ -8,15 +8,14 @@ jQuery(function($){
     let prevUrl = '';
     function loopCheckUrl() {
         if (prevUrl != location.href) {
-            console.log(location.href);
-            onReady();
             prevUrl = location.href;
+            onReady();
         }
     }
     setInterval(loopCheckUrl, 500);
 
     function onReady() {
-        injectBlockListUI();
+        setTimeout(injectBlockListUI, 300);
     };
 
     /** 
@@ -29,8 +28,13 @@ jQuery(function($){
 
             const memberInfoHead = $('#app div.CafeMemberProfile div.profile_head_info');
             const memberInfoHeadTabList = $('ul.HeaderTabList.HeaderTabList--between > li');
+            const cafeid = location.href.replace('https://m.cafe.naver.com/ca-fe/web/cafes/', '').split('/')[0];
             
-            if (memberInfoHead && memberInfoHeadTabList.length == 4 && !memberInfoHead.find('.blocking').length) {
+            if (memberInfoHead.find('.blocking').length) { // already injected
+                return;
+            }
+
+            if (memberInfoHead && memberInfoHeadTabList.length == 4) {
 
                 // 차단 목록 링크
                 const blockUI = $(`<div class="profile_button"><a href="#" role="button" class="ButtonBase ButtonBase--gray blocking"><span class="ButtonBase__txt">차단 목록</span></a></div>`)
@@ -38,20 +42,25 @@ jQuery(function($){
                 memberInfoHead.find('.blocking').bind('click', e => {
 
                     // 차단 목록 페이지 로딩
-                    const cafeid = location.href.replace('https://m.cafe.naver.com/ca-fe/web/cafes/', '').split('/')[0];
                     loadBlocking(nid, cafeid);
-                    //loadBlocking(keyword, cafeid);
                 });
 
             } else if (memberInfoHead && memberInfoHeadTabList.length == 3) { // 차단하기 UI삽입
 
-                /*
-                var params = getURLParams();
+                console.log('fff');
+                const _nickname = memberInfoHead.find('.info_area .nickname').text().trim();
+                //const _id = params["memberId"].replace('#', '');
 
-                var _cafeid = params['cafeId'];
-                var _nickname = document.querySelector("#memberInfo strong.nick > span").innerText;
-                var _id = params["memberId"].replace('#', '');
-                injectBlockUIUser(_cafeid, _nickname, _id);*/
+                console.log(memberInfoHead)
+                // 차단 목록 링크
+                const blockUI = $(`<div class="profile_button"><a href="#" role="button" class="ButtonBase ButtonBase--gray blocking"><span class="ButtonBase__txt">차단하기</span></a></div>`)
+                memberInfoHead.append(blockUI);
+                memberInfoHead.find('.blocking').bind('click', e => {
+                    if(confirm("정말로 " + _nickname + " 님을 차단하시겠습니까?")) {
+                        pushBlockItem(nid, cafeid, _nickname, '');
+                        //location.reload(true);
+                    }
+                });
             }
         }
     }
@@ -426,28 +435,6 @@ jQuery(function($){
             $(element).find('.lst_wp').append(blockedMsg);
 
         }
-    }
-
-    /** 
-     * @description 프로필 페이지에 차단하기 UI를 삽입합니다.
-     * @param {string} _cafeid 차단 대상 회원의 카페 id
-     * @param {string} _nickname 차단 대상 닉네임
-     * @param {string} _id 차단 대상 id
-     */
-    function injectBlockUIUser(_cafeid, _nickname, _id = '') {
-
-        var aBlock = document.createElement("a");
-        aBlock.className = "btn_go blocking";
-        aBlock.href = "#";
-        aBlock.append("차단하기");
-        document.querySelector("#memberInfo div.info_profile div.info").appendChild(aBlock);
-
-        document.querySelector("#memberInfo div.info_profile div.info .blocking").addEventListener("click", function(event) {
-            if(confirm("정말로 " + _nickname + " 님을 차단하시겠습니까?")) {
-                pushBlockItem(nid, _cafeid, _nickname, _id);
-                //location.reload(true);
-            }
-        });
     }
 
 });
