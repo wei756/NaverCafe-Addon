@@ -5,7 +5,6 @@
 
 jQuery(function($){
     $(document).ready(() => {
-        injectLikeItUI();
         injectBestArticleUI();
         injectDarkmodeUI();
         checkActivityStop();
@@ -39,34 +38,6 @@ jQuery(function($){
     }
 
     /** 
-     * @description 좋아요한 글 목록 UI를 삽입합니다.
-     */
-    function injectLikeItUI() {
-        const link = '<a href="#" class="likeit link_sort"">좋아요한 글</a>';
-        const profileArea = $('.article-board.article_profile');
-        profileArea.ready(() => {
-            // 좋아요한 글 링크
-            const page = $(link);
-            profileArea.find('.list-style > .sort_area').append(page);
-            page.on('click', () => {
-                location.href = location.href.replace('&likeit.page=true', '')
-                                            .replace('&likeit.timestamp=', '&likeit.dump=')
-                                            .replace('&blocking.page=true', '')
-                                            .replace('&blocking.type=', '&blocking.dump=')
-                                            .replace('#', '') + '&likeit.page=true'; // 좋아요한 글 페이지로 이동
-            });
-
-            // 좋아요 페이지 로딩
-            const params = getURLParams();
-            const isLikeIt = params['likeit.page'];
-            const timestamp = params['likeit.timestamp'];
-            if (isLikeIt && isLikeIt.replace('#', '') === 'true') { // 좋아요한 글 페이지면
-                loadLikeIt(timestamp ? timestamp : '');
-            }
-        });
-    }
-
-    /** 
      * @description 인기글 목록 UI를 삽입합니다.
      */
     function injectBestArticleUI() {
@@ -91,41 +62,6 @@ jQuery(function($){
                 loadBestArticle();
             }
         });
-    }
-
-    /** 
-     * @description 좋아요한 글 목록을 불러옵니다.
-     * @param {string} timestamp 타임스탬프
-     */
-    function loadLikeIt(timestamp) {
-        const main_area = $('#main-area');
-        const section = main_area.children('.article-board.article_profile');
-        const sort_area = section.find('.sort_area');
-
-        const tableHtml = '<table><caption><span class="blind">게시글 목록</span></caption><colgroup><col><col style="width:120px"><col style="width:100px"><col style="width:80px"></colgroup><thead><tr><th scope="col">제목</th><th scope="col" class="th_name">작성자</th><th scope="col">작성일</th><th scope="col">조회</th></tr></thead><tbody></tbody></table>';
-        const table = $(tableHtml);
-        // 기존 UI 제거
-        sort_area.children('.link_sort.on').removeClass('on');
-        sort_area.children('.link_sort.likeit').addClass('on');
-        main_area.children('.post_btns').remove();
-        main_area.children('.prev-next').html('');
-        section.children('table').remove();
-
-        section.append(table);
-
-        const params = getURLParams();
-        const clubid = params['search.clubid'];
-        var memberid = params['search.query'] || params['search.writerid'];
-        memberid = memberid.replace('#', '');
-        getLikeItArticles(
-            clubid, 
-            memberid, 
-            '20', 
-            timestamp, 
-            data => {
-                dispLikeItArticles(data, clubid, memberid, '20', timestamp);
-            }
-        );
     }
 
     let stateShowBestThumb = true;
@@ -171,35 +107,6 @@ jQuery(function($){
         const bestArticleList = $('#bestArticleList');
         bestArticleList.attr('class', val ? 'showThumb' : '');
     }
-
-    /** 
-     * @description 좋아요한 글 데이터를 불러옵니다.
-     * @param {string} cafeid 카페 id
-     * @param {string} memberid 회원 id
-     * @param {string} count 출력할 개수
-     * @param {string} timestamp 타임스탬프
-     * @param {function} callback 콜백 함수
-     */
-    function getLikeItArticles(cafeid, memberid, count, timestamp, callback) {
-        const url = 'https://m.cafe.naver.com/CafeMemberLikeItList.nhn?search.cafeId=' + cafeid + 
-                '&search.memberId='+ memberid +
-                '&search.count='+ count +
-                '&search.likeItTimestamp=' + timestamp;
-        $.ajax({
-            type: 'POST',
-            url: url,
-            xhrFields: {
-                withCredentials: true
-            },
-            crossDomain: true,
-            success: callback,
-            error: function (xhr) {
-                alert('좋아요한 글을 불러오는 데 실패하였습니다.');
-                alert(xhr.responseText);
-            }
-        })
-    }
-
     
     /** 
      * @description 인기글 데이터를 불러옵니다.
@@ -222,82 +129,6 @@ jQuery(function($){
                 alert(xhr.responseText);
             }
         })
-    }
-
-    /** 
-     * @description 좋아요한 글 목록을 출력합니다.
-     * @param {string} data 좋아요한 글 html
-     * @param {string} cafeid 카페 id
-     * @param {string} memberid 회원 id
-     * @param {string} count 출력할 개수
-     * @param {string} timestamp 타임스탬프
-     */
-    function dispLikeItArticles(data, cafeid, memberid, count, timestamp) {
-        const prevnext_html = '<a href="#" class="pgL"><span class="m-tcol-c">처음으로</span></a><a href="#" class="pgR"><span class="m-tcol-c">다음</span></a>';
-        const main_area = document.querySelector('#main-area');
-        const section = main_area.querySelector('.article-board.article_profile');
-        
-        main_area.querySelector('.prev-next').innerHTML = prevnext_html;
-        if (!timestamp) { // 첫페이지
-            main_area.querySelector('.prev-next > .pgL').remove();
-        } else {
-            main_area.querySelector('.prev-next > .pgL').addEventListener('click', () => { // 처음으로
-                location.href = location.href.replace('&likeit.timestamp=', '&likeit.dump=')
-                                            .replace('#', '') + '&likeit.timestamp=';
-            });
-        }
-
-        const articles = $('<div>' + data + '</div>').children('li');
-        
-        main_area.querySelector('.prev-next > .pgR').addEventListener('click', () => { // 다음 페이지
-            location.href = location.href.replace('&likeit.timestamp=', '&likeit.dump=')
-                                        .replace('#', '') + '&likeit.timestamp=' + articles[articles.length - 1].getAttribute('data-timestamp');
-        });
-
-        const table = section.querySelector('table > tbody');
-        table.innerHTML += geneLikeItArticles(articles, cafeid);
-    }
-
-    /** 
-     * @description 좋아요한 글 목록 HTML을 생성합니다.
-     * @param {Object} articles
-     */
-    function geneLikeItArticles(articles, cafeid) {
-        var innerHtml = '';
-        articles.each((i, itemData) => {
-            const item = $(itemData);
-
-            const articleListItem = item.find('._articleListItem');
-
-            const articleId = articleListItem.attr('data-article-id');
-            const articleUrl = `https://cafe.naver.com/ArticleRead.nhn?clubid=${cafeid}&articleid=${articleId}`;
-            const title = articleListItem.find('strong.tit').text();
-            const imgIcon = item.find('.thumb_area').length ? '<span class="list-i-img"><i class="blind">사진</i></span>' : '';
-            const pollIcon = item.find('.icon_poll').length ? '<span class="list-i-poll"><i class="blind">투표</i></span>' : '';
-            const linkIcon = articleListItem.find('.icon_link').length ? '<span class="list-i-link"><i class="blind">링크</i></span>' : '';
-            const uploadIcon = item.find('.icon_file').length ? '<span class="list-i-upload"><i class="blind">파일</i></span>' : '';
-            const newIcon = articleListItem.find('.icon_new_txt').length ? '<span class="list-i-new"><i class="blind">new</i></span>' : '';
-
-            const comment = item.find('.link_comment > em.num').text();
-            const nickname = articleListItem.find('.user_area > span.nick > span.ellip').text();
-            const date = articleListItem.find('.user_area > span.time').text();
-            const view = articleListItem.find('.user_area > span.no').text();
-
-            innerHtml += `
-            <tr>
-                <td class="td_article">
-                    <div class="board-number"><div class="inner_number">${articleId}</div></div>
-                    <div class="board-list"><div class="inner_list">
-                        <a class="title_txt" target="_parent" href="${articleUrl}">${title}</a>${imgIcon}${pollIcon}${linkIcon}${uploadIcon}
-                        <a href="${articleUrl + '&commentFocus=true'}" target="_parent" class="cmt">[<em>${comment}</em>]</a>${newIcon}
-                    </div></div>
-                </td>
-                <td class="td_name"><div class="pers_nick_area"><table role="presentation" cellspacing="0"><tbody><tr><td class="p-nick"><a href="#" class="m-tcol-c"><div class="ellipsis m-tcol-c">${nickname}</div></a></td></tr></tbody></table></div></td>
-                <td class="td_date">${date}</td>
-                <td class="td_view">${view}</td>
-            </tr>`;
-        });
-        return innerHtml;
     }
     
     /** 
