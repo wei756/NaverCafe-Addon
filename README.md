@@ -5,9 +5,9 @@
 
 # 다운로드
 
-웹스토어 버전: [![Download from Chrome Web Store](https://img.shields.io/badge/다운로드-v1.2.0-brightgreen)](https://chrome.google.com/webstore/detail/네이버-카페-애드온/epcibdcgmbiimdleghmeldeopdjcaeic)
+웹스토어 버전: [![Download from Chrome Web Store](https://img.shields.io/badge/다운로드-v1.3.0-brightgreen)](https://chrome.google.com/webstore/detail/네이버-카페-애드온/epcibdcgmbiimdleghmeldeopdjcaeic)
 
-개발 버전: [![Download from https://github.com/wei756/NaverCafe-Addon/releases](https://img.shields.io/badge/다운로드-v1.3.0-brightgreen)](https://github.com/wei756/NaverCafe-Addon/releases)
+개발 버전: [![Download from https://github.com/wei756/NaverCafe-Addon/releases](https://img.shields.io/badge/다운로드-v1.3.1-brightgreen)](https://github.com/wei756/NaverCafe-Addon/releases)
 
 
 

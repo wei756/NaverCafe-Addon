@@ -1,6 +1,6 @@
 {
   "name": "네이버 카페 애드온",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "인기글, 다크모드 등 각종 편의기능 제공",
   "permissions": [
     "storage"

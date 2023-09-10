@@ -1278,3 +1278,9 @@ html[data-dark=true] .FlexableTextArea .textarea_input {
     border: 1px solid #555;
 	color: #f0f0f0;
 }
+.view_blocked_article {
+	color: #555;
+}
+html[data-dark=true] .view_blocked_article {
+	color: #ccc;
+}
