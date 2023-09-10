@@ -1,34 +1,25 @@
 {
   "name": "네이버 카페 애드온",
-  "version": "1.2.1",
-  "description": "네이버 카페 차단, 인기글 목록, 좋아요한 글 등 각종 편의기능 제공",
+  "version": "1.3.0",
+  "description": "인기글 목록 등 각종 편의기능 제공",
   "permissions": [
     "storage", 
-    "contextMenus", 
+    "contextMenus"
+  ],
+  "host_permissions": [
     "https://cafe.naver.com/*", 
-    "http://cafe.naver.com/*",
-    "https://m.cafe.naver.com/*"
+    "http://cafe.naver.com/*"
   ],
   "content_scripts": [
     {
       "matches": ["https://cafe.naver.com/*"], 
       "run_at": "document_idle",
-      "js": ["jquery3.3.1.min.js", "common.js", "blocking_script.js", "content_script.js"],
+      "js": ["jquery3.3.1.min.js", "common.js", "content_script.js"],
       "css": ["bestArticle.css", "deepdarknaver.css", "deepdark1080_cafe-1593151221000-219709.css"],
-      "all_frames": true
-    },
-    {
-      "matches": ["https://m.cafe.naver.com/*"], 
-      "run_at": "document_idle",
-      "js": ["jquery3.3.1.min.js", "common.js", "content_script_mobile.js", "blocking_script_mobile.js"],
-      "css": ["deepdarknaver.css", "deepdark1080_cafe-1593151221000-219709.css"],
       "all_frames": true
     }
   ],
-  "background": {
-    "scripts": ["blocking_context_menu.js"]
-  },
-  "page_action": {
+  "action": {
     "default_icon": {
       "16": "images/icon16.png",
       "32": "images/icon32.png",
@@ -36,5 +27,5 @@
       "128": "images/icon128.png"
     }
   },
-  "manifest_version": 2
+  "manifest_version": 3
 }
