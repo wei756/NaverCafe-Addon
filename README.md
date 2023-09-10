@@ -7,13 +7,13 @@
 
 웹스토어 버전: [![Download from Chrome Web Store](https://img.shields.io/badge/다운로드-v1.2.0-brightgreen)](https://chrome.google.com/webstore/detail/네이버-카페-애드온/epcibdcgmbiimdleghmeldeopdjcaeic)
 
-개발 버전: [![Download from https://github.com/wei756/NaverCafe-Addon/releases](https://img.shields.io/badge/다운로드-v1.2.1-brightgreen)](https://github.com/wei756/NaverCafe-Addon/releases)
+개발 버전: [![Download from https://github.com/wei756/NaverCafe-Addon/releases](https://img.shields.io/badge/다운로드-v1.3.0-brightgreen)](https://github.com/wei756/NaverCafe-Addon/releases)
 
 
 
 # 제공하는 기능
 
-- \[PC\]인기글 리스트 표시
+- 인기글 리스트 표시
 
 ![인기글 리스트 표시](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn1.png)  
 
@@ -21,33 +21,15 @@
 
 <br>
 
-- \[PC\]프로필 페이지에서 좋아요한 글 리스트 표시
+- 게시글 하단 상세 프로필 표시
 
-![프로필 페이지에서 좋아요한 글 리스트 표시](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn2.png)
-
-<br>
-
-<br>
-
-- \[PC/모바일\]특정 회원 글/댓글 차단
-
-![특정 회원 글/댓글 차단(PC)](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn3.gif)
-![특정 회원 글/댓글 차단(모바일)](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn3-m.png)
+![게시글 하단 상세 프로필 표시](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn6.png)
 
 <br>
 
 <br>
 
-- \[PC/모바일\]특정 키워드가 포함된 글제목/댓글 차단
-
-![특정 키워드가 포함된 글제목/댓글 차단](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn3.png)
-![특정 키워드가 포함된 글제목/댓글 차단(모바일)](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn3-m3.png)
-
-<br>
-
-<br>
-
-- \[PC/모바일\]다크 모드
+- 다크 모드
 
 ![다크 모드](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn4.png)
 
@@ -55,7 +37,7 @@
 
 <br>
 
-- \[PC/모바일\]회원 정지 여부 조회
+- 회원 정지 여부 조회
 
 ![회원 정지 여부 조회](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn5.png)
 
