@@ -20,7 +20,7 @@
     {
       "matches": ["https://cafe.naver.com/*"], 
       "run_at": "document_idle",
-      "js": ["jquery3.3.1.min.js", "cafeApi.js", "content_script.js"],
+      "js": ["jquery3.3.1.min.js", "common.js", "cafeApi.js", "content_script.js"],
       "css": ["bestArticle.css", "profile.css"],
       "all_frames": true
     }
