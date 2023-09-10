@@ -1,0 +1,198 @@
+.activityStop {
+  background: #888;
+  border-radius: 4px;
+  color: #fff;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1em;
+  margin-left: 2px;
+  padding: 2px 4px 3px;
+}
+.activityStop.notStop {
+  display: none;
+}
+
+.ProfileSwitchButton {
+  text-align: right;
+  padding: 8px 0;
+}
+.ProfileSwitchButton .diaplay_profile_text {
+  line-height: 22px;
+  margin-right: 8px;
+}
+.profileArea {
+  border-radius: 4px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+  padding: 12px 16px;
+  border: #eee solid 1px;
+}
+.profileArea .profilePanel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  flex: 1 0 0;
+  padding: 8px 0px;
+}
+.profileArea .profilePanel .profileLink {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.profileArea .profilePanel .profileLink .profileCircleWrapper {
+  border: #eee solid 1px;
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+}
+.profileArea .profilePanel .profileLink .profileCircleWrapper .profileCircle {
+  width: 100%;
+}
+.profileArea .profilePanel .profileLink .profileCircleWrapper .descArea {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 12px;
+}
+.profileArea .profilePanel .profileLink .descArea {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 12px;
+}
+.profileArea .profilePanel .profileLink .descArea .nicknameWrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.profileArea .profilePanel .profileLink .descArea .nicknameWrapper .nickname {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1em;
+}
+.profileArea .profilePanel .profileLink .descArea .nicknameWrapper .class {
+  color: #999;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1em; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+}
+.profileArea .profilePanel .profileLink .descArea .nicknameWrapper .class {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+}
+.profileArea .profilePanel .profileLink .descArea .memberSummary {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.profileArea .profilePanel .profileLink .descArea .memberSummary .count {
+  color: #999;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1em; 
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+.profileArea .profilePanel .profileLink .descArea .memberSummary .count .countValue {
+  color: #000;
+  font-weight: 700;
+}
+.profileArea .profilePanel .description {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4em;
+}
+.profileArea .vLine {
+  align-self: stretch;
+  background: #D9D9D9;
+  width: 1px;
+}
+.profileArea .recentArticleListWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  width: 0;
+  flex: 1 0 0;
+  padding: 8px 0px;
+}
+.profileArea .recentArticleListWrapper .listHeader {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1em;
+}
+.profileArea .recentArticleListWrapper .recentArticleList {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  list-style: none;
+  width: 100%;
+}
+.profileArea .recentArticleListWrapper .recentArticleList .recentArticleItem,
+.profileArea .recentArticleListWrapper .recentArticleList .recentArticleItem a {
+  display: inline;
+  align-items: flex-start;
+  gap: 2px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+  word-break: break-all;
+}
+.profileArea .recentArticleListWrapper .recentArticleList .recentArticleItem a:hover {
+  text-decoration: underline;
+}
+.profileArea .recentArticleListWrapper .recentArticleList .recentArticleItem .horsehead {
+  color: #999;
+  display: inline;
+}
+.profileArea .recentArticleListWrapper .recentArticleList .recentArticleItem .title {
+  color: inherit;
+  display: inline;
+}
+
+
+html[data-dark="true"] .activityStop {
+  background: #555;
+  color: #f0f0f0;
+}
+html[data-dark="true"] .profileArea {
+  border: #aaa solid 1px;
+}
+html[data-dark="true"] .profileArea .profilePanel .profileLink .profileCircleWrapper {
+  border: #aaa solid 1px;
+}
+html[data-dark="true"] .profileArea .profilePanel .profileLink .descArea .nicknameWrapper .class {
+  color: #999;
+}
+html[data-dark="true"] .profileArea .profilePanel .profileLink .descArea .memberSummary .count {
+  color: #999;
+}
+html[data-dark="true"] .profileArea .profilePanel .profileLink .descArea .memberSummary .count .countValue {
+  color: #f0f0f0;
+}
+html[data-dark="true"] .profileArea .vLine {
+  background: #aaa;
+}
+html[data-dark="true"] .profileArea .recentArticleListWrapper .recentArticleList .recentArticleItem .horsehead {
+  color: #999;
+}
