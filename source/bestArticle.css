@@ -9,9 +9,6 @@
     grid-template-rows: 36px;
     position: relative;
 }
-html[data-dark="true"] #bestArticleList .bestArticleItem {
-    border-bottom: 1px solid rgb(51, 51, 51);
-}
 
 .bestArticleItem > div {
     box-sizing: border-box;
@@ -73,4 +70,10 @@ html[data-dark="true"] .bestArticleItem .b_nick a {
     padding: 0;
     width: 100px;
     height: 100px;
+}
+html[data-dark="true"] #bestArticleList .bestArticleItem {
+    border-bottom: 1px solid rgb(51, 51, 51);
+}
+html[data-dark="true"] #bestArticleList.showThumb .bestArticleItem:hover .best_thumb_area {
+    background-color: #333;
 }

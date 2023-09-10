@@ -139,8 +139,8 @@ html[data-dark=true] .skin-1080 .board-notice.type_main .cmt {
 
 html[data-dark=true] .skin-1080 .board-notice.type_required .board-tag-txt,
 html[data-dark=true] .skin-1080 .board-notice.type_main .board-tag-txt {
+	background-color: #554a4b;
 	border: 1px solid #463737;
-	background-color: #837576;
 	color: #ff4e59;
 }
 
@@ -612,7 +612,7 @@ html[data-dark=true] .skin-1080 .sub_info_box .link_more {
 }
 
 html[data-dark=true] .skin-1080 .list_sub_tab {
-	border-bottom: 1px solid #e5e5e5;
+	border-bottom: 1px solid #999;
 }
 
 html[data-dark=true] .skin-1080 .list_sub_tab .link {
@@ -1205,4 +1205,76 @@ html[data-dark=true] .CommentBox .comment_list .CommentItem.CommentItem--mine {
 
 html[data-dark=true] .CommentBox .comment_list .CommentItem {
     border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+html[data-dark=true] {
+	--skinColor: #1e1f21;
+	--skinTextColor: #ccc;
+    --skinLayoutBorder: #aaa;
+	--skinListBorder: #999;
+	--themeColorBT6: #555;
+	--themeColorTC1: #ccc;
+	--skinSpecialMenuColor: #aaa;
+	--GnbLink: #aaa;
+	--skinSpecialMenuBorder: #aaa;
+
+	--profileHeadNickName: #f0f0f0;
+	--profileHeadLevel: #f0f0f0;
+	--profileHeadLevelNum: #f0f0f0;
+	--boardHeaderToolSortLinkColor: #999;
+
+	--boardArticleListTh: #ddd;
+	--boardArticleListBorderBottom: #555;
+	--boardArticleListText: #999;
+    --boardArticleListTitle: #f0f0f0;
+	--themeColorLN2: #aaa;
+}
+
+/* 광고 */
+html[data-dark=true] .AdvertArea {
+	background: #999;
+}
+/* html[data-dark=true] .pcol2 {
+    color: #f0f0f0;
+} */
+
+/* 에디터 */
+html[data-dark=true] .WritingSide {
+    color: #f0f0f0;
+}
+html[data-dark=true] .WritingSide .setting_area {
+    background-color: #333;
+}
+html[data-dark=true] .WritingSide .open_set .btn_open_set {
+    color: #f0f0f0;
+}
+html[data-dark=true] .WritingSide .open_select {
+    color: #999;
+}
+html[data-dark=true] .FormSelectButton .button {
+    border: 1px solid #555;
+    background: #333;
+    color: #f0f0f0;
+}
+html[data-dark=true] .FormSelectBox .select_option,
+html[data-dark=true] .ArticleWritingTitle .column_category .select_option {
+    border: 1px solid rgba(0,0,0,.1);
+    box-shadow: 0 1px 12px 0 rgba(0,0,0,.1);
+    background-color: #333;
+    color: #f0f0f0;
+}
+html[data-dark=true] .FormSelectBox .select_option .option:hover,
+html[data-dark=true] .ArticleWritingTitle .column_category .select_option .option:hover,
+html[data-dark=true] .ArticleWritingTitle .column_category .select_option .option_none:hover {
+    background: #555;
+}
+html[data-dark=true] .FormSelectBox .select_option .option,
+html[data-dark=true] .ArticleWritingTitle .column_category .select_option .option,
+html[data-dark=true] .ArticleWritingTitle .column_category .select_option .option_none {
+    color: #f0f0f0;
+}
+html[data-dark=true] .FlexableTextArea .textarea_input {
+    background: #333;
+    border: 1px solid #555;
+	color: #f0f0f0;
 }
