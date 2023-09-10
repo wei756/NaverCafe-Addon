@@ -185,11 +185,6 @@ jQuery(async function($){
     return innerHtml;
   }
 
-  const isDarkmode = (await getSyncStorage()).darkmode;
-  if (isDarkmode) {
-    document.documentElement.setAttribute('data-dark', 'true');
-  }
-
   /**
    * @description 현재 페이지가 프로필 페이지인지 확인하고 프로필 페이지면 카페id와 멤버키를 반환합니다.
    * 
