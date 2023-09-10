@@ -26,6 +26,9 @@ html[data-dark="true"] #bestArticleList .bestArticleItem {
     font-weight: bold;
     color: #ff2f3b;
 }
+.bestArticleItem .b_nick {
+    text-align: left;
+}
 .bestArticleItem .b_nick a {
     color: #666;
 }
