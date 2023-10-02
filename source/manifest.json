@@ -13,7 +13,7 @@
     {
       "matches": ["https://cafe.naver.com/*"], 
       "run_at": "document_start",
-      "js": ["common.js", "darkmode.js"],
+      "js": ["common.js", "darkmode.js", "resolve-url.js"],
       "css": ["deepdarknaver.css", "deepdark1080_cafe-1593151221000-219709.css"],
       "all_frames": true
     },
