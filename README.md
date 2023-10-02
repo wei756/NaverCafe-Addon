@@ -13,14 +13,6 @@
 
 # 제공하는 기능
 
-- 인기글 리스트 표시
-
-![인기글 리스트 표시](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn1.png)  
-
-<br>
-
-<br>
-
 - 게시글 하단 상세 프로필 표시
 
 ![게시글 하단 상세 프로필 표시](https://github.com/wei756/NaverCafe-Addon/raw/master/images/gn6.png)
