@@ -4,10 +4,10 @@
  */
 
 if (window.name === "cafe_main") {
-  let data = {
+  const data = {
     baseUrl: `//${window.parent.location.host}${window.parent.location.pathname
-      .split("/", 2)
-      .join("/")}`,
+      .split('/', 2)
+      .join('/')}`,
     url: `?iframe_url_utf8=${encodeURIComponent(location.href)}`,
   };
 
@@ -17,11 +17,11 @@ if (window.name === "cafe_main") {
 }
 
 function testIsArticle(data) {
-  let test = /^\/ca-fe\/cafes\/(.*)\/articles\/.*$/.exec(location.pathname);
+  const test = /^\/ca-fe\/cafes\/(.*)\/articles\/.*$/.exec(location.pathname);
   if (test) {
     data.url = `/${test[1]}`;
-  } else if (location.pathname.endsWith("/ArticleRead.nhn")) {
+  } else if (location.pathname.endsWith('/ArticleRead.nhn')) {
     const searchParams = new URLSearchParams(location.search);
-    data.url = `/${searchParams.get("articleid")}`;
+    data.url = `/${searchParams.get('articleid')}`;
   }
 }
