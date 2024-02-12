@@ -1284,3 +1284,12 @@ html[data-dark=true] .FlexableTextArea .textarea_input {
 html[data-dark=true] .view_blocked_article {
 	color: #ccc;
 }
+
+/* 글작성 제목부분 */
+html[data-dark=true] .WritingEditor .editer_wrap {
+	border: 1px solid #333;
+	background-color: transparent;
+}
+html[data-dark=true] .WritingEditor .editer_wrap .FlexableTextArea .textarea_input {
+	background-color: #333;
+}
