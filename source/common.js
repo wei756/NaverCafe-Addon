@@ -67,7 +67,7 @@ function wait(miliseconds) {
 
 /**
  * @param {string} selector
- * @param {function} handler
+ * @param {(el: Element) => Promise<any>} handler
  * @param {number} timeout
  * @returns {Promise<HTMLElement>}
  */
