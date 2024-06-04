@@ -121,10 +121,20 @@ function $query(selector) {
   return document.querySelector(selector);
 }
 
+/**
+ * @param {number} miliseconds 
+ * @returns {Promise<never>}
+ */
 function wait(miliseconds) {
   return new Promise(resolve => setTimeout(resolve, miliseconds));
 }
 
+/**
+ * @param {string} selector 
+ * @param {function} handler 
+ * @param {number} timeout 
+ * @returns {Promise<HTMLElement>}
+ */
 async function waitUntilLoadedElement(selector, handler = async () => {}, timeout = 10000) {
   const startTime = Date.now();
   while(!$query(selector)) {
