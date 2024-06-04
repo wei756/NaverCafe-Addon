@@ -43,21 +43,6 @@ jQuery(async function ($) {
   }
 
   /**
-   * @description 현재 페이지가 프로필 페이지인지 확인하고 프로필 페이지면 카페id와 멤버키를 반환합니다.
-   *
-   * @returns {{cafeId: string, memberKey: string} | null}
-   */
-  function checkProfilePage(url) {
-    const profilePageRegex =
-      /cafe\.naver\.com\/ca-fe\/cafes\/(?<cafeId>\d+)\/members\/(?<memberKey>[0-9a-zA-Z_-]+)/g;
-    if (url.match(profilePageRegex)) {
-      return profilePageRegex.exec(url).groups;
-    } else {
-      return null;
-    }
-  }
-
-  /**
    * @description 현재 보고 있는 회원이 활동정지 상태인지 확인하고 그 상태를 프로필에 표시합니다.
    */
   async function checkActivityStop() {
@@ -69,16 +54,7 @@ jQuery(async function ($) {
             return;
           }
 
-          // url 추출
-          (await waitUntilLoadedElement('button.nick_btn')).click();
-          const url = (
-            await waitUntilLoadedElement(
-              '#LayerMore1 > ul.layer_list > li:first-child > a',
-            )
-          )?.href;
-          (await waitUntilLoadedElement('button.nick_btn')).click();
-
-          const isProfilePage = url && checkProfilePage(url);
+          const isProfilePage = await parseMemberOnProfilePage();
           if (isProfilePage) {
             const { cafeId, memberKey } = isProfilePage;
 
