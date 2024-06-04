@@ -49,6 +49,10 @@ function getEul(str) {
   }
 }
 
+/**
+ * @param {string} selector 
+ * @returns {Element | null}
+ */
 function $query(selector) {
   return document.querySelector(selector);
 }
