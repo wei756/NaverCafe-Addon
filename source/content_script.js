@@ -108,14 +108,14 @@ jQuery(async function($){
   /**
    * @description 
    * 
-   * @returns {{cafeId: string, memberKey: string} | null}
+   * @returns {{cafeId: string | null, memberKey: string | null}}
    */
   function getArticleProfileMemberKey(url) {
     const profilePageRegex = /ca-fe\/cafes\/(?<cafeId>\d+)\/members\/(?<memberKey>[0-9a-zA-Z_-]+)/g;
-    if (url.match(profilePageRegex)) {
+    if (url?.match(profilePageRegex)) {
       return profilePageRegex.exec(url).groups;
     } else {
-      return null;
+      return {cafeId: null, memberKey: null};
     }
   }
 
@@ -129,9 +129,14 @@ jQuery(async function($){
       
       await waitUntilLoadedElement('.ArticleContentBox');
       const articleProfile = await waitUntilLoadedElement('.ArticleWriterProfile');
+      await waitUntilLoadedElement('.ArticleWriterProfile a.more_area');
       const {
         memberKey
-      } = getArticleProfileMemberKey(articleProfile.querySelector('a.more_area').href);
+      } = getArticleProfileMemberKey(articleProfile?.querySelector('a.more_area')?.href);
+
+      if (!memberKey) {
+        return;
+      }
 
       //console.log(cafeId, articleId, memberKey);
 
