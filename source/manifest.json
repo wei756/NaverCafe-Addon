@@ -13,6 +13,7 @@
         "modules/storage.js",
         "modules/cafe-api.js",
         "modules/parsing.js",
+        "modules/on-page.js",
         "common.js",
         "darkmode.js",
         "resolve-url.js",

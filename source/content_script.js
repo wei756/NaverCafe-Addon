@@ -47,33 +47,29 @@ jQuery(async function ($) {
    */
   async function checkActivityStop() {
     while (true) {
-      await waitUntilLoadedElement(
-        '.sub_tit_profile .nick_area',
-        async (el) => {
-          if ($query('.sub_tit_profile .nick_area .activityStop')) {
-            return;
-          }
+      await onProfilePage(async (el) => {
+        if ($query('.sub_tit_profile .nick_area .activityStop')) {
+          return;
+        }
 
-          const isProfilePage = await parseMemberOnProfilePage();
-          if (isProfilePage) {
-            const { cafeId, memberKey } = isProfilePage;
+        const isProfilePage = await parseMemberOnProfilePage();
+        if (isProfilePage) {
+          const { cafeId, memberKey } = isProfilePage;
 
-            const isActivityStop = await getActivityStop(cafeId, memberKey);
-            if (isActivityStop) {
-              el.insertAdjacentHTML(
-                'beforeend',
-                '<span class="activityStop">활동 정지됨</span>',
-              );
-            } else {
-              el.insertAdjacentHTML(
-                'beforeend',
-                '<span class="activityStop notStop"></span>',
-              );
-            }
+          const isActivityStop = await getActivityStop(cafeId, memberKey);
+          if (isActivityStop) {
+            el.insertAdjacentHTML(
+              'beforeend',
+              '<span class="activityStop">활동 정지됨</span>',
+            );
+          } else {
+            el.insertAdjacentHTML(
+              'beforeend',
+              '<span class="activityStop notStop"></span>',
+            );
           }
-        },
-        -1,
-      );
+        }
+      }, -1);
 
       await wait(50);
     }
