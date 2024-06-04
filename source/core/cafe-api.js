@@ -74,7 +74,7 @@
  * @description 인기글 데이터를 불러옵니다.
  *
  * @param {string} cafeid 카페 id
- * @returns {{message: {result: {popularArticleList: PopularArticleItem[]}}}}
+ * @returns {Promise<{message: {result: {popularArticleList: PopularArticleItem[]}}}>}
  */
 function getBestArticles(cafeid) {
   const url = `https://apis.naver.com/cafe-web/cafe2/WeeklyPopularArticleList.json?cafeId=${cafeid}`;
@@ -102,7 +102,7 @@ function getBestArticles(cafeid) {
  *
  * @param {string} cafeid 카페 id
  * @param {string} memberKey 회원 id
- * @returns {boolean}
+ * @returns {Promise<boolean>}
  */
 function getActivityStop(cafeId, memberKey) {
   return new Promise((resolve, reject) =>
@@ -132,7 +132,7 @@ const memberCache = {};
  * Cafe API를 통해 멤버 정보를 불러옵니다.
  *
  * @param {{cafeId: string, memberId?: string, memberKey?: string}}
- * @returns {MemberInfo}
+ * @returns {Promise<MemberInfo>}
  */
 async function getCafeMemberProfile({ cafeId, memberId, memberKey }) {
   if (memberCache[memberKey] || memberCache[memberId]) {
@@ -167,7 +167,7 @@ async function getCafeMemberProfile({ cafeId, memberId, memberKey }) {
  * Cafe API를 통해 멤버 소개글을 불러옵니다.
  *
  * @param {{cafeId: string, memberId: string}}
- * @returns {{cafeId: number, introduction: string, memberId: introduction}}
+ * @returns {Promise<{cafeId: number, introduction: string, memberId: introduction}>}
  */
 async function getCafeMemberIntroduction(cafeId, memberId) {
   const reqUrl = `https://apis.naver.com/cafe-web/cafe-cafeinfo-api/v1.0/cafes/${cafeId}/member-profile/${memberId}/introduction`;
@@ -189,7 +189,7 @@ async function getCafeMemberIntroduction(cafeId, memberId) {
  * Cafe API를 통해 멤버 최근 게시글을 불러옵니다.
  *
  * @param {{cafeId: string, memberId?: string, memberKey?: string}}
- * @returns {MemberInfo}
+ * @returns {Promise<MemberInfo>}
  */
 async function getCafeMemberArticles(cafeId, memberKey) {
   const reqUrl = `https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberNetworkArticleListV1?search.cafeId=${cafeId}&search.memberKey=${memberKey}&search.perPage=5&search.page=1`;
@@ -211,7 +211,7 @@ async function getCafeMemberArticles(cafeId, memberKey) {
  * @description 차단한 멤버 키를 불러옵니다.
  *
  * @param {string} cafeid 카페 id
- * @returns {string[]}
+ * @returns {Promise<string[]>}
  */
 function getBlockedMembers(cafeid) {
   const url = `https://apis.naver.com/cafe-web/cafe2/ArticleListV2dot1.json?search.clubid=${cafeid}&search.perPage=0`;
