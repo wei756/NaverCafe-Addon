@@ -1,9 +1,14 @@
 /**
+ * @typedef MemberMemo
+ * @property {string} memberKey
+ * @property {string} memo
+ */
+/**
  * @typedef AddonPreferences
  * @property {boolean} showBestThumb
  * @property {boolean} showProfileOnArticle
  * @property {boolean} darkmode
- * @property
+ * @property {MemberMemo[]} memberMemos
  * @property {4} version
  */
 
@@ -24,9 +29,11 @@ async function initSyncStorage() {
   if (items.darkmode === undefined) {
     items.darkmode = false;
   }
-  if (items.version === undefined) {
-    items.version = STORAGE_VERSION;
+  if (items.memberMemos === undefined) {
+    items.memberMemos = [];
   }
+  items.version = STORAGE_VERSION;
+
   await new Promise((resolve) =>
     chrome.storage.sync.set(items, () => {
       resolve();

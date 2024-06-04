@@ -10,10 +10,12 @@
       "run_at": "document_start",
       "js": [
         "jquery3.3.1.min.js",
-        "modules/storage.js",
+        "core/storage.js",
+        "core/page-observer.js",
         "modules/cafe-api.js",
         "modules/parsing.js",
         "modules/on-page.js",
+        "modules/display-activity-stop.js",
         "common.js",
         "darkmode.js",
         "resolve-url.js",
