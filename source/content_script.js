@@ -75,10 +75,10 @@ jQuery(async function ($) {
             await waitUntilLoadedElement(
               '#LayerMore1 > ul.layer_list > li:first-child > a',
             )
-          ).href;
+          )?.href;
           (await waitUntilLoadedElement('button.nick_btn')).click();
 
-          const isProfilePage = checkProfilePage(url);
+          const isProfilePage = url && checkProfilePage(url);
           if (isProfilePage) {
             const { cafeId, memberKey } = isProfilePage;
 
