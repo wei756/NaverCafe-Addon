@@ -19,10 +19,10 @@
         "content_script.js"
       ],
       "css": [
-        "deepdarknaver.css",
-        "deepdark1080_cafe-1593151221000-219709.css",
-        "bestArticle.css",
-        "profile.css"
+        "css/deepdarknaver.css",
+        "css/deepdark1080_cafe-1593151221000-219709.css",
+        "css/bestArticle.css",
+        "css/profile.css"
       ],
       "all_frames": true
     }
