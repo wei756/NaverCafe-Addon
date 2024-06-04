@@ -1,4 +1,3 @@
-
 /**
  * @typedef {Object} MemberInfo
  * @property {boolean} allowPopularMember
@@ -71,67 +70,71 @@
  * @property {boolean} enableToReadWhenNotCafeMember
  */
 
-
-/** 
+/**
  * @description 인기글 데이터를 불러옵니다.
- * 
+ *
  * @param {string} cafeid 카페 id
- * @returns {{message: {result: {popularArticleList: PopularArticleItem[]}}}} 
+ * @returns {{message: {result: {popularArticleList: PopularArticleItem[]}}}}
  */
 function getBestArticles(cafeid) {
   const url = `https://apis.naver.com/cafe-web/cafe2/WeeklyPopularArticleList.json?cafeId=${cafeid}`;
-  return new Promise((resolve, reject) => $.ajax({
-    type: 'POST',
-    url,
-    dataType: 'json',
-    xhrFields: {
-      withCredentials: true
-    },
-    crossDomain: true,
-    success: resolve,
-    error: xhr => {
-      alert('인기글을 불러오는 데 실패하였습니다.');
-      alert(xhr.responseText);
-      reject(xhr);
-    },
-  }));
+  return new Promise((resolve, reject) =>
+    $.ajax({
+      type: 'POST',
+      url,
+      dataType: 'json',
+      xhrFields: {
+        withCredentials: true,
+      },
+      crossDomain: true,
+      success: resolve,
+      error: (xhr) => {
+        alert('인기글을 불러오는 데 실패하였습니다.');
+        alert(xhr.responseText);
+        reject(xhr);
+      },
+    }),
+  );
 }
 
 /**
  * @description 회원의 활동정지 상태를 반환합니다.
- * 
+ *
  * @param {string} cafeid 카페 id
  * @param {string} memberKey 회원 id
  * @returns {boolean}
  */
 function getActivityStop(cafeId, memberKey) {
-  return new Promise((resolve, reject) => $.ajax({
-    type: 'POST',
-    url: `https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberStatus?cafeId=${cafeId}&memberKey=${memberKey}`,
-    dataType: 'json',
-    xhrFields: {
-      withCredentials: true
-    },
-    crossDomain: true,
-    success: data => {
-      resolve(data.message.status == '200' && data.message.result.activityStop);
-    },
-    error: xhr => {
-      reject(false);
-    }
-  }));
+  return new Promise((resolve, reject) =>
+    $.ajax({
+      type: 'POST',
+      url: `https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberStatus?cafeId=${cafeId}&memberKey=${memberKey}`,
+      dataType: 'json',
+      xhrFields: {
+        withCredentials: true,
+      },
+      crossDomain: true,
+      success: (data) => {
+        resolve(
+          data.message.status == '200' && data.message.result.activityStop,
+        );
+      },
+      error: (xhr) => {
+        reject(false);
+      },
+    }),
+  );
 }
 
 const memberCache = {};
 
 /**
  * Cafe API를 통해 멤버 정보를 불러옵니다.
- * 
- * @param {{cafeId: string, memberId?: string, memberKey?: string}} 
+ *
+ * @param {{cafeId: string, memberId?: string, memberKey?: string}}
  * @returns {MemberInfo}
  */
-async function getCafeMemberProfile({cafeId, memberId, memberKey}) {
-
+async function getCafeMemberProfile({ cafeId, memberId, memberKey }) {
   if (memberCache[memberKey] || memberCache[memberId]) {
     return memberCache[memberKey] || memberCache[memberId];
   }
@@ -140,17 +143,17 @@ async function getCafeMemberProfile({cafeId, memberId, memberKey}) {
     return null;
   }
 
-  const reqUrl = `https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberProfile?cafeId=${cafeId}${memberId ? '&memberId=' + memberId : '&memberKey=' + memberKey}&requestFrom=A`;
-  const res = await fetch(reqUrl, { credentials: "include" });
+  const reqUrl = `https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberProfile?cafeId=${cafeId}${
+    memberId ? '&memberId=' + memberId : '&memberKey=' + memberKey
+  }&requestFrom=A`;
+  const res = await fetch(reqUrl, { credentials: 'include' });
 
   if (res.ok == true) {
     const { message } = await res.json();
     if (message.status == '200') {
-      (
-        memberKey ? 
-        memberCache[memberKey] = message.result : 
-        memberCache[memberId] = message.result
-      )
+      memberKey
+        ? (memberCache[memberKey] = message.result)
+        : (memberCache[memberId] = message.result);
       return message.result;
     } else {
       return null;
@@ -162,14 +165,13 @@ async function getCafeMemberProfile({cafeId, memberId, memberKey}) {
 
 /**
  * Cafe API를 통해 멤버 소개글을 불러옵니다.
- * 
- * @param {{cafeId: string, memberId: string}} 
+ *
+ * @param {{cafeId: string, memberId: string}}
  * @returns {{cafeId: number, introduction: string, memberId: introduction}}
  */
 async function getCafeMemberIntroduction(cafeId, memberId) {
-
   const reqUrl = `https://apis.naver.com/cafe-web/cafe-cafeinfo-api/v1.0/cafes/${cafeId}/member-profile/${memberId}/introduction`;
-  const res = await fetch(reqUrl, { credentials: "include" });
+  const res = await fetch(reqUrl, { credentials: 'include' });
 
   if (res.ok == true) {
     const { result } = await res.json();
@@ -185,14 +187,13 @@ async function getCafeMemberIntroduction(cafeId, memberId) {
 
 /**
  * Cafe API를 통해 멤버 최근 게시글을 불러옵니다.
- * 
- * @param {{cafeId: string, memberId?: string, memberKey?: string}} 
+ *
+ * @param {{cafeId: string, memberId?: string, memberKey?: string}}
  * @returns {MemberInfo}
  */
 async function getCafeMemberArticles(cafeId, memberKey) {
-
   const reqUrl = `https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberNetworkArticleListV1?search.cafeId=${cafeId}&search.memberKey=${memberKey}&search.perPage=5&search.page=1`;
-  const res = await fetch(reqUrl, { credentials: "include" });
+  const res = await fetch(reqUrl, { credentials: 'include' });
 
   if (res.ok == true) {
     const { message } = await res.json();
@@ -206,33 +207,35 @@ async function getCafeMemberArticles(cafeId, memberKey) {
   }
 }
 
-/** 
+/**
  * @description 차단한 멤버 키를 불러옵니다.
- * 
+ *
  * @param {string} cafeid 카페 id
- * @returns {string[]} 
+ * @returns {string[]}
  */
 function getBlockedMembers(cafeid) {
   const url = `https://apis.naver.com/cafe-web/cafe2/ArticleListV2dot1.json?search.clubid=${cafeid}&search.perPage=0`;
-  return new Promise((resolve, reject) => $.ajax({
-    type: 'GET',
-    url,
-    dataType: 'json',
-    xhrFields: {
-      withCredentials: true
-    },
-    crossDomain: true,
-    success: res => {
-      if (res.message.status == '200') {
-        resolve(res.message.result.blockMemberList);
-      } else {
-        reject(res);
-      }
-    },
-    error: xhr => {
-      alert('인기글을 불러오는 데 실패하였습니다.');
-      alert(xhr.responseText);
-      reject(xhr);
-    },
-  }));
+  return new Promise((resolve, reject) =>
+    $.ajax({
+      type: 'GET',
+      url,
+      dataType: 'json',
+      xhrFields: {
+        withCredentials: true,
+      },
+      crossDomain: true,
+      success: (res) => {
+        if (res.message.status == '200') {
+          resolve(res.message.result.blockMemberList);
+        } else {
+          reject(res);
+        }
+      },
+      error: (xhr) => {
+        alert('인기글을 불러오는 데 실패하였습니다.');
+        alert(xhr.responseText);
+        reject(xhr);
+      },
+    }),
+  );
 }

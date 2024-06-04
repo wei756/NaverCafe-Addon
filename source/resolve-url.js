@@ -3,7 +3,7 @@
  * @license MIT
  */
 
-if (window.name === "cafe_main") {
+if (window.name === 'cafe_main') {
   const data = {
     baseUrl: `//${window.parent.location.host}${window.parent.location.pathname
       .split('/', 2)
