@@ -15,6 +15,7 @@
         "core/page-observer.js",
         "modules/parsing.js",
         "modules/display-activity-stop.js",
+        "modules/member-memo.js",
         "common.js",
         "darkmode.js",
         "resolve-url.js",

@@ -4,21 +4,21 @@
  * @type {PageHandler}
  */
 async function checkActivityStop({ cafeId, memberKey }) {
-  const el = $query('.sub_tit_profile .nick_area');
 
   if ($query('.sub_tit_profile .nick_area .activityStop')) {
     return;
   }
 
   const isActivityStop = await getActivityStop(cafeId, memberKey);
+  const el = $query('.sub_tit_profile .nick_area .nick_btn');
   if (isActivityStop) {
     el.insertAdjacentHTML(
-      'beforeend',
+      'afterend',
       '<span class="activityStop">활동 정지됨</span>',
     );
   } else {
     el.insertAdjacentHTML(
-      'beforeend',
+      'afterend',
       '<span class="activityStop notStop"></span>',
     );
   }
