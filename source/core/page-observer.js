@@ -5,6 +5,7 @@
 /**
  * @typedef PageEvent
  * @property {string} cafeId
+ * @property {string | undefined} articleId
  * @property {string} memberKey
  */
 /**
@@ -25,6 +26,34 @@ const handlers = {
  */
 function onPage(name, handler) {
   handlers[name]?.push(handler);
+}
+
+async function performArticleEvent() {
+  // article
+  while (true) {
+    const { cafeId, articleId, memberKey } = await getWriterProfileOnArticle();
+
+    if (!memberKey) {
+      await wait(250);
+      continue;
+    }
+    if ($query('.ArticleContentBox .loaded')) {
+      await wait(1000);
+      continue;
+    }
+
+    handlers['article'].forEach((handler) =>
+      handler({ cafeId, articleId, memberKey }),
+    );
+
+    const el = $query('.ArticleContentBox');
+    el.insertAdjacentHTML(
+      'beforeend',
+      `<span class="loaded" style="display:none"></span>`,
+    );
+
+    await wait(50);
+  }
 }
 
 async function performMemberProfileEvent() {
@@ -60,4 +89,5 @@ async function performMemberProfileEvent() {
 
 function performEvents() {
   performMemberProfileEvent();
+  performArticleEvent();
 }
