@@ -43,10 +43,15 @@ async function geneMemberMemoUI(memberKey) {
   buttonEl.innerHTML = PencilSquareIcon;
   buttonEl.addEventListener('click', () => {
     const newMemo = prompt('메모 입력', memo);
-    if (newMemo !== null) {
-      setMemberMemo(memberKey, newMemo);
-      memoEl.querySelector('.content > .string').innerText = newMemo;
+    if (newMemo === null) {
+      return;
     }
+    if (newMemo.length > 30) {
+      alert('메모는 30자 이내로만 저장할 수 있습니다.');
+      return;
+    }
+    setMemberMemo(memberKey, newMemo);
+    memoEl.querySelector('.content > .string').innerText = newMemo;
   });
   memoEl.append(buttonEl);
   return memoEl;
