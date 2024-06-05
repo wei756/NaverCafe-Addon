@@ -5,7 +5,7 @@
 async function getMemberMemo(memberKey) {
   const memos = (await getSyncStorage()).memberMemos;
 
-  return memos.find((item) => item.memberKey === memberKey)?.memo ?? '없음';
+  return memos.find((item) => item.memberKey === memberKey)?.memo ?? '';
 }
 
 /**
@@ -26,16 +26,19 @@ async function setMemberMemo(memberKey, memo) {
 
 /**
  * @param {string} memberKey
- * @returns {Promise<Element>} 
+ * @returns {Promise<Element>}
  */
 async function geneMemberMemoUI(memberKey) {
   const memo = await getMemberMemo(memberKey);
+  const memoContent = memo
+    ? `메모: <span class="string">${memo}</span>`
+    : `메모 없음`;
 
   const memoEl = document.createElement('span');
   memoEl.className = 'memberMemo';
   memoEl.insertAdjacentHTML(
     'beforeend',
-    `<span class="content"> 메모: <span class="string">${memo}</span></span>`,
+    `<span class="content">${memoContent}</span>`,
   );
 
   const buttonEl = document.createElement('button');
@@ -51,7 +54,11 @@ async function geneMemberMemoUI(memberKey) {
       return;
     }
     setMemberMemo(memberKey, newMemo);
-    memoEl.querySelector('.content > .string').innerText = newMemo;
+    const memoContent =
+      newMemo.length > 0
+        ? `메모: <span class="string">${newMemo}</span>`
+        : `메모 없음`;
+    memoEl.querySelector('.content').innerHTML = memoContent;
   });
   memoEl.append(buttonEl);
   return memoEl;
