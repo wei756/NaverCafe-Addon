@@ -10,14 +10,15 @@
       "run_at": "document_start",
       "js": [
         "jquery3.3.1.min.js",
+        "core/utils/functions.js",
         "core/storage.js",
         "core/cafe-api.js",
         "core/parsing.js",
         "core/page-observer.js",
+        "core/init.js",
         "modules/article-profile-card.js",
         "modules/display-activity-stop.js",
         "modules/member-memo.js",
-        "common.js",
         "darkmode.js",
         "resolve-url.js",
         "content_script.js"

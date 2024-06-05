@@ -7,8 +7,6 @@ jQuery(async function ($) {
   $(document).ready(() => {
     injectFloatingUI();
     hideBlockedMembersOnArticleList();
-
-    performEvents();
   });
 
   async function injectFloatingUI() {

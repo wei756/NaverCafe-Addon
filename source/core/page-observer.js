@@ -28,7 +28,7 @@ function onPage(name, handler) {
   handlers[name]?.push(handler);
 }
 
-async function performArticleEvent() {
+async function performOnArticle() {
   // article
   while (true) {
     const { cafeId, articleId, memberKey } = await getWriterProfileOnArticle();
@@ -56,7 +56,7 @@ async function performArticleEvent() {
   }
 }
 
-async function performMemberProfileEvent() {
+async function performOnMemberProfile() {
   // member-profile
   while (true) {
     await waitUntilLoadedElement(
@@ -87,7 +87,7 @@ async function performMemberProfileEvent() {
   }
 }
 
-function performEvents() {
-  performMemberProfileEvent();
-  performArticleEvent();
+function handlePageEvents() {
+  document.addEventListener('DOMContentLoaded', performOnMemberProfile);
+  document.addEventListener('DOMContentLoaded', performOnArticle);
 }
