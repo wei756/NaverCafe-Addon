@@ -25,20 +25,14 @@ async function setMemberMemo(memberKey, memo) {
 }
 
 /**
- * @description 프로필 페이지에 멤버 메모와 편집 UI를 삽입합니다.
- *
- * @type {PageHandler}
+ * @param {string} memberKey
+ * @returns {Promise<Element>} 
  */
-async function injectMemberMemoUIOnProfilePage({ cafeId, memberKey }) {
-  const el = $query('.sub_tit_profile .nick_area');
-  if ($query('.sub_tit_profile .nick_area .memo')) {
-    return;
-  }
-
+async function geneMemberMemoUI(memberKey) {
   const memo = await getMemberMemo(memberKey);
 
   const memoEl = document.createElement('span');
-  memoEl.className = 'memo';
+  memoEl.className = 'memberMemo';
   memoEl.insertAdjacentHTML(
     'beforeend',
     `<span class="content"> 메모: <span class="string">${memo}</span></span>`,
@@ -46,7 +40,7 @@ async function injectMemberMemoUIOnProfilePage({ cafeId, memberKey }) {
 
   const buttonEl = document.createElement('button');
   buttonEl.className = 'btnEditMemo';
-  buttonEl.innerText = '메모 수정';
+  buttonEl.innerHTML = PencilSquareIcon;
   buttonEl.addEventListener('click', () => {
     const newMemo = prompt('메모 입력', memo);
     if (newMemo !== null) {
@@ -55,8 +49,21 @@ async function injectMemberMemoUIOnProfilePage({ cafeId, memberKey }) {
     }
   });
   memoEl.append(buttonEl);
+  return memoEl;
+}
 
+/**
+ * @description 프로필 페이지 UI
+ *
+ * @type {PageHandler}
+ */
+async function injectUIOnProfilePage({ cafeId, memberKey }) {
+  const el = $query('.sub_tit_profile .nick_area');
+  if ($query('.sub_tit_profile .nick_area .memberMemo')) {
+    return;
+  }
+  const memoEl = await geneMemberMemoUI(memberKey);
   el.insertAdjacentElement('beforeend', memoEl);
 }
 
-onPage('member-profile', injectMemberMemoUIOnProfilePage);
+onPage('member-profile', injectUIOnProfilePage);
