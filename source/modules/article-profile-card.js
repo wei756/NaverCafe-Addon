@@ -17,7 +17,7 @@ async function injectProfileCardOnArticle({ cafeId, articleId, memberKey }) {
 
   articleProfile.innerHTML = '';
   articleProfile.innerHTML = `<div class="SubscribeButton ProfileSwitchButton"><em class="diaplay_profile_text">프로필 표시</em><div class="ToggleSwitch ToggleSwitch--skinGray"><input id="toggle_diaplay_profile" type="checkbox" class="switch_input blind"><label for="toggle_diaplay_profile" class="switch_slider"></label></div></div>`;
-  articleProfile.append(geneProfileOnArticle(memberInfo, recentArticleList));
+  articleProfile.append(await geneProfileOnArticle(memberInfo, recentArticleList));
 
   const profileArea = await waitUntilLoadedElement(
     '.ArticleWriterProfile .profileArea',
@@ -50,7 +50,7 @@ async function injectProfileCardOnArticle({ cafeId, articleId, memberKey }) {
   });
 }
 
-function geneProfileOnArticle(memberInfo, articleList) {
+async function geneProfileOnArticle(memberInfo, articleList) {
   const profileElement = document.createElement('div');
   profileElement.className = 'profileArea';
   profileElement.innerHTML = `
@@ -61,7 +61,7 @@ function geneProfileOnArticle(memberInfo, articleList) {
       </div>
       <div class="descArea">
         <a class="nicknameWrapper">
-        <span class="activityStop">${XCircleIcon}</span>
+          <span class="activityStop">${XCircleIcon}</span>
           <span class="nickname"></span>
           <div class="class">
             <span class="className"></span>
@@ -82,6 +82,7 @@ function geneProfileOnArticle(memberInfo, articleList) {
             <span class="countValue subCount">0</span>
           </div>
         </div>
+        <div class="memoWrapper"></div>
       </div>
     </div>
     <div class="description"></div>
@@ -108,6 +109,9 @@ function geneProfileOnArticle(memberInfo, articleList) {
   if (!memberInfo.isActivityStop) {
     profileElement.querySelector('.activityStop').classList.add('notStop');
   }
+  
+  const memoElement = await geneMemberMemoUI(memberInfo.memberKey);
+  profileElement.querySelector('.memoWrapper').append(memoElement);
 
   profileElement.querySelector('.visitCount').innerText =
     formatNumberWithCommas(memberInfo.visitCount);
