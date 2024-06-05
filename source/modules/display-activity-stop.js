@@ -14,7 +14,7 @@ async function checkActivityStop({ cafeId, memberKey }) {
   if (isActivityStop) {
     el.insertAdjacentHTML(
       'afterend',
-      '<span class="activityStop">활동 정지됨</span>',
+      '<span class="activityStop">' + XCircleIcon + '</span>',
     );
   } else {
     el.insertAdjacentHTML(

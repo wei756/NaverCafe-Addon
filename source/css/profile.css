@@ -1,13 +1,14 @@
 .activityStop {
-  background: #888;
+  background: #f5353520;
   border-radius: 4px;
-  color: #fff;
+  color: var(--themeColorTC9);
   display: inline-block;
   font-size: 12px;
   font-weight: 700;
   line-height: 1em;
-  margin-left: 2px;
-  padding: 2px 4px 3px;
+  margin: 0 2px;
+  vertical-align: middle;
+  padding: 3px 3px 2px;
 }
 .activityStop.notStop {
   display: none;
@@ -172,8 +173,8 @@
 
 
 html[data-dark="true"] .activityStop {
-  background: #555;
-  color: #f0f0f0;
+  background: #f5353540;
+  color: var(--themeColorTC9);
 }
 html[data-dark="true"] .profileArea {
   border: #aaa solid 1px;

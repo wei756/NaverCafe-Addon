@@ -10,6 +10,7 @@
       "run_at": "document_start",
       "js": [
         "jquery3.3.1.min.js",
+        "ui/icon/x-circle-icon.js",
         "core/utils/functions.js",
         "core/storage.js",
         "core/cafe-api.js",

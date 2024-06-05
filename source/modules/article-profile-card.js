@@ -61,12 +61,12 @@ function geneProfileOnArticle(memberInfo, articleList) {
       </div>
       <div class="descArea">
         <a class="nicknameWrapper">
+        <span class="activityStop">${XCircleIcon}</span>
           <span class="nickname"></span>
           <div class="class">
             <span class="className"></span>
             <img src="" alt="" class="classIcon">
           </div>
-          <span class="activityStop">활동 정지됨</span>
         </a>
         <div class="memberSummary">
           <div class="count visit">
