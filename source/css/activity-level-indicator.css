@@ -1,0 +1,79 @@
+.activityLevelIndicator {
+  position: relative;
+}
+.sub_tit_profile .user_level .activityLevelIndicator {
+  margin-right: 4px;
+}
+.activityLevelIndicator .levelGaugeWrapper {
+  position: absolute;
+  top: calc(100% - 8px);
+  left: -12px;
+  padding: 8px 0;
+  opacity: 0;
+  transition: opacity 0.15s ease, top 0.15s ease;
+  pointer-events: none;
+  z-index: 10;
+}
+.activityLevelIndicator:hover .levelGaugeWrapper {
+  top: calc(100%);
+  opacity: 1;
+  pointer-events: auto;
+}
+.activityLevelIndicator .levelGaugeWrapper > .levelGaugeCard {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 4px #0003;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  width: 200px;
+  pointer-events: none;
+}
+html[data-dark='true']
+  .activityLevelIndicator
+  .levelGaugeWrapper
+  > .levelGaugeCard {
+  background: #333;
+}
+.activityLevelIndicator .levelGaugeWrapper .levelGauge {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.activityLevelIndicator .levelGaugeWrapper .levelGauge .levelGaugeBar {
+  background: #00ff3755;
+  width: 100%;
+  height: 4px;
+  position: relative;
+}
+.activityLevelIndicator
+  .levelGaugeWrapper
+  .levelGauge
+  .levelGaugeBar
+  .currentGauge {
+  background: var(--themeColorTC6);
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 30%;
+}
+.activityLevelIndicator .levelStatus {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.activityLevelIndicator .expPercent {
+}
+.activityLevelIndicator .levelExp {
+}
+.activityLevelIndicator .next {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-weight: 400;
+}
+.activityLevelIndicator .next .count {
+  font-weight: 700;
+}

@@ -21,6 +21,7 @@
         "modules/article-profile-card.js",
         "modules/display-activity-stop.js",
         "modules/member-memo.js",
+        "modules/activity-level-indicator.js",
         "darkmode.js",
         "resolve-url.js",
         "content_script.js"
@@ -30,7 +31,8 @@
         "css/deepdark1080_cafe-1593151221000-219709.css",
         "css/bestArticle.css",
         "css/profile.css",
-        "css/member-memo.css"
+        "css/member-memo.css",
+        "css/activity-level-indicator.css"
       ],
       "all_frames": true
     }

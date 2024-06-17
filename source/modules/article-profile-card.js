@@ -17,7 +17,9 @@ async function injectProfileCardOnArticle({ cafeId, articleId, memberKey }) {
 
   articleProfile.innerHTML = '';
   articleProfile.innerHTML = `<div class="SubscribeButton ProfileSwitchButton"><em class="diaplay_profile_text">프로필 표시</em><div class="ToggleSwitch ToggleSwitch--skinGray"><input id="toggle_diaplay_profile" type="checkbox" class="switch_input blind"><label for="toggle_diaplay_profile" class="switch_slider"></label></div></div>`;
-  articleProfile.append(await geneProfileOnArticle(memberInfo, recentArticleList));
+  articleProfile.append(
+    await geneProfileOnArticle(memberInfo, recentArticleList),
+  );
 
   const profileArea = await waitUntilLoadedElement(
     '.ArticleWriterProfile .profileArea',
@@ -63,6 +65,7 @@ async function geneProfileOnArticle(memberInfo, articleList) {
         <a class="nicknameWrapper">
           <span class="activityStop">${XCircleIcon}</span>
           <span class="nickname"></span>
+          ${geneLevelUI(memberInfo)}
           <div class="class">
             <span class="className"></span>
             <img src="" alt="" class="classIcon">
@@ -109,7 +112,7 @@ async function geneProfileOnArticle(memberInfo, articleList) {
   if (!memberInfo.isActivityStop) {
     profileElement.querySelector('.activityStop').classList.add('notStop');
   }
-  
+
   const memoElement = await geneMemberMemoUI(memberInfo.memberKey);
   profileElement.querySelector('.memoWrapper').append(memoElement);
 

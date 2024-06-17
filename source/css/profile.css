@@ -79,17 +79,12 @@
   font-weight: 700;
   line-height: 1em;
 }
-.profileArea .profilePanel .profileLink .descArea .nicknameWrapper .class {
+.profileArea .profilePanel .profileLink .descArea .nicknameWrapper .class,
+.profileArea .profilePanel .profileLink .descArea .nicknameWrapper .activityLevelIndicator {
   color: #999;
   font-size: 12px;
   font-weight: 700;
   line-height: 1em; 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2px;
-}
-.profileArea .profilePanel .profileLink .descArea .nicknameWrapper .class {
   display: flex;
   justify-content: center;
   align-items: center;
