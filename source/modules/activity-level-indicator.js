@@ -130,7 +130,11 @@ function geneLevelUI(memberInfo) {
                 <span class="percent">${expPercent.toFixed(1)}</span>%
               </div>
               <div class="levelExp">
-                <span class="currentExp">${activityExp}</span>/<span class="nextExp">${nextLevelExp}</span>
+                <span class="currentExp">${formatNumberWithCommas(
+                  activityExp,
+                )}</span>/<span class="nextExp">${formatNumberWithCommas(
+    nextLevelExp,
+  )}</span>
               </div>
             </div>
           </div>
