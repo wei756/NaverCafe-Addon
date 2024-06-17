@@ -63,6 +63,7 @@ html[data-dark='true']
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  font-weight: 700;
 }
 .activityLevelIndicator .expPercent {
 }
