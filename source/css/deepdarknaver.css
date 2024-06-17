@@ -303,7 +303,7 @@ html[data-dark=true] .skin-1080 #ia-info-data-emblem .txt {
 }
 
 html[data-dark=true] .skin-1080 .ia-info-btn .link_chat {
-	border-color: #e5e5e5;
+	border-color: #acacac;
 	color: #d9d9d9;
 	background-color: #1e1f21;
 }
@@ -1210,8 +1210,10 @@ html[data-dark=true] .CommentBox .comment_list .CommentItem {
 html[data-dark=true] {
 	--skinColor: #1e1f21;
 	--skinTextColor: #ccc;
-    --skinLayoutBorder: #aaa;
-	--skinListBorder: #999;
+	--skinText323232: #aaa;
+	--historyTextColor: #ccc;
+  --skinLayoutBorder: #aaa;
+	--skinListBorder: #777;
 	--themeColorBT6: #555;
 	--themeColorBT7: #2a2a2a;
 	--themeColorTC1: #ccc;
@@ -1229,6 +1231,9 @@ html[data-dark=true] {
 	--boardArticleListText: #999;
     --boardArticleListTitle: #f0f0f0;
 	--themeColorLN2: #aaa;
+
+	--skinBaseButtonDefaultBg: rgb(41, 42, 45);
+  --skinBaseButtonDefaultColor: #f0f0f0;
 }
 
 /* 광고 */
@@ -1293,4 +1298,23 @@ html[data-dark=true] .WritingEditor .editer_wrap {
 }
 html[data-dark=true] .WritingEditor .editer_wrap .FlexableTextArea .textarea_input {
 	background-color: #333;
+}
+
+/* 게시글 상단 1:1 채팅 버튼 */
+html[data-dark=true] .WriterInfo .profile_info .link_talk {
+	background: var(--skinBaseButtonDefaultBg);
+	color: var(--skinBaseButtonDefaultColor);
+}
+
+/* 댓글, 프로필 더보기메뉴 */
+html[data-dark=true] .LayerMore {
+	border: 1px solid rgba(255, 255, 255, .06);
+	background-color: var(--skinBaseButtonDefaultBg);
+	color: var(--skinBaseButtonDefaultColor);
+}
+html[data-dark=true] .LayerMore .layer_button {
+	color: var(--skinBaseButtonDefaultColor);
+}
+html[data-dark=true] .LayerMore .layer_button:hover {
+	background: #3b3c3e;
 }

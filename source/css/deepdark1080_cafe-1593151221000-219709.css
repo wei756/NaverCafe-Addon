@@ -505,13 +505,13 @@ html[data-dark=true] .alarm_switch .layer_alarm {
 
 /* tab menu */
 html[data-dark=true] .tab_list_wrap {
-	border-bottom: solid 1px #e5e5e5;
-	background-color: rgba(249, 249, 249, 0.5);
+	border-bottom: 1px solid #848484;
+	background-color: #333;
 }
 
 html[data-dark=true] .tab_list_wrap li {
-	border: solid 1px #e5e5e5;
-	background-color: #f9f9f9;
+	border: solid 1px #848484;
+	background-color: rgb(51, 51, 51);
 }
 
 html[data-dark=true] .tab_list_wrap li a {
@@ -521,7 +521,7 @@ html[data-dark=true] .tab_list_wrap li a {
 html[data-dark=true] .tab_list_wrap li.selected {
 	color: #03c75a;
 	border-color: #03c75a;
-	background-color: #fff;
+	background-color: rgb(89, 89, 89);
 }
 
 html[data-dark=true] .tab_list_wrap li.selected a {
@@ -1468,20 +1468,20 @@ html[data-dark=true] .skin-1080 .article-intro .group-tit {
 }
 
 html[data-dark=true] .skin-1080 .article-intro .box_profile {
-	background-color: #f9f9f9;
+	background-color: #333;
 }
 
 html[data-dark=true] .skin-1080 .article-intro .tbl_cafe_info {
-	border-top: 1px solid #e5e5e5;
+	border-top: 1px solid #848484;
 }
 
 html[data-dark=true] .skin-1080 .article-intro .tbl_cafe_info th {
-	border-bottom: 1px solid #e5e5e5;
-	background-color: #f9f9f9;
+	border-bottom: 1px solid #848484;
+	background-color: #333;
 }
 
 html[data-dark=true] .skin-1080 .article-intro .tbl_cafe_info td {
-	border-bottom: 1px solid #e5e5e5;
+	border-bottom: 1px solid #848484;
 }
 
 html[data-dark=true] .skin-1080 .article-intro .tbl_cafe_info .off_game {
@@ -1489,16 +1489,16 @@ html[data-dark=true] .skin-1080 .article-intro .tbl_cafe_info .off_game {
 }
 
 html[data-dark=true] .skin-1080 .article-intro .group_rank {
-	border: 1px solid #e5e5e5;
+	border: 1px solid #848484;
 }
 
 html[data-dark=true] .skin-1080 .article-intro .group_rank .rank_head {
-	border-bottom: 1px solid #e5e5e5;
+	border-bottom: 1px solid #848484;
 }
 
 html[data-dark=true] .skin-1080 .article-intro .group_rank .head_area .rank + .rank {
-	border-left: 1px solid #e5e5e5;
-	border-right: 1px solid #e5e5e5;
+	border-left: 1px solid #848484;
+	border-right: 1px solid #848484;
 }
 
 html[data-dark=true] .skin-1080 .article-intro .group_rank .head_area .desc {
