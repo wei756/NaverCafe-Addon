@@ -43,38 +43,6 @@
  * @property {boolean} showSexAndAge
  * @property {number} visitCount
  */
-/**
- * @typedef PopularArticleItem
- * @property {string} statDate
- * @property {number} cafeId
- * @property {number} articleId
- * @property {string} subject
- * @property {string} nickname
- * @property {string} writerId
- * @property {number} memberLevel
- * @property {number} memberLevelIconId
- * @property {number} commentCount
- * @property {string} formattedCommentCount
- * @property {string} representImage
- * @property {string} representImageType
- * @property {number} imageCount
- * @property {number} writeDateTimestamp
- * @property {string} aheadOfWriteDate
- * @property {string} saleStatus
- * @property {number} menuId
- * @property {string} menuType
- * @property {string} boardType
- * @property {boolean} newArticle
- * @property {boolean} openArticle
- * @property {number} readCount
- * @property {number} upCount
- * @property {string} formattedReadCount
- * @property {boolean} hasNewComment
- * @property {number} lastCommentDateTimestamp
- * @property {number} refArticleId
- * @property {number} totalScore
- * @property {boolean} enableToReadWhenNotCafeMember
- */
 
 /**
  * @typedef SiblingArticleResponse
@@ -211,33 +179,6 @@
  */
 
 /**
- * @description 인기글 데이터를 불러옵니다.
- *
- * @param {string} cafeid 카페 id
- * @returns {Promise<{message: {result: {popularArticleList: PopularArticleItem[]}}}>}
- */
-function getBestArticles(cafeid) {
-  const url = `https://apis.naver.com/cafe-web/cafe2/WeeklyPopularArticleList.json?cafeId=${cafeid}`;
-  return new Promise((resolve, reject) =>
-    $.ajax({
-      type: 'POST',
-      url,
-      dataType: 'json',
-      xhrFields: {
-        withCredentials: true,
-      },
-      crossDomain: true,
-      success: resolve,
-      error: (xhr) => {
-        alert('인기글을 불러오는 데 실패하였습니다.');
-        alert(xhr.responseText);
-        reject(xhr);
-      },
-    }),
-  );
-}
-
-/**
  * @description 회원의 활동정지 상태를 반환합니다.
  *
  * @param {string} cafeid 카페 id
@@ -245,25 +186,15 @@ function getBestArticles(cafeid) {
  * @returns {Promise<boolean>}
  */
 function getActivityStop(cafeId, memberKey) {
-  return new Promise((resolve, reject) =>
-    $.ajax({
-      type: 'POST',
-      url: `https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberStatus?cafeId=${cafeId}&memberKey=${memberKey}`,
-      dataType: 'json',
-      xhrFields: {
-        withCredentials: true,
-      },
-      crossDomain: true,
-      success: (data) => {
-        resolve(
-          data.message.status == '200' && data.message.result.activityStop,
-        );
-      },
-      error: (xhr) => {
-        reject(false);
-      },
-    }),
-  );
+  return fetch(
+    `https://apis.naver.com/cafe-web/cafe-mobile/CafeMemberStatus?cafeId=${cafeId}&memberKey=${memberKey}`,
+    { credentials: 'include' },
+  )
+    .then((res) => res.json())
+    .then(
+      (res) => res.message.status == '200' && res.message.result.activityStop,
+    )
+    .catch(() => false);
 }
 
 const memberCache = {};
