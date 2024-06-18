@@ -387,7 +387,7 @@ function getBlockedMembers(cafeid) {
  * @param {number} articleId
  * @returns {Promise<SiblingArticleResponse | SiblingArticleError>}
  */
-async function getArticleSiblings(cafeId, articleId, limit = 3) {
+async function getArticleSiblings(cafeId, articleId, limit = 5) {
   const url = `https://apis.naver.com/cafe-web/cafe-articleapi/cafes/${cafeId}/articles/${articleId}/siblings?limit=${limit}`;
   return await fetch(url, { credentials: 'include' }).then((res) => res.json());
 }
