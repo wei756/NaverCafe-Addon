@@ -1,6 +1,6 @@
 {
   "name": "네이버 카페 애드온",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "다크모드, 유저 프로필 카드, 회원 메모 등 각종 편의기능 제공",
   "permissions": ["storage"],
   "host_permissions": ["https://cafe.naver.com/*", "http://cafe.naver.com/*"],
