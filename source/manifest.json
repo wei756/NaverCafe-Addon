@@ -12,6 +12,7 @@
         "jquery3.3.1.min.js",
         "ui/icon/x-circle-icon.js",
         "ui/icon/pencil-square-icon.js",
+        "ui/icon/shorts-icon.js",
         "core/utils/functions.js",
         "core/storage.js",
         "core/cafe-api.js",
@@ -22,6 +23,7 @@
         "modules/display-activity-stop.js",
         "modules/member-memo.js",
         "modules/activity-level-indicator.js",
+        "modules/comment-url-link.js",
         "darkmode.js",
         "resolve-url.js",
         "content_script.js"
@@ -32,7 +34,8 @@
         "css/bestArticle.css",
         "css/profile.css",
         "css/member-memo.css",
-        "css/activity-level-indicator.css"
+        "css/activity-level-indicator.css",
+        "css/comment-url-link.css"
       ],
       "all_frames": true
     }

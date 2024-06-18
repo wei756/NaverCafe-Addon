@@ -1,4 +1,10 @@
 /**
+ * @typedef CafeApiError
+ * @property {string} code
+ * @property {string} msg
+ */
+
+/**
  * @typedef {Object} MemberInfo
  * @property {boolean} allowPopularMember
  * @property {number} articleCount
@@ -68,6 +74,140 @@
  * @property {number} refArticleId
  * @property {number} totalScore
  * @property {boolean} enableToReadWhenNotCafeMember
+ */
+
+/**
+ * @typedef SiblingArticleResponse
+ * @property {SiblingArticleMenu} menu
+ * @property {SiblingArticleList} articles
+ * @property {SiblingArticleAlarm} alarm
+ *
+ * @typedef SiblingArticleMenu
+ * @property {number} id
+ * @property {string} name
+ *
+ * @typedef SiblingArticleList
+ * @property {SiblingArticleItem[]} items
+ * @property {number} totalPages
+ *
+ * @typedef SiblingArticleItem
+ * @property {number} id
+ * @property {string} subject
+ * @property {string} writerId
+ * @property {string} writerMemberKey
+ * @property {string} writerNick
+ * @property {number} writeDate
+ * @property {number} memberLevel
+ * @property {number} memberLevelIconId
+ * @property {number} commentCount
+ * @property {string} saleStatus
+ * @property {SiblingArticleHead} head
+ * @property {boolean} isAttachedMap
+ * @property {boolean} isAttachedMovie
+ * @property {boolean} isAttachedLink
+ * @property {boolean} isAttachedMusic
+ * @property {boolean} isAttachedCalendar
+ * @property {boolean} isAttachedPoll
+ * @property {boolean} isAttachedFile
+ * @property {boolean} isAttachedImage
+ * @property {boolean} isNewArticle
+ * @property {boolean} isCafeBook
+ * @property {boolean} isBadMenuByRestrict
+ *
+ * @typedef SiblingArticleHead
+ * @property {number} headId
+ * @property {string} head
+ *
+ * @typedef SiblingArticleAlarm
+ * @property {boolean} isShow
+ * @property {boolean} isChecked
+ *
+ * @typedef SiblingArticleError
+ * @property {string} errorCode
+ * @property {string} reason
+ * @property {SiblingArticleErrorMore} more
+ *
+ * @typedef SiblingArticleErrorMore
+ * @property {string} cafeUrl
+ * @property {string} cafeName
+ * @property {string} pcCafeName
+ * @property {number} cafeId
+ */
+
+/**
+ * @typedef CafeInfo
+ * @property {string} profileImageUrl
+ * @property {string} mobileGateImageUrl
+ * @property {string} mobileCafeName
+ * @property {CafeInfoView} cafeInfoView
+ * @property {number} memberCount
+ * @property {boolean} useMemberLevel
+ * @property {boolean} readOnly
+ * @property {boolean} popularMenu
+ * @property {boolean} showPopularMember
+ * @property {string} popularItemStatusCode
+ * @property {string} popularArticleStatDate
+ * @property {string} styleCode
+ * @property {number} styleId
+ * @property {SkinColorType} skinColorType
+ * @property {boolean} openMemberInfo
+ *
+ * @typedef CafeInfoView
+ * @property {number} cafeId
+ * @property {string} cafeUrl
+ * @property {string} cafeName
+ * @property {string} openType
+ * @property {string} sysopId
+ * @property {string} sysopNick
+ * @property {string} openDate
+ * @property {boolean} powerCafe
+ * @property {boolean} dormantCafe
+ * @property {boolean} starJoinCafe
+ * @property {boolean} educationCafe
+ * @property {boolean} gameCafe
+ * @property {boolean} teenagerHarmfulCafe
+ * @property {boolean} townCafe
+ * @property {string} regionName
+ *
+ * @typedef SkinColorType
+ * @property {string} type
+ * @property {string} cssFilePostfix
+ */
+
+/**
+ * @typedef YoutubeVideoInfo
+ * @property {string} title
+ * @property {string} author_name
+ * @property {string} author_url
+ * @property {string} type
+ * @property {string} height
+ * @property {string} width
+ * @property {string} version
+ * @property {string} provider_name
+ * @property {string} provider_url
+ * @property {string} thumbnail_url
+ * @property {string} thumbnail_width
+ * @property {string} thumbnail_height
+ * @property {string} html
+ */
+
+/**
+ * @typedef AfreecaVodInfo
+ * @property {string} '@context'
+ * @property {string} '@type'
+ * @property {string} name
+ * @property {string} description
+ * @property {string} thumbnailUrl
+ * @property {string} uploadDate
+ * @property {string} duration
+ * @property {string} embedUrl
+ * @property {string} author
+ */
+
+/**
+ * @typedef AfreecaLiveInfo
+ * @property {string} title
+ * @property {string} nickname
  */
 
 /**
@@ -238,4 +378,85 @@ function getBlockedMembers(cafeid) {
       },
     }),
   );
+}
+
+/**
+ * @description 이웃 글 목록을 불러옵니다.
+ *
+ * @param {number} cafeId
+ * @param {number} articleId
+ * @returns {Promise<SiblingArticleResponse | SiblingArticleError>}
+ */
+async function getArticleSiblings(cafeId, articleId, limit = 3) {
+  const url = `https://apis.naver.com/cafe-web/cafe-articleapi/cafes/${cafeId}/articles/${articleId}/siblings?limit=${limit}`;
+  return await fetch(url, { credentials: 'include' }).then((res) => res.json());
+}
+
+/**
+ * @description 카페 정보를 출력합니다.
+ *
+ * @param {string | number} cafeUrl
+ * @returns {Promise<CafeInfo | CafeApiError>}
+ */
+async function getCafeGateInfo(cafeUrl) {
+  const params =
+    typeof cafeUrl === 'string' ? `cluburl=${cafeUrl}` : `cafeid=${cafeUrl}`;
+  return await fetch(
+    `https://apis.naver.com/cafe-web/cafe2/CafeGateInfo.json?${params}`,
+  )
+    .then((res) => res.json())
+    .then((res) => res.message.result || res.message.error);
+}
+
+/**
+ * @description 유튜브 영상 정보를 출력합니다.
+ *
+ * @param {string} videoId
+ * @returns {Promise<YoutubeVideoInfo | null>}
+ */
+async function getYoutubeVideoInfo(videoId) {
+  const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+  return await fetch(url)
+    .then((res) => res.json())
+    .catch(() => null);
+}
+
+/**
+ * @description 아프리카 VOD 정보를 출력합니다.
+ *
+ * @param {string} videoId
+ * @returns {Promise<AfreecaVodInfo | null>}
+ */
+async function getAfreecaVodInfo(videoId) {
+  const url = `https://api.allorigins.win/raw?url=https://vod.afreecatv.com/player/${videoId}`;
+  return await fetch(url)
+    .then((res) => res.text())
+    .then(
+      (html) =>
+        html.match(
+          /(?<=<script type="application\/ld\+json">)(\n|.)*?(?=<\/script>)/,
+        )?.[0],
+    )
+    .then(JSON.parse)
+    .catch(() => null);
+}
+
+/**
+ * @description 아프리카 생방송 정보를 출력합니다.
+ *
+ * @param {string} streamerId
+ * @param {string} videoId
+ * @returns {Promise<AfreecaLiveInfo | null>}
+ */
+async function getAfreecaLiveInfo(streamerId, videoId) {
+  const url = `https://api.allorigins.win/raw?url=https://play.afreecatv.com/${streamerId}/${videoId}`;
+  return await fetch(url)
+    .then((res) => res.text())
+    .then((html) => ({
+      title: html.match(
+        /(?<=<meta property="og:title" content=")(.+?)(?=" \/>)/,
+      )?.[0],
+      nickname: html.match(/(?<=<div class="nickname">)(.+?)(?=<\/div>)/)?.[0],
+    }))
+    .catch(() => null);
 }
