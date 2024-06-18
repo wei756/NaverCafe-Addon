@@ -9,6 +9,9 @@
   padding: 4px 12px 4px 4px;
   margin-top: 4px;
 }
+html[data-dark='true'] .CommentLinkButton {
+  background: #fff2;
+}
 .CommentLinkButton .linkIcon {
   width: 20px;
   height: 20px;
