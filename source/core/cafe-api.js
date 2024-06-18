@@ -350,34 +350,19 @@ async function getCafeMemberArticles(cafeId, memberKey) {
 /**
  * @description 차단한 멤버 키를 불러옵니다.
  *
- * @param {string} cafeid 카페 id
+ * @param {string} cafeId 카페 id
  * @returns {Promise<string[]>}
  */
-function getBlockedMembers(cafeid) {
-  const url = `https://apis.naver.com/cafe-web/cafe2/ArticleListV2dot1.json?search.clubid=${cafeid}&search.perPage=0`;
-  return new Promise((resolve, reject) =>
-    $.ajax({
-      type: 'GET',
-      url,
-      dataType: 'json',
-      xhrFields: {
-        withCredentials: true,
-      },
-      crossDomain: true,
-      success: (res) => {
-        if (res.message.status == '200') {
-          resolve(res.message.result.blockMemberList);
-        } else {
-          reject(res);
-        }
-      },
-      error: (xhr) => {
-        alert('인기글을 불러오는 데 실패하였습니다.');
-        alert(xhr.responseText);
-        reject(xhr);
-      },
-    }),
-  );
+function getBlockedMembers(cafeId) {
+  return fetch(
+    `https://apis.naver.com/cafe-web/cafe-cafeinfo-api/v1.1/cafes/${cafeId}/block-members`,
+    {
+      credentials: 'include',
+    },
+  )
+    .then((res) => res.json())
+    .then((res) => res.result)
+    .catch(() => []);
 }
 
 /**
