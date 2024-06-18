@@ -133,7 +133,7 @@ function geneLevelUI(memberInfo) {
                 <span class="currentExp">${formatNumberWithCommas(
                   activityExp,
                 )}</span>/<span class="nextExp">${formatNumberWithCommas(
-    nextLevelExp,
+    Math.ceil(nextLevelExp),
   )}</span>
               </div>
             </div>
