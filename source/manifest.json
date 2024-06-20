@@ -24,6 +24,7 @@
         "modules/member-memo.js",
         "modules/activity-level-indicator.js",
         "modules/comment-url-link.js",
+        "modules/remove-block-drag.js",
         "darkmode.js",
         "resolve-url.js",
         "content_script.js"
