@@ -143,6 +143,90 @@
  */
 
 /**
+ * @typedef CommentItem
+ * @property {number} id
+ * @property {number} refId
+ * @property {CommentWriter} writer
+ * @property {string} content
+ * @property {CommentImage} image
+ * @property {CommentImage} originalImage
+ * @property {CommentSticker} sticker
+ * @property {number} updateDate
+ * @property {number} memberLevel
+ * @property {number} memberLevelIconId
+ * @property {boolean} cleanBotDetected
+ * @property {boolean} isRef
+ * @property {boolean} isDeleted
+ * @property {boolean} isArticleWriter
+ * @property {boolean} isNew
+ * @property {boolean} isRemovable
+ * @property {CommentStandardReportPopup} standardReportPopup
+ *
+ * @typedef CommentWriter
+ * @property {string} id
+ * @property {string} memberKey
+ * @property {string} nick
+ * @property {CommentWriterImage} image
+ * @property {boolean} currentPopularMember
+ *
+ * @typedef CommentImage
+ * @property {string} url
+ * @property {string} service
+ * @property {string} type
+ * @property {boolean} isAnimated
+ * @property {boolean} isCropped
+ * @property {number} width
+ * @property {number} height
+ * @property {string} path
+ * @property {string} fileName
+ *
+ * @typedef CommentSticker
+ * @property {string} id
+ * @property {string} url
+ * @property {string} type
+ * @property {boolean} animation
+ * @property {number} width
+ * @property {number} height
+ *
+ * @typedef CommentWriterImage
+ * @property {string} url
+ * @property {string} service
+ * @property {string} type
+ *
+ * @typedef CommentStandardReportPopup
+ * @property {string} normalUrl
+ * @property {string} darkUrl
+ * @property {boolean} showRemoveAlert
+ */
+
+/**
+ * @typedef CommentLikeItem
+ * @property {'CAFE-COMMENT'} serviceId
+ * @property {string} contentsId
+ * @property {boolean} isDisplay
+ * @property {null} categoryId
+ * @property {'DEFAULT'} countType
+ * @property {CommentLikeReaction[]} reactions
+ * @property {{}} reactionMap
+ * @property {any} reactionTextMap
+ * @property {boolean} isLogin
+ * @property {boolean} customized
+ * @property {boolean} differentPlatform
+ *
+ * @typedef CommentLikeReaction
+ * @property {string} reactionType
+ * @property {number} count
+ * @property {boolean} isReacted
+ * @property {null} periodUser
+ * @property {CommentLikeReactionTypeCode} reactionTypeCode
+ *
+ * @typedef CommentLikeReactionTypeCode
+ * @property {string} name
+ * @property {string} messageCode
+ * @property {string} description
+ */
+
+/**
  * @typedef YoutubeVideoInfo
  * @property {string} title
  * @property {string} author_name
@@ -340,6 +424,56 @@ async function getCafeGateInfo(cafeUrl) {
   )
     .then((res) => res.json())
     .then((res) => res.message.result || res.message.error);
+}
+
+/**
+ * @description 댓글 목록을 불러옵니다.
+ *
+ * @param {number} cafeId
+ * @param {number} articleId
+ * @param {number} page
+ * @param {number} perPage
+ * @returns {Promise<CommentItem[]>}
+ */
+async function getComments(
+  cafeId,
+  articleId,
+  page = 1,
+  perPage = 100,
+  orderBy = 'asc',
+) {
+  const url = `https://apis.naver.com/cafe-web/cafe-articleapi/v2/cafes/${cafeId}/articles/${articleId}/comments/pages/${page}?requestFrom=A&orderBy=${orderBy}&perPage=${perPage}`;
+  return await fetch(url, { credentials: 'include' })
+    .then((res) => res.json())
+    .then((res) => res.result.comments.items);
+}
+
+/**
+ * @description 댓글 좋아요 목록을 불러옵니다.
+ *
+ * @param {number} cafeId
+ * @param {number} articleId
+ * @param {number[]} commentIds
+ * @returns {Promise<CommentLikeItem[]>}
+ */
+async function getCommentLikes(cafeId, articleId, commentIds) {
+  const params = {
+    suppress_response_codes: true,
+    q: `CAFE-COMMENT[${commentIds
+      .map((commentId) => `${cafeId}-${articleId}-${commentId}`)
+      .join(',')}]`,
+    isDuplication: true,
+    cssIds: 'BASIC_PC,CAFE_PC',
+    _: Date.now(),
+  };
+  const url = `https://api.allorigins.win/raw?${new URLSearchParams({
+    url: `https://cafe.like.naver.com/v1/search/contents?${new URLSearchParams(
+      params,
+    ).toString()}`,
+  })}`;
+  return await fetch(url)
+    .then((res) => res.json())
+    .then((res) => res.contents);
 }
 
 /**
