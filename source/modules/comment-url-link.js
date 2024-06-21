@@ -51,13 +51,8 @@ async function replaceCommentUrlStringToLink({ cafeId, articleId, memberKey }) {
         }
       }
       if (articleInfo.cafe.name) {
-        const icon = document.createElement('img');
-        icon.classList.add('linkIcon');
-        icon.src = articleInfo.cafe.icon;
-        linkElement.prepend(icon);
+        linkElement.prepend(LinkIcon(articleInfo.cafe.icon));
       }
-      link.innerText = '';
-      link.appendChild(linkElement);
     } else if (youtube) {
       // 유튜브 영상
       const videoId = youtube.groups.videoId;
@@ -66,14 +61,11 @@ async function replaceCommentUrlStringToLink({ cafeId, articleId, memberKey }) {
         linkElement.innerText = `존재하지 않는 유튜브 링크`;
       }
       linkElement.innerText = videoInfo.title || videoId;
-
-      const icon = document.createElement('img');
-      icon.classList.add('linkIcon');
-      icon.src =
-        'https://www.youtube.com/s/desktop/a258f8cf/img/favicon_32x32.png';
-      linkElement.prepend(icon);
-      link.innerText = '';
-      link.appendChild(linkElement);
+      linkElement.prepend(
+        LinkIcon(
+          'https://www.youtube.com/s/desktop/a258f8cf/img/favicon_32x32.png',
+        ),
+      );
     } else if (youtubeShorts) {
       // 유튜브 쇼츠
       const videoId = youtubeShorts.groups.videoId;
@@ -82,24 +74,15 @@ async function replaceCommentUrlStringToLink({ cafeId, articleId, memberKey }) {
         linkElement.innerText = `존재하지 않는 유튜브 링크`;
       }
       linkElement.innerText = videoInfo.title || videoId;
-
-      const icon = ShortsIcon('linkIcon');
-      linkElement.insertAdjacentHTML('afterbegin', icon);
-      link.innerText = '';
-      link.appendChild(linkElement);
+      linkElement.prepend(LinkShortsIcon());
     } else if (afreecaStation) {
       // 아프리카 방송국
       const streamerId = afreecaStation.groups.streamerId;
 
       linkElement.innerText = `방송국 - ${streamerId}`;
-
-      const icon = document.createElement('img');
-      icon.classList.add('linkIcon');
-      icon.src = 'https://bj.afreecatv.com/favicon.ico';
-      linkElement.prepend(icon);
-      link.innerText = '';
-      link.appendChild(linkElement);
+      linkElement.prepend(LinkIcon('https://bj.afreecatv.com/favicon.ico'));
     } else if (afreecaLive) {
+      // 아프리카 생방송
       const streamerId = afreecaLive.groups.streamerId;
       const videoId = afreecaLive.groups.videoId;
       const streamInfo = await getAfreecaLiveInfo(streamerId, videoId);
@@ -110,28 +93,20 @@ async function replaceCommentUrlStringToLink({ cafeId, articleId, memberKey }) {
       linkElement.innerText = `${streamInfo.title || videoId} | ${
         streamInfo.nickname || streamerId
       } 생방송`;
-
-      const icon = document.createElement('img');
-      icon.classList.add('linkIcon');
-      icon.src = 'https://bj.afreecatv.com/favicon.ico';
-      linkElement.prepend(icon);
-      link.innerText = '';
-      link.appendChild(linkElement);
+      linkElement.prepend(LinkIcon('https://bj.afreecatv.com/favicon.ico'));
     } else if (afreecaVod) {
+      // 아프리카 VOD
       const videoId = afreecaVod.groups.videoId;
       const videoInfo = await getAfreecaVodInfo(videoId);
       if (!videoInfo) {
         linkElement.innerText = `존재하지 않는 아프리카TV VOD 링크`;
       }
-
       linkElement.innerText = videoInfo.name || videoId;
+      linkElement.prepend(LinkIcon('https://bj.afreecatv.com/favicon.ico'));
+    }
 
-      const icon = document.createElement('img');
-      icon.classList.add('linkIcon');
-      icon.src = 'https://bj.afreecatv.com/favicon.ico';
-      linkElement.prepend(icon);
-      link.innerText = '';
-      link.appendChild(linkElement);
+    if (linkElement.innerText) {
+      link.childNodes[0].replaceWith(linkElement);
     }
   });
 }
@@ -161,10 +136,12 @@ async function parseCafeArticleInfo(cafe) {
     cafe.cafeId = cafeInfo.cafeInfoView.cafeId;
   }
 
+  // 카페 정보
   result.cafe.name = cafeInfo.mobileCafeName;
   result.cafe.url = cafeInfo.cafeInfoView.cafeUrl;
   result.cafe.icon = cafeInfo.profileImageUrl;
 
+  // 이웃 게시글 정보를 통해 현재 게시글 정보를 가져옴
   const siblingResponse = await getArticleSiblings(cafe.cafeId, cafe.articleId);
   if (siblingResponse.errorCode) {
     return result;
@@ -179,6 +156,8 @@ async function parseCafeArticleInfo(cafe) {
     return result;
   }
   result.article.articleId = cafe.articleId;
+
+  // 게시글 제목
   if (article.head?.head) {
     result.article.subject = `[${article.head.head}] ${article.subject}`;
   } else {
