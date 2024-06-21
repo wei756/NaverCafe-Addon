@@ -27,6 +27,21 @@ async function replaceCommentUrlStringToLink({ cafeId, articleId, memberKey }) {
 
     const linkElement = document.createElement('span');
     linkElement.classList.add('CommentLinkButton');
+    const iconWrapper = document.createElement('span');
+    linkElement.appendChild(iconWrapper);
+    const label = document.createElement('span');
+    linkElement.appendChild(label);
+    const line = document.createElement('div');
+    line.classList.add('line');
+    linkElement.appendChild(line);
+    const revealOriginalLinkButton = document.createElement('button');
+    revealOriginalLinkButton.innerText = '원본 링크 보기';
+    revealOriginalLinkButton.classList.add('revertOriginal');
+    revealOriginalLinkButton.addEventListener('click', (e) => {
+      e.preventDefault();
+      link.innerText = url;
+    });
+    linkElement.appendChild(revealOriginalLinkButton);
 
     const cafe = parseCafeUrl(url);
     const youtube = url.match(youtubeRegex);
@@ -39,28 +54,23 @@ async function replaceCommentUrlStringToLink({ cafeId, articleId, memberKey }) {
       // 카페 게시글
       const articleInfo = await parseCafeArticleInfo(cafe);
       if (!articleInfo.cafe.name) {
-        linkElement.innerText = '존재하지 않는 카페';
-      } else if (!articleInfo.article.subject) {
-        linkElement.innerText = '존재하지 않는 게시글';
+        label.innerText = '존재하지 않는 카페';
       } else {
-        linkElement.innerText = articleInfo.article.subject;
+        label.innerText = articleInfo?.article?.subject ?? cafe.articleId;
         // 모바일 pc링크로 변환
         if (link.href.includes('//m.cafe.naver.com')) {
           link.href = `https://cafe.naver.com/${articleInfo.cafe.url}/${articleInfo.article.articleId}`;
         }
       }
       if (articleInfo.cafe.name) {
-        linkElement.prepend(LinkIcon(articleInfo.cafe.icon));
+        iconWrapper.appendChild(LinkIcon(articleInfo.cafe.icon));
       }
     } else if (youtube) {
       // 유튜브 영상
       const videoId = youtube.groups.videoId;
       const videoInfo = await getYoutubeVideoInfo(videoId);
-      if (!videoInfo) {
-        linkElement.innerText = `존재하지 않는 유튜브 링크`;
-      }
-      linkElement.innerText = videoInfo.title || videoId;
-      linkElement.prepend(
+      label.innerText = videoInfo?.title ?? videoId;
+      iconWrapper.appendChild(
         LinkIcon(
           'https://www.youtube.com/s/desktop/a258f8cf/img/favicon_32x32.png',
         ),
@@ -69,17 +79,14 @@ async function replaceCommentUrlStringToLink({ cafeId, articleId, memberKey }) {
       // 유튜브 쇼츠
       const videoId = youtubeShorts.groups.videoId;
       const videoInfo = await getYoutubeVideoInfo(videoId);
-      if (!videoInfo) {
-        linkElement.innerText = `존재하지 않는 유튜브 링크`;
-      }
-      linkElement.innerText = videoInfo.title || videoId;
-      linkElement.prepend(LinkShortsIcon());
+      label.innerText = videoInfo?.title ?? videoId;
+      iconWrapper.appendChild(LinkShortsIcon());
     } else if (afreecaStation) {
       // 아프리카 방송국
       const streamerId = afreecaStation.groups.streamerId;
       const stationInfo = await getAfreecaStationInfo(streamerId);
-      linkElement.innerText = `${stationInfo.station.user_nick} 방송국`;
-      linkElement.prepend(LinkIcon('https://bj.afreecatv.com/favicon.ico'));
+      label.innerText = `${stationInfo?.station?.user_nick ?? '알 수 없는'} 방송국`;
+      iconWrapper.appendChild(LinkIcon('https://bj.afreecatv.com/favicon.ico'));
     } else if (afreecaLive) {
       // 아프리카 생방송
       const streamerId = afreecaLive.groups.streamerId;
@@ -87,24 +94,21 @@ async function replaceCommentUrlStringToLink({ cafeId, articleId, memberKey }) {
       const streamInfo = await getAfreecaLiveInfo(streamerId, videoId);
       const stationInfo = await getAfreecaStationInfo(streamerId);
       if (!streamInfo) {
-        linkElement.innerText = `존재하지 않는 아프리카TV 생방송 링크`;
+        label.innerText = `존재하지 않는 아프리카TV 생방송 링크`;
       }
-      linkElement.innerText = `${streamInfo.title || videoId} | ${
+      label.innerText = `${streamInfo.title || videoId} | ${
         stationInfo?.station?.user_nick || streamerId
       } 생방송`;
-      linkElement.prepend(LinkIcon('https://bj.afreecatv.com/favicon.ico'));
+      iconWrapper.appendChild(LinkIcon('https://bj.afreecatv.com/favicon.ico'));
     } else if (afreecaVod) {
       // 아프리카 VOD
       const videoId = afreecaVod.groups.videoId;
       const videoInfo = await getAfreecaVodInfo(videoId);
-      if (!videoInfo) {
-        linkElement.innerText = `존재하지 않는 아프리카TV VOD 링크`;
-      }
-      linkElement.innerText = videoInfo.name || videoId;
-      linkElement.prepend(LinkIcon('https://bj.afreecatv.com/favicon.ico'));
+      label.innerText = videoInfo?.name || videoId;
+      iconWrapper.appendChild(LinkIcon('https://bj.afreecatv.com/favicon.ico'));
     }
 
-    if (linkElement.innerText) {
+    if (label.innerText) {
       link.childNodes[0].replaceWith(linkElement);
     }
   });

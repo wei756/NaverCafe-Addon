@@ -17,3 +17,21 @@ html[data-dark='true'] .CommentLinkButton {
   height: 20px;
   border-radius: 10px;
 }
+
+.CommentLinkButton .line {
+  width: 1px;
+  height: 20px;
+  background: #ccc;
+}
+html[data-dark='true'] .CommentLinkButton .line {
+  background: #aaa;
+}
+
+.CommentLinkButton .revertOriginal {
+  color: #959595;
+  font-size: 12px;
+  font-weight: 700;
+}
+html[data-dark='true'] .CommentLinkButton .revertOriginal {
+  color: #aaa;
+}
