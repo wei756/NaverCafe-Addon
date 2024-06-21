@@ -160,6 +160,24 @@
  */
 
 /**
+ * @typedef AfreecaStationInfo
+ * @property {string} profile_image
+ * @property {AfreecaStation} station
+ *
+ * @typedef AfreecaStation
+ * @property {string} broad_start
+ * @property {number} grade
+ * @property {string} jointime
+ * @property {string} station_name
+ * @property {number} station_no
+ * @property {string} station_title
+ * @property {number} total_broad_time
+ * @property {string} user_id
+ * @property {string} user_nick
+ * @property {number} active_no
+ */
+
+/**
  * @typedef AfreecaVodInfo
  * @property {string} '@context'
  * @property {string} '@type'
@@ -332,6 +350,19 @@ async function getCafeGateInfo(cafeUrl) {
  */
 async function getYoutubeVideoInfo(videoId) {
   const url = `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`;
+  return await fetch(url)
+    .then((res) => res.json())
+    .catch(() => null);
+}
+
+/**
+ * @description 아프리카 방송국 정보를 출력합니다.
+ *
+ * @param {string} streamerId
+ * @returns {Promise<AfreecaStationInfo | null>}
+ */
+async function getAfreecaStationInfo(streamerId) {
+  const url = `https://api.allorigins.win/raw?url=http://bjapi.afreecatv.com/api/${streamerId}/station`;
   return await fetch(url)
     .then((res) => res.json())
     .catch(() => null);
