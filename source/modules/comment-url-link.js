@@ -15,7 +15,6 @@ const afreecaVodRegex =
  * @type {PageHandler}
  */
 async function replaceCommentUrlStringToLink({ cafeId, articleId, memberKey }) {
-  console.log('replaceCommentUrlStringToLink');
   const commentList = await waitUntilLoadedElement(
     '.CommentBox ul.comment_list',
   );
@@ -35,6 +34,7 @@ async function replaceCommentUrlStringToLink({ cafeId, articleId, memberKey }) {
     const afreecaStation = url.match(afreecaStationRegex);
     const afreecaLive = url.match(afreecaLiveRegex);
     const afreecaVod = url.match(afreecaVodRegex);
+
     if (cafe) {
       // 카페 게시글
       const articleInfo = await parseCafeArticleInfo(cafe);
@@ -44,7 +44,6 @@ async function replaceCommentUrlStringToLink({ cafeId, articleId, memberKey }) {
         linkElement.innerText = '존재하지 않는 게시글';
       } else {
         linkElement.innerText = articleInfo.article.subject;
-
         // 모바일 pc링크로 변환
         if (link.href.includes('//m.cafe.naver.com')) {
           link.href = `https://cafe.naver.com/${articleInfo.cafe.url}/${articleInfo.article.articleId}`;
@@ -78,20 +77,20 @@ async function replaceCommentUrlStringToLink({ cafeId, articleId, memberKey }) {
     } else if (afreecaStation) {
       // 아프리카 방송국
       const streamerId = afreecaStation.groups.streamerId;
-
-      linkElement.innerText = `방송국 - ${streamerId}`;
+      const stationInfo = await getAfreecaStationInfo(streamerId);
+      linkElement.innerText = `${stationInfo.station.user_nick} 방송국`;
       linkElement.prepend(LinkIcon('https://bj.afreecatv.com/favicon.ico'));
     } else if (afreecaLive) {
       // 아프리카 생방송
       const streamerId = afreecaLive.groups.streamerId;
       const videoId = afreecaLive.groups.videoId;
       const streamInfo = await getAfreecaLiveInfo(streamerId, videoId);
+      const stationInfo = await getAfreecaStationInfo(streamerId);
       if (!streamInfo) {
         linkElement.innerText = `존재하지 않는 아프리카TV 생방송 링크`;
       }
-
       linkElement.innerText = `${streamInfo.title || videoId} | ${
-        streamInfo.nickname || streamerId
+        stationInfo?.station?.user_nick || streamerId
       } 생방송`;
       linkElement.prepend(LinkIcon('https://bj.afreecatv.com/favicon.ico'));
     } else if (afreecaVod) {
