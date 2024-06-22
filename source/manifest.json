@@ -13,6 +13,7 @@
         "ui/icon/pencil-square-icon.js",
         "ui/icon/comment-url-link/link-shorts-icon.js",
         "ui/icon/comment-url-link/link-icon.js",
+        "ui/icon/comment-like-icon.js",
         "core/utils/functions.js",
         "core/storage.js",
         "core/cafe-api.js",
@@ -25,6 +26,7 @@
         "modules/activity-level-indicator.js",
         "modules/comment-url-link.js",
         "modules/remove-block-drag.js",
+        "modules/best-comment.js",
         "darkmode.js",
         "resolve-url.js",
         "content_script.js"
@@ -36,7 +38,8 @@
         "css/profile.css",
         "css/member-memo.css",
         "css/activity-level-indicator.css",
-        "css/comment-url-link.css"
+        "css/comment-url-link.css",
+        "css/best-comment.css"
       ],
       "all_frames": true
     }

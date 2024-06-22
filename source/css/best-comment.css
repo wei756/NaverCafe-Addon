@@ -1,0 +1,90 @@
+.BestComment__list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.BestComment__list .BestComment__item {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--skinListBorder);
+  position: relative;
+}
+.BestComment__list .BestComment__item:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -29px;
+  bottom: -1px;
+  width: 858px;
+  background: #03c75a10;
+}
+.BestComment__item .BestComment__profile {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 1;
+}
+.BestComment__item .BestComment__profile img {
+  width: 100%;
+  object-fit: cover;
+}
+.BestComment__item .BestComment__content_wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 1;
+}
+.BestComment__item .BestComment__nick {
+  font-size: 14px;
+  font-weight: 700;
+}
+.BestComment__item .BestComment__level {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+}
+.BestComment__item .BestComment__best {
+  color: #c70303;
+  border: 1px solid #c70303;
+  border-radius: 9px;
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 0px 4px;
+}
+.BestComment__item .BestComment__content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.BestComment__item .text_comment {
+  font-size: 15px;
+  line-height: 22px;
+  word-break: break-all;
+  word-wrap: break-word;
+  vertical-align: top;
+}
+.BestComment__item .image > img {
+  max-width: 250px;
+  max-height: 375px;
+  border-radius: 12px;
+  vertical-align: top;
+}
+.BestComment__item .BestComment__info {
+  color: var(--skinText979797);
+  font-size: 13px;
+  line-height: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.BestComment__item .BestComment__like {
+  color: rgb(245, 53, 53);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
