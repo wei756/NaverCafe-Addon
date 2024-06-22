@@ -466,11 +466,11 @@ async function getCommentLikes(cafeId, articleId, commentIds) {
     cssIds: 'BASIC_PC,CAFE_PC',
     _: Date.now(),
   };
-  const url = `https://api.allorigins.win/raw?${new URLSearchParams({
-    url: `https://cafe.like.naver.com/v1/search/contents?${new URLSearchParams(
+  const url = `https://corsproxy.io/?${encodeURIComponent(
+    `https://cafe.like.naver.com/v1/search/contents?${new URLSearchParams(
       params,
     ).toString()}`,
-  })}`;
+  )}`;
   return await fetch(url)
     .then((res) => res.json())
     .then((res) => res.contents);
@@ -496,7 +496,9 @@ async function getYoutubeVideoInfo(videoId) {
  * @returns {Promise<AfreecaStationInfo | null>}
  */
 async function getAfreecaStationInfo(streamerId) {
-  const url = `https://api.allorigins.win/raw?url=http://bjapi.afreecatv.com/api/${streamerId}/station`;
+  const url = `https://corsproxy.io/?${encodeURIComponent(
+    `http://bjapi.afreecatv.com/api/${streamerId}/station`,
+  )}`;
   return await fetch(url)
     .then((res) => res.json())
     .catch(() => null);
@@ -509,7 +511,9 @@ async function getAfreecaStationInfo(streamerId) {
  * @returns {Promise<AfreecaVodInfo | null>}
  */
 async function getAfreecaVodInfo(videoId) {
-  const url = `https://api.allorigins.win/raw?url=https://vod.afreecatv.com/player/${videoId}`;
+  const url = `https://corsproxy.io/?${encodeURIComponent(
+    `https://vod.afreecatv.com/player/${videoId}`,
+  )}`;
   return await fetch(url)
     .then((res) => res.text())
     .then(
@@ -530,7 +534,9 @@ async function getAfreecaVodInfo(videoId) {
  * @returns {Promise<AfreecaLiveInfo | null>}
  */
 async function getAfreecaLiveInfo(streamerId, videoId) {
-  const url = `https://api.allorigins.win/raw?url=https://play.afreecatv.com/${streamerId}/${videoId}`;
+  const url = `https://corsproxy.io/?${encodeURIComponent(
+    `https://play.afreecatv.com/${streamerId}/${videoId}`,
+  )}`;
   return await fetch(url)
     .then((res) => res.text())
     .then((html) => ({
