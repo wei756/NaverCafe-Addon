@@ -5,7 +5,7 @@
 
 # 다운로드
 
-웹스토어: [![Download from Chrome Web Store](https://img.shields.io/badge/다운로드-v1.3.2-brightgreen)](https://chrome.google.com/webstore/detail/네이버-카페-애드온/epcibdcgmbiimdleghmeldeopdjcaeic)
+웹스토어: [![Download from Chrome Web Store](https://img.shields.io/badge/다운로드-v1.5.1-brightgreen)](https://chrome.google.com/webstore/detail/네이버-카페-애드온/epcibdcgmbiimdleghmeldeopdjcaeic)
 
 
 # 제공하는 기능
