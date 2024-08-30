@@ -82,7 +82,10 @@ function geneBestCommentElement(cafeId, comments) {
     li.classList.add('BestComment__item');
     li.innerHTML = `
       <a class="BestComment__profile" href="${profileUrl}">
-        <img src="${comment.writer.image.url}" />
+        <img src="${
+          comment.writer.image?.url ||
+          'https://ssl.pstatic.net/static/cafe/cafe_pc/default/cafe_profile_77.png'
+        }" />
       </a>
       <div class="BestComment__content_wrapper">
         <span class="BestComment__nick">
