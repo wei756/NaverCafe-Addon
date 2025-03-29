@@ -85,6 +85,12 @@ async function geneProfileOnArticle(memberInfo, articleList) {
             <span class="countValue subCount">0</span>
           </div>
         </div>
+        <div class="memberSummary join">
+          <div class="count join">
+            가입
+            <span class="countValue joinDate">00.00.00.</span>
+          </div>
+        </div>
         <div class="memoWrapper"></div>
       </div>
     </div>
@@ -123,6 +129,8 @@ async function geneProfileOnArticle(memberInfo, articleList) {
   profileElement.querySelector('.subCount').innerText = formatNumberWithCommas(
     memberInfo.memberSubscriberCount,
   );
+  profileElement.querySelector('.joinDate').innerText =
+    memberInfo.joinDate.slice(2);
 
   profileElement.querySelector('.description').innerText =
     memberInfo.introduction;

@@ -108,6 +108,9 @@
   color: #000;
   font-weight: 700;
 }
+.profileArea .profilePanel .profileLink .descArea .memberSummary.join {
+  margin-top: -4px;
+}
 .profileArea .profilePanel .profileLink .descArea .memoWrapper span.memberMemo {
   margin: 0;
 }
